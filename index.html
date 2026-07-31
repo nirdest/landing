@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--
   DevOps.toys — DevOps / FinOps / Production Engineering consultant landing.
-  Still to fill in: the consultant's real name (for the JSON-LD Person node,
-  see the comment above the ld+json block) and the LinkedIn handle (footer).
+  Consultant: Денис Кузьмин (linkedin.com/in/nirdest, github.com/nirdest).
+  The name currently appears only in the JSON-LD and the footer links — no
+  visible byline on the page itself yet.
   The lead form is simulated here; in production it POSTs to /api/lead.
   Language: single page, client-side RU/EN toggle (RU is the default).
   Markup/CSS/JS live in separate files (css/styles.css, js/main.js, js/animations.js) —
@@ -41,12 +42,14 @@
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/latin-500.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
 <link href="css/styles.css" rel="stylesheet">
-<!-- The Person node is intentionally absent: it previously carried "[YOUR_NAME]",
-     which fed search engines a literal placeholder as the consultant's name.
-     Add it back once a real name is available. -->
+<!-- The Person is the provider of the service and is linked both ways by @id, so
+     search engines tie the practice to a named human rather than treating them as
+     two unrelated entities. Name kept in Cyrillic on both locales: a personal name
+     is not translated, and no Latin spelling has been confirmed by the owner. -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
-{"@type":"ProfessionalService","@id":"https://devops.toys/#business","name":"DevOps.toys","url":"https://devops.toys/","image":"https://devops.toys/og-image.png","description":"Ускорение сайтов, снижение расходов на облако, надёжный production. Диагностика бесплатно — оплата только за результат.","serviceType":["DevOps consulting","FinOps consulting","Production engineering"],"areaServed":"Worldwide","availableLanguage":["ru","en"]},
+{"@type":"Person","@id":"https://devops.toys/#person","name":"Денис Кузьмин","jobTitle":"DevOps / FinOps Consultant","url":"https://devops.toys/","sameAs":["https://www.linkedin.com/in/nirdest","https://github.com/nirdest"]},
+{"@type":"ProfessionalService","@id":"https://devops.toys/#business","name":"DevOps.toys","url":"https://devops.toys/","image":"https://devops.toys/og-image.png","description":"Ускорение сайтов, снижение расходов на облако, надёжный production. Диагностика бесплатно — оплата только за результат.","serviceType":["DevOps consulting","FinOps consulting","Production engineering"],"areaServed":"Worldwide","availableLanguage":["ru","en"],"founder":{"@id":"https://devops.toys/#person"},"provider":{"@id":"https://devops.toys/#person"}},
 {"@type":"WebSite","@id":"https://devops.toys/#website","url":"https://devops.toys/","name":"DevOps.toys","inLanguage":"ru","publisher":{"@id":"https://devops.toys/#business"}}
 ]}
 </script>
@@ -471,9 +474,7 @@
   <div class="wrap ftr-in">
     <span data-i18n="foot.rights">© 2026 DevOps.toys · Консалтинг DevOps и FinOps</span>
     <span class="right">
-      <!-- LinkedIn link removed until a real handle exists: it pointed at
-           /in/[YOUR_HANDLE] and was a live 404 on the production site.
-           Restore it here once the handle is known. -->
+      <a href="https://www.linkedin.com/in/nirdest" target="_blank" rel="noopener">LinkedIn ↗</a>
       <a href="https://github.com/nirdest" target="_blank" rel="noopener">GitHub ↗</a>
       <a href="mailto:hello@devops.toys">hello@devops.toys</a>
     </span>

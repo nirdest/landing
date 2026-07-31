@@ -144,8 +144,8 @@ Breakpoints are `980 / 900 / 760 / 620` and are **not** written in descending or
 
 - **HTTPS is not yet working on the custom domain.** DNS resolves and the site serves over `http://devops.toys/`, but GitHub has not provisioned a TLS certificate for it — `https://devops.toys/` fails with a `*.github.io` certificate name mismatch. The `CNAME` file now exists (it did not before, which is the usual cause). Finishing this needs a UI action nobody but the repo owner can take: Settings → Pages → wait for "Certificate provisioned", then tick **Enforce HTTPS**.
 - DNS currently has only **two** of GitHub's four apex A records (`185.199.108.153`, `185.199.109.153`). Adding `110.153` and `111.153` costs nothing and buys redundancy.
-- The consultant's **real name** is still missing — the JSON-LD `Person` node was removed rather than publish `[YOUR_NAME]` to search engines. Add it back once known.
-- The footer **LinkedIn** link was removed: it pointed at `/in/[YOUR_HANDLE]` and was a live 404. GitHub now points at `github.com/nirdest`.
+- Consultant is **Денис Кузьмин** — `linkedin.com/in/nirdest`, `github.com/nirdest`. Both are wired into the JSON-LD `Person` (`sameAs`) and the footer. No placeholders remain in any published file.
+- The name appears **only** in structured data and the footer links; nothing on the visible page names the consultant. For a site whose whole pitch is personal trust ("я свяжусь с вами лично"), a visible byline in the Experience section is an obvious gap — not done because it's a content decision the owner hasn't asked for.
 - The lead form does not submit anywhere.
 - The tech stack listed in the Experience section was partly inferred and has not been confirmed by the owner. Don't present it as verified.
 - Don't invent metrics, case studies or client names — an earlier interactive "tuner" showing fabricated latency/cost numbers was removed for exactly this reason.
