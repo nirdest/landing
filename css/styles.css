@@ -195,8 +195,8 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
 .alt-table tr:last-child td{border-bottom:0}
 .alt-table th{font:500 .68rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .alt-table th:first-child,.alt-table td:first-child{color:var(--muted);font:400 .78rem var(--mono)}
-.alt-table td.vibeops{color:var(--acc-deep);font-weight:560}
-.alt-table th.vibeops{color:var(--acc-deep)}
+.alt-table td.us{color:var(--acc-deep);font-weight:560}
+.alt-table th.us{color:var(--acc-deep)}
 
 /* ============ faq ============ */
 .faq{max-width:78ch;border-top:1px solid var(--line)}

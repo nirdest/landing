@@ -25,14 +25,18 @@ git push origin main
 
 # confirm the deploy actually landed (Pages lags ~30-60s; compare checksums)
 for i in $(seq 1 20); do
-  live=$(curl -s https://nirdest.github.io/landing/ | md5)
+  live=$(curl -s http://devops.toys/ | md5)
   local=$(md5 -q index.html)
   [ "$live" = "$local" ] && echo "deployed" && break
   sleep 8
 done
 ```
 
-Live URL: https://nirdest.github.io/landing/
+Live URL: **https://devops.toys/** (`nirdest.github.io/landing/` 301-redirects there).
+
+Publishing is filtered by `_config.yml`. Internal working documents (`competitive-analysis.html`, `research/`, `CLAUDE.md`) are listed under `exclude:` so Jekyll does not copy them into the built site — they live in git but are **not** reachable over the web. `robots.txt` repeats the same two paths as `Disallow:` for defence in depth. If you add another internal document, add it to both, then verify it 404s after deploy rather than assuming.
+
+`CNAME` pins the custom domain to `devops.toys`; do not delete it.
 
 ### Verifying changes
 
@@ -65,7 +69,7 @@ Single-page is a **deliberate** choice, re-confirmed by competitor research in `
 
 ### i18n
 
-Client-side only; no localized routes. RU is the default, EN is a toggle persisted to `localStorage` under `vibeops-lang`.
+Client-side only; no localized routes. RU is the default, EN is a toggle persisted to `localStorage` under `devopstoys-lang`.
 
 `applyLang()` walks four attribute types and rewrites them from the `I18N` dictionary:
 
@@ -89,7 +93,7 @@ grep -oE 'data-i18n(-ph|-aria|-html)?="[^"]+"' index.html | sed -E 's/.*="(.*)"/
 
 ### Before/after comparison widget
 
-The centrepiece. Two full inline SVGs sharing `viewBox="0 0 1200 470"`, stacked absolutely:
+The centrepiece. Two full inline SVGs sharing `viewBox="0 0 1400 470"`, stacked absolutely:
 
 - `.cmp-base` (`z-index:1`) holds `#topoAfter` — the healthy architecture, **always fully painted**
 - `.cmp-top` (`z-index:2`, `#cmpTop`) holds `#topoBefore` — the degraded one, revealed from the left by `clip-path: inset(0 N% 0 0)`
@@ -99,15 +103,21 @@ Because both layers are stacked, **each SVG needs its own opaque `<rect fill="va
 
 The "before" SVG carries `class="tone-bad"`, which restyles the shared `.shape` / `.det` / `.route` / `.led` / `.pkt-*` primitives to the red degraded palette. Both SVGs reuse the same primitive classes — style the class, not the element.
 
-Keep the two monitoring blocks horizontally apart (ghost at x≈300, live at x≈780). When they sat at the same x they overlapped into unreadable garbage at the 50% split.
+Each layer also carries its own HTML `.cmp-chrome` header (caption + system status), so the clip reveals the state that matches the side you are looking at — red "система деградировала" on the before half, green "система в норме" on the after half. The `.cmp-legend` is shared and therefore sits **outside** the clipped area.
 
-Below 760px the widget changes mode: `.cmp-wrap` scrolls horizontally with `min-width:860px` on `.cmp` (labels are unreadable at phone scale otherwise) and `.cmp-range` switches to `position:static`, becoming a normal visible slider below the diagram. This is why the input sits **outside** `.cmp` in the DOM — it must not scroll away with the diagram.
+Anything positioned near the horizontal centre gets sliced in half at the default 50% divider. The "after" monitoring block (x≈900) and the tag row are deliberately placed clear of it. Before moving anything into the middle, check it doesn't straddle the divider.
+
+Below 760px the widget changes mode: `.cmp-wrap` scrolls horizontally with `min-width:1040px` on `.cmp` (labels are unreadable at phone scale otherwise) and `.cmp-range` switches to `position:static`, becoming a normal visible slider below the diagram. This is why the input sits **outside** `.cmp` in the DOM — it must not scroll away with the diagram.
 
 ### Packet animation
 
-`makePool(host, paths, speed, gap, cap)` returns `{step, hide}`. Dots are pooled and recycled, positioned each frame with `path.getPointAtLength()` along real `<path>` elements referenced by id (`#pBefore`, `#pA1`…`#pA4`) — the visible routes *are* the animation paths, so changing a route's `d` moves the packets with it.
+`makePool(host, paths, speed, gap, cap)` returns `{seed, step, hide}`. Dots are pooled and recycled, positioned each frame with `path.getPointAtLength()` along real `<path>` elements referenced by id (`#pBefore`, `#pA1`…`#pA3`) — the visible routes *are* the animation paths, so changing a route's `d` moves the packets with it.
+
+`seed()` must be called once at startup: it fills each lane with packets at random `t`. Without it the whole batch spawns at `t=0` and travels as a single visible clump, because transit time far exceeds `cap × gap`.
 
 A single `requestAnimationFrame` loop drives all pools. Motion is suppressed when `prefers-reduced-motion: reduce` or the tab is hidden.
+
+Both SVGs paint an opaque `<rect fill="var(--card)">` to stop the layers bleeding through, which also covers `.cmp`'s CSS dot grid — so the grid is re-drawn *inside* each SVG as an `<pattern>` (`#dotsA` / `#dotsB`). Pattern ids must stay unique across the two inline SVGs; they share one document.
 
 ### Lead modal
 
@@ -132,10 +142,13 @@ Breakpoints are `980 / 900 / 760 / 620` and are **not** written in descending or
 
 ## Unfinished / needs the owner's input
 
-- Placeholders still in the file: `[YOUR_DOMAIN]` (×4), `[YOUR_HANDLE]` (×3), `[YOUR_NAME]` (×2) — footer links, canonical, OG, JSON-LD.
+- **HTTPS is not yet working on the custom domain.** DNS resolves and the site serves over `http://devops.toys/`, but GitHub has not provisioned a TLS certificate for it — `https://devops.toys/` fails with a `*.github.io` certificate name mismatch. The `CNAME` file now exists (it did not before, which is the usual cause). Finishing this needs a UI action nobody but the repo owner can take: Settings → Pages → wait for "Certificate provisioned", then tick **Enforce HTTPS**.
+- DNS currently has only **two** of GitHub's four apex A records (`185.199.108.153`, `185.199.109.153`). Adding `110.153` and `111.153` costs nothing and buys redundancy.
+- The consultant's **real name** is still missing — the JSON-LD `Person` node was removed rather than publish `[YOUR_NAME]` to search engines. Add it back once known.
+- The footer **LinkedIn** link was removed: it pointed at `/in/[YOUR_HANDLE]` and was a live 404. GitHub now points at `github.com/nirdest`.
 - The lead form does not submit anywhere.
 - The tech stack listed in the Experience section was partly inferred and has not been confirmed by the owner. Don't present it as verified.
 - Don't invent metrics, case studies or client names — an earlier interactive "tuner" showing fabricated latency/cost numbers was removed for exactly this reason.
 - The `.hero-3d` zone is an empty placeholder — no asset exists yet. See "Hero 3D placeholder" above.
 - The **"what I won't do"** (`#avoid`) and **alternatives comparison** (`#alt`) sections were drafted by Claude from `research/03-build-brief.md`, following the existing site's tone and already-stated positioning (free diagnosis, pay-for-result, no lock-in) — not fabricated metrics, but still the owner should read them once before this goes live, since they're first-person claims about how the consultant actually works.
-- Full competitive research behind this rebuild: `research/01-client-brand.md`, `research/02-competitor-analysis.md`, `research/03-build-brief.md`, and the client-facing `competitive-analysis.html` in the repo root.
+- Full competitive research behind this rebuild: `research/01-client-brand.md`, `research/02-competitor-analysis.md`, `research/03-build-brief.md`, and `competitive-analysis.html` in the repo root. **These are internal.** `competitive-analysis.html` scores ten named competitors; it and `research/` were briefly served publicly on the live domain before `_config.yml` excluded them. Keep them excluded.

@@ -1,0 +1,14 @@
+# GitHub Pages (Jekyll) build config.
+#
+# The only job of this file is to keep internal working documents OUT of the
+# published site. They stay in git for reference, but Jekyll does not copy them
+# into the build, so they are not reachable at https://devops.toys/.
+#
+# This matters: competitive-analysis.html scores ten *named* competitors, and
+# research/ holds positioning and pricing strategy. Both were being served
+# publicly and were crawlable (robots.txt allows everything).
+exclude:
+  - competitive-analysis.html
+  - research/
+  - CLAUDE.md
+  - README.md

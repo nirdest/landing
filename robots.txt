@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://[YOUR_DOMAIN]/sitemap.xml
+# Defence in depth. These are internal working documents and are already kept
+# out of the build by _config.yml; the rules below mean that if that exclusion
+# is ever removed by accident, crawlers still leave them alone.
+Disallow: /competitive-analysis.html
+Disallow: /research/
+
+Sitemap: https://devops.toys/sitemap.xml

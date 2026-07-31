@@ -5,7 +5,7 @@
 var I18N = {
   ru: {
     'skip':'Перейти к содержанию',
-    'meta.title':'DevOps, FinOps и Production Engineering | VibeOps',
+    'meta.title':'DevOps, FinOps и Production Engineering | DevOps.toys',
     'meta.desc':'Ускорение сайтов, снижение расходов на облако, надёжный production. Диагностика бесплатно — оплата только за результат.',
     'nav.services':'Услуги','nav.process':'Как я работаю','nav.exp':'Опыт','nav.faq':'Вопросы','nav.contact':'Связаться',
     'hero.eyebrow':'DEVOPS · FINOPS · PRODUCTION ENGINEERING',
@@ -68,7 +68,7 @@ var I18N = {
 
     'alt.eyebrow':'06 — Альтернативы','alt.h':'С чем вы на самом деле сравниваете',
     'alt.lead':'Если не я — то что? Честное сравнение с тем, что обычно пробуют вместо этого.',
-    'alt.colVibeops':'VibeOps','alt.colPrompts':'Чинить самому промптами','alt.colFreelancer':'Дешёвый фрилансер','alt.colNothing':'Ничего не делать',
+    'alt.colUs':'DevOps.toys','alt.colPrompts':'Чинить самому промптами','alt.colFreelancer':'Дешёвый фрилансер','alt.colNothing':'Ничего не делать',
     'alt.row1':'Причина или симптом',
     'alt.row2':'Оплата',
     'alt.row3':'Зависимость (lock-in)',
@@ -97,11 +97,11 @@ var I18N = {
     'form.valErr':'Укажите контакт — не короче 5 символов.',
     'form.privacy':'Контакт будет использован только для ответа на эту заявку.',
     'form.done':'Готово','form.closeAria':'Закрыть окно',
-    'foot.rights':'© 2026 VibeOps · Консалтинг DevOps и FinOps'
+    'foot.rights':'© 2026 DevOps.toys · Консалтинг DevOps и FinOps'
   },
   en: {
     'skip':'Skip to content',
-    'meta.title':'DevOps, FinOps & Production Engineering | VibeOps',
+    'meta.title':'DevOps, FinOps & Production Engineering | DevOps.toys',
     'meta.desc':'Faster sites, lower cloud bills, reliable production. The diagnosis is free — you only pay for results.',
     'nav.services':'Services','nav.process':'How I work','nav.exp':'Experience','nav.faq':'FAQ','nav.contact':'Contact',
     'hero.eyebrow':'DEVOPS · FINOPS · PRODUCTION ENGINEERING',
@@ -164,7 +164,7 @@ var I18N = {
 
     'alt.eyebrow':'06 — Alternatives','alt.h':'What you’re actually comparing this to',
     'alt.lead':'If not me, then what? An honest comparison with what people usually try instead.',
-    'alt.colVibeops':'VibeOps','alt.colPrompts':'Fix it yourself with more prompts','alt.colFreelancer':'A cheap freelancer','alt.colNothing':'Do nothing',
+    'alt.colUs':'DevOps.toys','alt.colPrompts':'Fix it yourself with more prompts','alt.colFreelancer':'A cheap freelancer','alt.colNothing':'Do nothing',
     'alt.row1':'Root cause or symptom',
     'alt.row2':'Payment',
     'alt.row3':'Lock-in',
@@ -193,7 +193,7 @@ var I18N = {
     'form.valErr':'Please enter a contact — at least 5 characters.',
     'form.privacy':'Your contact is used only to reply to this request.',
     'form.done':'Done','form.closeAria':'Close dialog',
-    'foot.rights':'© 2026 VibeOps · DevOps & FinOps consulting'
+    'foot.rights':'© 2026 DevOps.toys · DevOps & FinOps consulting'
   }
 };
 
@@ -205,13 +205,13 @@ var store = {
   get:function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
   set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 };
-var lang = store.get('vibeops-lang') === 'en' ? 'en' : 'ru';
+var lang = store.get('devopstoys-lang') === 'en' ? 'en' : 'ru';
 function t(k){ return (I18N[lang] && I18N[lang][k]) || I18N.ru[k] || k; }
 
 /* ================= language ================= */
 function applyLang(l){
   lang = (l === 'en') ? 'en' : 'ru';
-  store.set('vibeops-lang', lang);
+  store.set('devopstoys-lang', lang);
   document.documentElement.lang = lang;
   $all('[data-i18n]').forEach(function(el){ el.textContent = t(el.getAttribute('data-i18n')); });
   $all('[data-i18n-html]').forEach(function(el){ el.innerHTML = t(el.getAttribute('data-i18n-html')); });
