@@ -105,26 +105,43 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
 .hero-trust b{color:var(--ink);font-weight:600}
 
 /* ============ before/after comparison ============ */
-.cmp-shell{position:relative;margin-top:6px}
-.cmp-wrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
-.cmp{position:relative;width:100%;aspect-ratio:1200/470;overflow:hidden;
-  background-image:radial-gradient(var(--line) 1px,transparent 1.3px);background-size:24px 24px}
-.cmp-base,.cmp-top{position:absolute;inset:0}
-.cmp-base svg,.cmp-top svg{position:absolute;inset:0;width:100%;height:100%;display:block}
-.cmp-base{z-index:1}
-.cmp-top{z-index:2;clip-path:inset(0 50% 0 0)}
+/* Panel chrome: bordered card with accent corner brackets, a per-state header
+   inside each layer (so the clip reveals the matching status), and a legend. */
+.cmp-panel{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.cmp-panel::before,.cmp-panel::after{content:"";position:absolute;width:15px;height:15px;pointer-events:none;z-index:6}
+.cmp-panel::before{top:-1px;left:-1px;border-top:2px solid var(--acc-deep);border-left:2px solid var(--acc-deep);border-top-left-radius:12px}
+.cmp-panel::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--acc-deep);border-right:2px solid var(--acc-deep);border-bottom-right-radius:12px}
+.cmp-shell{position:relative}
+.cmp-wrap{border-radius:12px 12px 0 0;overflow:hidden}
+.cmp{position:relative;overflow:hidden;background-image:radial-gradient(var(--line) 1px,transparent 1.3px);background-size:24px 24px}
+/* base layer sits in flow and defines the height; top layer is overlaid and clipped */
+.cmp-base{position:relative;z-index:1}
+.cmp-top{position:absolute;inset:0;z-index:2;clip-path:inset(0 50% 0 0)}
+.cmp-layer{display:block;width:100%;height:auto}
+.cmp-chrome{display:flex;align-items:center;gap:14px;height:52px;padding:0 clamp(14px,1.6vw,20px);border-bottom:1px dashed var(--line);background:var(--card)}
+.cmp-cap,.cmp-status{display:flex;align-items:center;gap:9px;font:500 .68rem var(--mono);letter-spacing:.13em;text-transform:uppercase;white-space:nowrap;color:var(--muted)}
+.cmp-status{margin-left:auto;letter-spacing:.06em}
+.cmp-cap b{font-weight:700}
+.cmp-dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--acc)}
+.cap-dot{animation:blink 2.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.cmp-chrome.ok b,.cmp-chrome.ok .cmp-status{color:var(--acc-deep)}
+.cmp-chrome.bad b,.cmp-chrome.bad .cmp-status{color:var(--danger)}
+.cmp-chrome.bad .cmp-dot{background:var(--danger)}
+.cmp-legend{display:flex;flex-wrap:wrap;gap:10px 26px;padding:13px clamp(14px,1.6vw,20px);border-top:1px dashed var(--line);font:400 .7rem var(--mono);color:var(--muted)}
+.cmp-legend span{display:inline-flex;align-items:center;gap:8px}
+.lg-dot{width:8px;height:8px;border-radius:50%;background:var(--acc);flex:none}
+.lg-dash{width:17px;height:11px;border:1.5px dashed var(--acc-deep);border-radius:3px;flex:none}
+.lg-probe{width:17px;border-top:1.5px dotted var(--line-2);flex:none}
 .cmp-div{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--acc-deep);pointer-events:none;transform:translateX(-1px);z-index:3}
 .cmp-div::before{content:"";position:absolute;top:50%;left:50%;width:42px;height:42px;border-radius:50%;background:var(--card);border:1.5px solid var(--acc-deep);transform:translate(-50%,-50%);box-shadow:0 4px 14px rgba(21,23,15,.14)}
 .cmp-div::after{content:"⟷";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font:500 15px var(--mono);color:var(--acc-deep)}
-.cmp-tag{position:absolute;top:14px;z-index:3;font:500 .68rem var(--mono);letter-spacing:.13em;text-transform:uppercase;padding:6px 12px;border-radius:6px;background:var(--card);border:1px solid var(--line-2);pointer-events:none}
-.cmp-tag-b{left:14px;color:var(--danger);border-color:rgba(178,58,34,.3)}
-.cmp-tag-a{right:14px;color:var(--acc-deep);border-color:rgba(0,112,58,.3)}
 .cmp-range{position:absolute;inset:0;width:100%;height:100%;margin:0;z-index:5;-webkit-appearance:none;appearance:none;background:transparent;cursor:ew-resize}
 .cmp-range::-webkit-slider-runnable-track{-webkit-appearance:none;height:100%;background:transparent}
 .cmp-range::-webkit-slider-thumb{-webkit-appearance:none;width:2px;height:2px;background:transparent;border:0}
 .cmp-range::-moz-range-track{height:100%;background:transparent;border:0}
 .cmp-range::-moz-range-thumb{width:2px;height:2px;background:transparent;border:0;opacity:0}
-.cmp-hint{display:none;margin-top:12px;font:400 .74rem var(--mono);color:var(--muted)}
+.cmp-hint{display:none;margin:10px clamp(14px,1.6vw,20px) 0;font:400 .74rem var(--mono);color:var(--muted)}
 .changes{margin-top:clamp(28px,3.6vw,44px);display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:clamp(20px,2.6vw,36px)}
 .change dt{display:flex;align-items:baseline;gap:9px;font-weight:620;font-size:.98rem;margin-bottom:8px;letter-spacing:-.012em}
 .change dt::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--acc);flex:none;transform:translateY(-1px)}
@@ -140,16 +157,14 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
 .led{fill:var(--acc-deep)}
 .nlabel{font:500 17px var(--sans);fill:var(--ink-2);text-anchor:middle;letter-spacing:.005em}
 .tag{font:500 16px var(--sans);fill:var(--acc-deep);text-anchor:middle}
-.node-alt .shape{stroke:var(--acc-deep);stroke-dasharray:5 4;fill:var(--acc-soft)}
-.probe path{fill:none;stroke:var(--line-2);stroke-width:1;stroke-dasharray:2 5;opacity:.8}
-.hb rect{fill:var(--card);stroke:var(--line-2);stroke-width:1.4}
-.hb-line{fill:none;stroke:var(--acc-deep);stroke-width:2;stroke-linecap:round;stroke-dasharray:90 190;animation:hb 2.4s linear infinite}
-@keyframes hb{to{stroke-dashoffset:-280}}
-.hb-txt{font:500 15px var(--mono);fill:var(--muted);text-anchor:middle}
-.ghost rect{fill:none;stroke:var(--danger);stroke-width:1.4;stroke-dasharray:5 5;opacity:.65}
-.ghost text{font:500 16px var(--sans);fill:var(--danger);text-anchor:middle;opacity:.85}
+.group-box{fill:none;stroke:var(--line-2);stroke-width:1.4;stroke-dasharray:6 5}
+.probe path{fill:none;stroke:var(--line-2);stroke-width:1;stroke-dasharray:2 5;opacity:.85}
+.hb rect{fill:var(--card);stroke:var(--acc-deep);stroke-width:1.4}
+.hb-line{fill:none;stroke:var(--acc-deep);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:110 230;animation:hb 2.4s linear infinite}
+@keyframes hb{to{stroke-dashoffset:-340}}
+.hb-txt{font:500 16px var(--mono);fill:var(--muted);text-anchor:middle;letter-spacing:.08em}
 .pkt-core{fill:var(--acc-deep)}
-.pkt-halo{fill:var(--acc);opacity:.22}
+.pkt-halo{fill:var(--acc);opacity:.2}
 /* "before" state — the same primitives, degraded palette */
 .tone-bad .shape{stroke:var(--danger)}
 .tone-bad .det{stroke:var(--danger);opacity:.55}
@@ -250,7 +265,7 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
 }
 @media (max-width:760px){
   .cmp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .cmp{min-width:860px}
+  .cmp{min-width:1040px}
   .cmp-range{position:static;width:100%;height:36px;margin-top:16px;cursor:pointer;background:transparent}
   .cmp-range::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:linear-gradient(to right,var(--danger) var(--p,50%),var(--acc-deep) var(--p,50%))}
   .cmp-range::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--card);border:2px solid var(--acc-deep);margin-top:-11.5px;box-shadow:0 2px 8px rgba(21,23,15,.2)}
@@ -317,163 +332,186 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
       <p class="lead" data-i18n="cmp.lead">Слева — инфраструктура, которая не справляется с нагрузкой. Справа — та же система после работы. Потяните ползунок, чтобы сравнить.</p>
     </div>
 
-    <div class="cmp-shell">
-      <div class="cmp-wrap">
-        <div class="cmp" id="cmp">
+    <figure class="cmp-panel">
+      <div class="cmp-shell">
+        <div class="cmp-wrap">
+          <div class="cmp" id="cmp">
 
-          <!-- AFTER: base layer, always fully painted -->
-          <div class="cmp-base">
-            <svg id="topoAfter" class="topo" viewBox="0 0 1200 470" role="img" aria-labelledby="afterTitle">
-              <title id="afterTitle" data-i18n="cmp.afterTitle">Инфраструктура после работы</title>
-              <rect width="1200" height="470" fill="var(--card)"/>
+            <!-- AFTER: base layer, sits in flow and defines the height -->
+            <div class="cmp-base">
+              <div class="cmp-chrome ok">
+                <span class="cmp-cap"><i class="cmp-dot cap-dot"></i><b data-i18n="cmp.after">После</b><span data-i18n="cmp.live">· живая топология</span></span>
+                <span class="cmp-status"><i class="cmp-dot"></i><span data-i18n="cmp.sysOk">система в норме</span></span>
+              </div>
+              <svg id="topoAfter" class="topo cmp-layer" viewBox="0 0 1400 470" role="img" aria-labelledby="afterTitle">
+                <title id="afterTitle" data-i18n="cmp.afterTitle">Инфраструктура после работы</title>
+                <!-- opaque base stops the other layer bleeding through; the dot grid
+                     must therefore be painted inside the SVG, not behind it -->
+                <defs><pattern id="dotsA" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="var(--line)"/></pattern></defs>
+                <rect width="1400" height="470" fill="var(--card)"/>
+                <rect width="1400" height="470" fill="url(#dotsA)"/>
 
-              <!-- four request routes; the packet animation reuses these exact paths -->
-              <path id="pA1" class="route" d="M80 255 L525 255 C590 255 610 210 675 210 C740 210 760 255 825 255 C890 255 910 210 975 210 C1040 210 1060 255 1120 255"/>
-              <path id="pA2" class="route" d="M80 255 L525 255 C590 255 610 210 675 210 C740 210 760 255 825 255 C890 255 910 300 975 300 C1040 300 1060 255 1120 255"/>
-              <path id="pA3" class="route" d="M80 255 L525 255 C590 255 610 300 675 300 C740 300 760 255 825 255 C890 255 910 210 975 210 C1040 210 1060 255 1120 255"/>
-              <path id="pA4" class="route" d="M80 255 L525 255 C590 255 610 300 675 300 C740 300 760 255 825 255 C890 255 910 300 975 300 C1040 300 1060 255 1120 255"/>
-              <path class="route route-opt" d="M1120 285 L1120 322"/>
+                <!-- three request lanes; the packet animation reuses these exact paths -->
+                <path id="pA1" class="route" d="M70 240 L655 240 Q690 240 690 205 L690 185 Q690 150 725 150 L775 150 Q810 150 810 185 L810 205 Q810 240 845 240 L975 240 Q1010 240 1010 205 L1010 185 Q1010 150 1045 150 L1095 150 Q1130 150 1130 185 L1130 205 Q1130 240 1160 240"/>
+                <path id="pA2" class="route" d="M70 240 L1160 240"/>
+                <path id="pA3" class="route" d="M70 240 L655 240 Q690 240 690 275 L690 295 Q690 330 725 330 L775 330 Q810 330 810 295 L810 275 Q810 240 845 240 L975 240 Q1010 240 1010 275 L1010 295 Q1010 330 1045 330 L1095 330 Q1130 330 1130 295 L1130 275 Q1130 240 1160 240"/>
+                <path class="route route-opt" d="M1242 245 L1288 245"/>
 
-              <!-- sits right of centre so it reads cleanly next to the "before" ghost at the left -->
-              <g class="probe" aria-hidden="true">
-                <path d="M705 86 L378 232"/><path d="M732 86 L525 230"/><path d="M759 86 L672 192"/>
-                <path d="M786 86 L822 232"/><path d="M813 86 L972 192"/><path d="M840 86 L1116 232"/>
-              </g>
-              <g class="hb">
-                <rect x="685" y="28" width="190" height="56" rx="9"/>
-                <path class="hb-line" d="M700 56 h18 l6 -13 9 25 7 -19 6 7 h18 l6 -16 9 28 7 -19 6 7 h60"/>
-                <text class="hb-txt" x="780" y="106" data-i18n="n.mon">мониторинг</text>
-              </g>
-
-              <g transform="translate(80,255)">
-                <g class="glyph">
-                  <circle cx="-16" cy="-15" r="5"/><path d="M-24 3 c0-7.5 3.9-11 8-11 s8 3.5 8 11 z"/>
-                  <circle cx="0" cy="-19" r="5.5"/><path d="M-8.5 1 c0-8 4.2-11.8 8.5-11.8 s8.5 3.8 8.5 11.8 z"/>
-                  <circle cx="16" cy="-15" r="5"/><path d="M8 3 c0-7.5 3.9-11 8-11 s8 3.5 8 11 z"/>
+                <!-- kept clear of the 50% divider so the default view never slices it -->
+                <g class="probe" aria-hidden="true">
+                  <path d="M828 84 L392 214"/><path d="M856 84 L572 212"/><path d="M884 84 L748 126"/>
+                  <path d="M912 84 L908 214"/><path d="M940 84 L1068 126"/><path d="M968 84 L1262 192"/>
                 </g>
-                <text class="nlabel" y="46" data-i18n="n.users">Пользователи</text>
-              </g>
-              <g transform="translate(225,255)">
-                <circle class="shape" r="19"/><ellipse class="det" rx="8" ry="19"/><line class="det" x1="-19" y1="0" x2="19" y2="0"/>
-                <text class="nlabel" y="46" data-i18n="n.dns">Интернет · DNS</text>
-              </g>
-              <g transform="translate(375,255)">
-                <rect class="shape" x="-22" y="-22" width="44" height="44" rx="7"/>
-                <g fill="#71756A" opacity=".85">
-                  <rect x="-13" y="-13" width="10" height="10" rx="2"/><rect x="3" y="-13" width="10" height="10" rx="2"/>
-                  <rect x="-13" y="3" width="10" height="10" rx="2"/><rect x="3" y="3" width="10" height="10" rx="2"/>
+                <g class="hb">
+                  <rect x="800" y="24" width="200" height="58" rx="10"/>
+                  <path class="hb-line" d="M818 53 h20 l7 -15 10 30 8 -22 7 9 h22 l7 -18 10 32 8 -22 7 9 h58"/>
+                  <text class="hb-txt" x="900" y="104" data-i18n="n.mon">мониторинг</text>
                 </g>
-                <text class="nlabel" y="46" data-i18n="n.cdn">CDN · Edge</text>
-              </g>
-              <g transform="translate(525,255)">
-                <path class="shape" d="M-17 -16 L0 0 L-17 16 L-34 0 Z"/>
-                <path class="shape" d="M17 -16 L34 0 L17 16 L0 0 Z"/>
-                <text class="nlabel" y="46" data-i18n="n.lb">Балансировщики</text>
-              </g>
-              <g transform="translate(675,210)">
-                <rect class="shape" x="-44" y="-18" width="88" height="36" rx="7"/>
-                <circle class="led" cx="-30" cy="0" r="3"/><line class="det" x1="-18" y1="0" x2="30" y2="0"/>
-              </g>
-              <g transform="translate(675,300)">
-                <rect class="shape" x="-44" y="-18" width="88" height="36" rx="7"/>
-                <circle class="led" cx="-30" cy="0" r="3"/><line class="det" x1="-18" y1="0" x2="30" y2="0"/>
-                <text class="nlabel" y="42" data-i18n="n.frontend">Фронтенд</text>
-              </g>
-              <g transform="translate(825,255)">
-                <rect class="shape" x="-21" y="-21" width="42" height="42" rx="9"/>
-                <path d="M3 -12 L-8 3 L-2 3 L-3 12 L8 -3 L2 -3 Z" fill="#00703A"/>
-                <text class="nlabel" y="46" data-i18n="n.cache">Кэш</text>
-              </g>
-              <g transform="translate(975,210)">
-                <rect class="shape" x="-44" y="-18" width="88" height="36" rx="7"/>
-                <circle class="led" cx="-30" cy="0" r="3"/><line class="det" x1="-18" y1="0" x2="30" y2="0"/>
-              </g>
-              <g transform="translate(975,300)">
-                <rect class="shape" x="-44" y="-18" width="88" height="36" rx="7"/>
-                <circle class="led" cx="-30" cy="0" r="3"/><line class="det" x1="-18" y1="0" x2="30" y2="0"/>
-                <text class="nlabel" y="42" data-i18n="n.backend">Бэкенд</text>
-              </g>
-              <g transform="translate(1120,255)">
-                <path class="shape" d="M-28 -15 V17 A28 10 0 0 0 28 17 V-15"/>
-                <ellipse class="shape" cx="0" cy="-15" rx="28" ry="10"/>
-                <path class="det" d="M-28 1 A28 10 0 0 0 28 1"/>
-              </g>
-              <g class="node-alt" transform="translate(1120,345)">
-                <path class="shape" d="M-21 -11 V12 A21 8 0 0 0 21 12 V-11"/>
-                <ellipse class="shape" cx="0" cy="-11" rx="21" ry="8"/>
-                <text class="nlabel" y="47" data-i18n="n.dbpair">БД + реплика</text>
-              </g>
 
-              <g>
-                <text class="tag" x="250" y="428" data-i18n="cmp.a1">CDN на edge</text>
-                <text class="tag" x="525" y="428" data-i18n="cmp.a2">резерв и HA</text>
-                <text class="tag" x="825" y="428" data-i18n="cmp.a3">кэш ~85%</text>
-                <text class="tag" x="1090" y="428" data-i18n="cmp.a4">бэкапы и реплика</text>
-              </g>
-              <g id="pktAfter" aria-hidden="true"></g>
-            </svg>
+                <g transform="translate(70,240)">
+                  <g class="glyph">
+                    <circle cx="-22" cy="-20" r="7"/><path d="M-33 4 c0-10.5 5.5-15.4 11-15.4 s11 4.9 11 15.4 z"/>
+                    <circle cx="0" cy="-26" r="7.7"/><path d="M-12 2 c0-11.2 5.9-16.5 12-16.5 s12 5.3 12 16.5 z"/>
+                    <circle cx="22" cy="-20" r="7"/><path d="M11 4 c0-10.5 5.5-15.4 11-15.4 s11 4.9 11 15.4 z"/>
+                  </g>
+                  <text class="nlabel" y="46" data-i18n="n.users">Пользователи</text>
+                </g>
+                <g transform="translate(210,240)">
+                  <circle class="shape" r="26"/>
+                  <ellipse class="det" rx="10" ry="26"/><ellipse class="det" rx="20" ry="26"/>
+                  <line class="det" x1="-26" y1="0" x2="26" y2="0"/>
+                  <text class="nlabel" y="46" data-i18n="n.dns">Интернет · DNS</text>
+                </g>
+                <g transform="translate(390,240)">
+                  <rect class="shape" x="-27" y="-27" width="54" height="54" rx="9"/>
+                  <g fill="#00703A">
+                    <rect x="-16" y="-16" width="13" height="13" rx="3"/><rect x="3" y="-16" width="13" height="13" rx="3"/>
+                    <rect x="-16" y="3" width="13" height="13" rx="3"/><rect x="3" y="3" width="13" height="13" rx="3"/>
+                  </g>
+                  <text class="nlabel" y="46" data-i18n="n.cdn">CDN · Edge</text>
+                </g>
+                <g transform="translate(570,240)">
+                  <path class="shape" d="M-52 0 L-30 -24 L30 -24 L52 0 L30 24 L-30 24 Z"/>
+                  <path class="det" d="M-32 -11 L-20 0 L-32 11 M-2 -11 L10 0 L-2 11" stroke-width="2"/>
+                  <text class="nlabel" y="46" data-i18n="n.lb">Балансировщики</text>
+                </g>
+                <g transform="translate(750,150)"><rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/></g>
+                <g transform="translate(750,240)"><rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/></g>
+                <g transform="translate(750,330)">
+                  <rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/>
+                  <text class="nlabel" y="48" data-i18n="n.frontend">Фронтенд</text>
+                </g>
+                <g transform="translate(910,240)">
+                  <rect class="shape" x="-25" y="-25" width="50" height="50" rx="10"/>
+                  <path d="M4 -14 L-10 4 L-2 4 L-4 14 L10 -4 L2 -4 Z" fill="#00703A"/>
+                  <text class="nlabel" y="46" data-i18n="n.cache">Кэш</text>
+                </g>
+                <g transform="translate(1070,150)"><rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/></g>
+                <g transform="translate(1070,240)"><rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/></g>
+                <g transform="translate(1070,330)">
+                  <rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/>
+                  <text class="nlabel" y="48" data-i18n="n.backend">Бэкенд</text>
+                </g>
+
+                <rect class="group-box" x="1160" y="195" width="210" height="140" rx="12"/>
+                <g transform="translate(1212,245)">
+                  <path class="shape" d="M-26 -14 V16 A26 10 0 0 0 26 16 V-14"/>
+                  <ellipse class="shape" cx="0" cy="-14" rx="26" ry="10"/>
+                  <path class="det" d="M-26 2 A26 10 0 0 0 26 2"/>
+                  <circle class="led" cx="20" cy="14" r="4.5"/>
+                  <text class="nlabel" y="52" data-i18n="n.dbPrimary">Основная</text>
+                  <text class="nlabel" y="72" data-i18n="n.db2">БД</text>
+                </g>
+                <g transform="translate(1318,245)">
+                  <path class="shape" d="M-26 -14 V16 A26 10 0 0 0 26 16 V-14"/>
+                  <ellipse class="shape" cx="0" cy="-14" rx="26" ry="10"/>
+                  <path class="det" d="M-26 2 A26 10 0 0 0 26 2"/>
+                  <circle class="led" cx="20" cy="14" r="4.5"/>
+                  <text class="nlabel" y="52" data-i18n="n.dbReplica">Реплика</text>
+                  <text class="nlabel" y="72" data-i18n="n.db2">БД</text>
+                </g>
+
+                <g>
+                  <text class="tag" x="300" y="442" data-i18n="cmp.a1">CDN на edge</text>
+                  <text class="tag" x="750" y="442" data-i18n="cmp.a2">резерв и HA</text>
+                  <text class="tag" x="910" y="442" data-i18n="cmp.a3">кэширование</text>
+                  <text class="tag" x="1265" y="442" data-i18n="cmp.a4">бэкапы и реплика</text>
+                </g>
+                <g id="pktAfter" aria-hidden="true"></g>
+              </svg>
+            </div>
+
+            <!-- BEFORE: overlaid and clipped, revealed from the left -->
+            <div class="cmp-top" id="cmpTop">
+              <div class="cmp-chrome bad">
+                <span class="cmp-cap"><i class="cmp-dot cap-dot"></i><b data-i18n="cmp.before">До</b><span data-i18n="cmp.live">· живая топология</span></span>
+                <span class="cmp-status"><i class="cmp-dot"></i><span data-i18n="cmp.sysBad">система деградировала</span></span>
+              </div>
+              <svg id="topoBefore" class="topo cmp-layer tone-bad" viewBox="0 0 1400 470" role="img" aria-labelledby="beforeTitle">
+                <title id="beforeTitle" data-i18n="cmp.beforeTitle">Инфраструктура до работы</title>
+                <defs><pattern id="dotsB" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="var(--line)"/></pattern></defs>
+                <rect width="1400" height="470" fill="var(--card)"/>
+                <rect width="1400" height="470" fill="url(#dotsB)"/>
+                <path id="pBefore" class="route" d="M70 240 L1270 240"/>
+
+                <g transform="translate(70,240)">
+                  <g class="glyph">
+                    <circle cx="-22" cy="-20" r="7"/><path d="M-33 4 c0-10.5 5.5-15.4 11-15.4 s11 4.9 11 15.4 z"/>
+                    <circle cx="0" cy="-26" r="7.7"/><path d="M-12 2 c0-11.2 5.9-16.5 12-16.5 s12 5.3 12 16.5 z"/>
+                    <circle cx="22" cy="-20" r="7"/><path d="M11 4 c0-10.5 5.5-15.4 11-15.4 s11 4.9 11 15.4 z"/>
+                  </g>
+                  <text class="nlabel" y="52" data-i18n="n.users">Пользователи</text>
+                </g>
+                <g transform="translate(300,240)">
+                  <circle class="shape" r="30"/>
+                  <ellipse class="det" rx="11" ry="30"/><ellipse class="det" rx="22" ry="30"/>
+                  <line class="det" x1="-30" y1="0" x2="30" y2="0"/>
+                  <text class="nlabel" y="56" data-i18n="n.dns">Интернет · DNS</text>
+                </g>
+                <g transform="translate(640,240)">
+                  <rect class="shape" x="-58" y="-30" width="116" height="60" rx="11"/>
+                  <circle class="led" cx="-34" cy="0" r="6"/>
+                  <line class="det" x1="-14" y1="-8" x2="36" y2="-8" stroke-width="3.4"/>
+                  <line class="det" x1="-14" y1="8" x2="36" y2="8" stroke-width="3.4"/>
+                  <text class="nlabel" y="56" data-i18n="n.frontend">Фронтенд</text>
+                </g>
+                <g transform="translate(950,240)">
+                  <rect class="shape" x="-58" y="-30" width="116" height="60" rx="11"/>
+                  <circle class="led" cx="-34" cy="0" r="6"/>
+                  <line class="det" x1="-14" y1="-8" x2="36" y2="-8" stroke-width="3.4"/>
+                  <line class="det" x1="-14" y1="8" x2="36" y2="8" stroke-width="3.4"/>
+                  <text class="nlabel" y="56" data-i18n="n.backend">Бэкенд</text>
+                </g>
+                <g transform="translate(1270,240)">
+                  <path class="shape" d="M-34 -18 V20 A34 12 0 0 0 34 20 V-18"/>
+                  <ellipse class="shape" cx="0" cy="-18" rx="34" ry="12"/>
+                  <path class="det" d="M-34 2 A34 12 0 0 0 34 2"/>
+                  <circle class="led" cx="26" cy="18" r="6"/>
+                  <text class="nlabel" y="58" data-i18n="n.db">База данных</text>
+                </g>
+
+                <g>
+                  <text class="tag" x="300" y="442" data-i18n="cmp.b1">нет CDN</text>
+                  <text class="tag" x="640" y="442" data-i18n="cmp.b2">один инстанс</text>
+                  <text class="tag" x="950" y="442" data-i18n="cmp.b3">нет кэша</text>
+                  <text class="tag" x="1270" y="442" data-i18n="cmp.b4">нет реплики</text>
+                </g>
+                <g id="pktBefore" aria-hidden="true"></g>
+              </svg>
+            </div>
+
+            <div class="cmp-div" id="cmpDiv" aria-hidden="true"></div>
           </div>
-
-          <!-- BEFORE: clipped top layer, revealed from the left -->
-          <div class="cmp-top" id="cmpTop">
-            <svg id="topoBefore" class="topo tone-bad" viewBox="0 0 1200 470" role="img" aria-labelledby="beforeTitle">
-              <title id="beforeTitle" data-i18n="cmp.beforeTitle">Инфраструктура до работы</title>
-              <rect width="1200" height="470" fill="var(--card)"/>
-              <path id="pBefore" class="route" d="M80 255 L1120 255"/>
-
-              <!-- kept left of centre so it never collides with the "after" monitor -->
-              <g class="ghost">
-                <rect x="200" y="28" width="200" height="56" rx="9"/>
-                <text x="300" y="62" data-i18n="cmp.noMon">мониторинга нет</text>
-              </g>
-
-              <g transform="translate(80,255)">
-                <g class="glyph">
-                  <circle cx="-16" cy="-15" r="5"/><path d="M-24 3 c0-7.5 3.9-11 8-11 s8 3.5 8 11 z"/>
-                  <circle cx="0" cy="-19" r="5.5"/><path d="M-8.5 1 c0-8 4.2-11.8 8.5-11.8 s8.5 3.8 8.5 11.8 z"/>
-                  <circle cx="16" cy="-15" r="5"/><path d="M8 3 c0-7.5 3.9-11 8-11 s8 3.5 8 11 z"/>
-                </g>
-                <text class="nlabel" y="46" data-i18n="n.users">Пользователи</text>
-              </g>
-              <g transform="translate(225,255)">
-                <circle class="shape" r="19"/><ellipse class="det" rx="8" ry="19"/><line class="det" x1="-19" y1="0" x2="19" y2="0"/>
-                <text class="nlabel" y="46" data-i18n="n.dns">Интернет · DNS</text>
-              </g>
-              <g transform="translate(520,255)">
-                <rect class="shape" x="-44" y="-18" width="88" height="36" rx="7"/>
-                <circle class="led" cx="-30" cy="0" r="3"/><line class="det" x1="-18" y1="0" x2="30" y2="0"/>
-                <text class="nlabel" y="46" data-i18n="n.frontend">Фронтенд</text>
-              </g>
-              <g transform="translate(800,255)">
-                <rect class="shape" x="-44" y="-18" width="88" height="36" rx="7"/>
-                <circle class="led" cx="-30" cy="0" r="3"/><line class="det" x1="-18" y1="0" x2="30" y2="0"/>
-                <text class="nlabel" y="46" data-i18n="n.backend">Бэкенд</text>
-              </g>
-              <g transform="translate(1120,255)">
-                <path class="shape" d="M-28 -15 V17 A28 10 0 0 0 28 17 V-15"/>
-                <ellipse class="shape" cx="0" cy="-15" rx="28" ry="10"/>
-                <path class="det" d="M-28 1 A28 10 0 0 0 28 1"/>
-                <text class="nlabel" y="52" data-i18n="n.db">База данных</text>
-              </g>
-
-              <g>
-                <text class="tag" x="250" y="428" data-i18n="cmp.b1">нет CDN</text>
-                <text class="tag" x="520" y="428" data-i18n="cmp.b2">один инстанс</text>
-                <text class="tag" x="800" y="428" data-i18n="cmp.b3">нет кэша</text>
-                <text class="tag" x="1080" y="428" data-i18n="cmp.b4">нет реплики</text>
-              </g>
-              <g id="pktBefore" aria-hidden="true"></g>
-            </svg>
-          </div>
-
-          <div class="cmp-div" id="cmpDiv" aria-hidden="true"></div>
-          <span class="cmp-tag cmp-tag-b" aria-hidden="true" data-i18n="cmp.before">До</span>
-          <span class="cmp-tag cmp-tag-a" aria-hidden="true" data-i18n="cmp.after">После</span>
         </div>
+        <input type="range" id="cmpSlider" class="cmp-range" min="0" max="100" step="1" value="50" aria-label="Сравнение: до и после" data-i18n-aria="cmp.sliderAria">
+        <p class="cmp-hint" data-i18n="cmp.hint">Потяните ползунок · схему можно прокрутить вбок</p>
       </div>
-      <input type="range" id="cmpSlider" class="cmp-range" min="0" max="100" step="1" value="50" aria-label="Сравнение: до и после" data-i18n-aria="cmp.sliderAria">
-      <p class="cmp-hint" data-i18n="cmp.hint">Потяните ползунок · схему можно прокрутить вбок</p>
-    </div>
+      <figcaption class="cmp-legend">
+        <span><i class="lg-dot"></i><span data-i18n="cmp.lg1">поток запросов</span></span>
+        <span><i class="lg-dash"></i><span data-i18n="cmp.lg2">дублирование и резерв</span></span>
+        <span><i class="lg-probe"></i><span data-i18n="cmp.lg3">проверки мониторинга</span></span>
+      </figcaption>
+    </figure>
 
     <dl class="changes">
       <div class="change"><dt data-i18n="cmp.c1t">CDN и кэш</dt><dd data-i18n="cmp.c1d">Статика и частые запросы отдаются с ближайшего к пользователю узла, а не тянутся каждый раз с вашего сервера.</dd></div>
@@ -621,19 +659,21 @@ var I18N = {
     'cmp.eyebrow':'01 — Что меняется','cmp.h':'Было и стало',
     'cmp.lead':'Слева — инфраструктура, которая не справляется с нагрузкой. Справа — та же система после работы. Потяните ползунок, чтобы сравнить.',
     'cmp.before':'До','cmp.after':'После',
+    'cmp.live':'· живая топология','cmp.sysOk':'система в норме','cmp.sysBad':'система деградировала',
+    'cmp.lg1':'поток запросов','cmp.lg2':'дублирование и резерв','cmp.lg3':'проверки мониторинга',
     'cmp.hint':'Потяните ползунок · схему можно прокрутить вбок',
     'cmp.sliderAria':'Сравнение: до и после',
     'cmp.beforeTitle':'Инфраструктура до работы','cmp.afterTitle':'Инфраструктура после работы',
-    'cmp.noMon':'мониторинга нет',
     'cmp.b1':'нет CDN','cmp.b2':'один инстанс','cmp.b3':'нет кэша','cmp.b4':'нет реплики',
-    'cmp.a1':'CDN на edge','cmp.a2':'резерв и HA','cmp.a3':'кэш ~85%','cmp.a4':'бэкапы и реплика',
+    'cmp.a1':'CDN на edge','cmp.a2':'резерв и HA','cmp.a3':'кэширование','cmp.a4':'бэкапы и реплика',
     'cmp.c1t':'CDN и кэш','cmp.c1d':'Статика и частые запросы отдаются с ближайшего к пользователю узла, а не тянутся каждый раз с вашего сервера.',
     'cmp.c2t':'Резерв на каждом уровне','cmp.c2d':'Балансировщики, несколько инстансов приложения и реплика базы. Отказ одного узла больше не роняет продукт.',
     'cmp.c3t':'База данных разгружена','cmp.c3d':'Кэш забирает большую часть чтения на себя, и база перестаёт быть узким местом при росте трафика.',
     'cmp.c4t':'Мониторинг всех узлов','cmp.c4d':'Метрики и алерты по всей цепочке. О деградации вы узнаёте по графику, а не из письма клиента.',
 
     'n.users':'Пользователи','n.dns':'Интернет · DNS','n.cdn':'CDN · Edge','n.lb':'Балансировщики',
-    'n.frontend':'Фронтенд','n.backend':'Бэкенд','n.cache':'Кэш','n.db':'База данных','n.dbpair':'БД + реплика','n.mon':'мониторинг',
+    'n.frontend':'Фронтенд','n.backend':'Бэкенд','n.cache':'Кэш','n.db':'База данных','n.mon':'мониторинг',
+    'n.dbPrimary':'Основная','n.dbReplica':'Реплика','n.db2':'БД',
 
     'svc.eyebrow':'02 — Услуги','svc.h':'Что именно я делаю',
     'svc.lead':'Беру задачи, где результат можно измерить: время ответа, счёт за облако, время выкатки, время простоя.',
@@ -695,19 +735,21 @@ var I18N = {
     'cmp.eyebrow':'01 — What changes','cmp.h':'Before and after',
     'cmp.lead':'On the left, infrastructure that can’t keep up with load. On the right, the same system after the work. Drag the handle to compare.',
     'cmp.before':'Before','cmp.after':'After',
+    'cmp.live':'· live topology','cmp.sysOk':'system nominal','cmp.sysBad':'system degraded',
+    'cmp.lg1':'request flow','cmp.lg2':'redundancy and standby','cmp.lg3':'monitoring probes',
     'cmp.hint':'Drag the slider · the diagram scrolls sideways',
     'cmp.sliderAria':'Comparison: before and after',
     'cmp.beforeTitle':'Infrastructure before the work','cmp.afterTitle':'Infrastructure after the work',
-    'cmp.noMon':'no monitoring',
     'cmp.b1':'no CDN','cmp.b2':'single instance','cmp.b3':'no cache','cmp.b4':'no replica',
-    'cmp.a1':'CDN at the edge','cmp.a2':'redundant + HA','cmp.a3':'cache ~85%','cmp.a4':'replica + backups',
+    'cmp.a1':'CDN at the edge','cmp.a2':'redundant + HA','cmp.a3':'caching','cmp.a4':'replica + backups',
     'cmp.c1t':'CDN and cache','cmp.c1d':'Static files and hot requests are served from the node nearest the user, instead of being pulled from your server every time.',
     'cmp.c2t':'Redundancy at every layer','cmp.c2d':'Load balancers, several application instances and a database replica. One node failing no longer takes the product down.',
     'cmp.c3t':'The database can breathe','cmp.c3d':'The cache absorbs most of the reads, so the database stops being the bottleneck as traffic grows.',
     'cmp.c4t':'Every node monitored','cmp.c4d':'Metrics and alerts across the whole chain. You see degradation on a graph, not in an email from a customer.',
 
     'n.users':'Users','n.dns':'Internet · DNS','n.cdn':'CDN · Edge','n.lb':'Load balancers',
-    'n.frontend':'Frontend','n.backend':'Backend','n.cache':'Cache','n.db':'Database','n.dbpair':'DB + replica','n.mon':'monitoring',
+    'n.frontend':'Frontend','n.backend':'Backend','n.cache':'Cache','n.db':'Database','n.mon':'monitoring',
+    'n.dbPrimary':'Primary','n.dbReplica':'Replica','n.db2':'DB',
 
     'svc.eyebrow':'02 — Services','svc.h':'What exactly I do',
     'svc.lead':'I take on work where the result can be measured: response time, cloud bill, deploy time, downtime.',
@@ -811,12 +853,12 @@ function makePool(host, paths, speed, gap, cap){
   function make(){
     var g = document.createElementNS(SVGNS,'g');
     var halo = document.createElementNS(SVGNS,'circle');
-    halo.setAttribute('r','7'); halo.setAttribute('class','pkt-halo');
+    halo.setAttribute('class','pkt-halo');
     var core = document.createElementNS(SVGNS,'circle');
-    core.setAttribute('r','3.4'); core.setAttribute('class','pkt-core');
+    core.setAttribute('class','pkt-core');
     g.appendChild(halo); g.appendChild(core);
     host.appendChild(g);
-    return { g:g, t:0, len:1, path:paths[0], spd:speed };
+    return { g:g, halo:halo, core:core, t:0, len:1, path:paths[0], spd:speed };
   }
   function kill(p){
     p.g.setAttribute('display','none');
@@ -829,11 +871,21 @@ function makePool(host, paths, speed, gap, cap){
     p.path = paths[Math.floor(Math.random() * paths.length)];
     p.len = p.path.getTotalLength();
     p.t = 0;
-    p.spd = speed * (0.85 + Math.random() * 0.3);
+    p.spd = speed * (0.75 + Math.random() * 0.5);
+    /* varied radii give the stream visual texture instead of a uniform dotted line */
+    var r = 2.2 + Math.random() * 2.4;
+    p.core.setAttribute('r', r.toFixed(1));
+    p.halo.setAttribute('r', (r * 2).toFixed(1));
     p.g.removeAttribute('display');
     live.push(p);
   }
+  /* Fill the lane immediately with packets at random positions. Without this the
+     whole batch spawns at t=0 within the first seconds and travels as one clump. */
+  function seed(){
+    for(var i = 0; i < cap; i++){ spawn(); live[live.length - 1].t = Math.random(); }
+  }
   return {
+    seed: seed,
     step: function(dt){
       if(reduced || tabHidden) return;
       acc += dt * 1000;
@@ -852,11 +904,14 @@ function makePool(host, paths, speed, gap, cap){
   };
 }
 
+/* Dense streams, matching the reference art: many small dots rather than a few
+   large ones. Counts are the ceiling, not the steady state. */
 var pools = [
-  makePool(byId('pktBefore'), [byId('pBefore')], 105, 950, 5),
-  makePool(byId('pktAfter'),  [byId('pA1'),byId('pA2'),byId('pA3'),byId('pA4')], 165, 400, 9)
+  makePool(byId('pktBefore'), [byId('pBefore')], 95, 380, 22),
+  makePool(byId('pktAfter'),  [byId('pA1'),byId('pA2'),byId('pA3')], 150, 260, 28)
 ];
 if(reduced) pools.forEach(function(p){ p.hide(); });
+else pools.forEach(function(p){ p.seed(); });
 
 var lastT = performance.now();
 function frame(now){
