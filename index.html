@@ -161,18 +161,41 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .compact .stage-l{font-size:13px}
 .compact .minor{display:none}
 
+/* red "degraded" theme, used only inside the before/after comparison's "before" illustration */
+.tone-bad .shape{stroke:var(--danger)}
+.tone-bad .det{stroke:var(--danger)}
+.tone-bad .route{stroke:var(--danger);opacity:.4}
+.tone-bad .pkt-core{fill:var(--danger)}
+.tone-bad .pkt-halo{fill:var(--danger);opacity:.25}
+.tone-bad .nlabel{fill:var(--ink2)}
+.tone-bad .led{fill:var(--danger)}
+
+/* ================= before / after image comparison ================= */
+.compare-section{padding:clamp(10px,2vh,20px) 0 clamp(26px,4vh,44px)}
+.compare-h{max-width:52ch;font-size:clamp(1.05rem,1.8vw,1.3rem);font-weight:500;line-height:1.35;margin-bottom:16px;color:var(--ink)}
+.compare-figure{padding:14px 16px 16px}
+.compare{position:relative;width:100%;aspect-ratio:1280/700;border-radius:6px;overflow:hidden;background-image:radial-gradient(var(--line) 1px,transparent 1.2px);background-size:22px 22px;touch-action:pan-y}
+.compare-base,.compare-top{position:absolute;inset:0}
+.compare-base svg,.compare-top svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.compare-base{z-index:1}
+.compare-top{z-index:2;clip-path:inset(0 50% 0 0)}
+.compare-divider{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--acc-deep);pointer-events:none;transform:translateX(-1px);z-index:3}
+.compare-divider::before{content:"";position:absolute;top:50%;left:50%;width:38px;height:38px;border-radius:50%;background:var(--bg-card2);border:1.5px solid var(--acc-deep);transform:translate(-50%,-50%);box-shadow:var(--shadow)}
+.compare-divider::after{content:"⟷";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font:600 15px var(--mono);color:var(--acc-deep)}
+.compare-tag{position:absolute;top:12px;font:600 .68rem var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:5px;background:var(--bg-card2);border:1px solid var(--line2);color:var(--muted);pointer-events:none;z-index:3}
+.compare-tag-before{left:12px}
+.compare-tag-after{right:12px}
+.compare-range{position:absolute;inset:0;width:100%;height:100%;margin:0;-webkit-appearance:none;appearance:none;background:transparent;cursor:ew-resize;z-index:5}
+.compare-range::-webkit-slider-runnable-track{-webkit-appearance:none;background:transparent;height:100%}
+.compare-range::-webkit-slider-thumb{-webkit-appearance:none;width:2px;height:2px;background:transparent;border:0}
+.compare-range::-moz-range-track{background:transparent;height:100%;border:0}
+.compare-range::-moz-range-thumb{width:2px;height:2px;background:transparent;border:0;opacity:0}
+
 /* ================= controls panel ================= */
 .controls{padding:20px 22px 22px;display:flex;flex-direction:column;gap:0}
 .ctl-title{font-size:1.22rem;font-weight:600;letter-spacing:-.015em;padding-bottom:14px;border-bottom:1px dashed var(--line)}
 .controls-body{display:flex;flex-direction:column;gap:6px}
-.stage-switch{display:inline-flex;align-items:center;gap:2px;background:var(--bg-card2);border:1px solid var(--line2);border-radius:8px;padding:3px;margin:16px 0 4px}
-.stage-btn{flex:1;font:600 .78rem var(--mono);letter-spacing:.04em;color:var(--muted);padding:8px 12px;border-radius:6px;transition:background .2s,color .2s}
-.stage-btn[aria-pressed="true"]{background:var(--acc);color:#07130B}
-.stage-btn:not([aria-pressed="true"]):hover{color:var(--ink)}
-.stage-note{font:400 .68rem var(--mono);color:var(--muted);letter-spacing:.02em;margin-bottom:4px}
-.ctls{display:flex;flex-direction:column;gap:15px;padding:18px 0 6px;transition:opacity .25s}
-.ctls[data-locked="true"]{opacity:.4}
-.ctls[data-locked="true"] input[type="range"]{pointer-events:none}
+.ctls{display:flex;flex-direction:column;gap:15px;padding:18px 0 6px}
 .ctl-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:2px}
 .ctl-head label{font:500 .92rem var(--disp);color:var(--ink)}
 .ctl-head output{font:500 .74rem var(--mono);color:var(--muted);min-width:3ch;text-align:right;transition:color .2s}
@@ -528,13 +551,7 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
           </div>
 
           <div class="controls-right">
-            <div class="stage-switch" role="group" aria-label="Инфраструктура: до или после" data-i18n-aria="stage.groupLabel">
-              <button type="button" class="stage-btn" id="stageBefore" data-stage="before" aria-pressed="false" data-i18n="stage.before">До</button>
-              <button type="button" class="stage-btn" id="stageAfter" data-stage="after" aria-pressed="true" data-i18n="stage.after">После</button>
-            </div>
-            <p class="stage-note" data-i18n="stage.note">«До» — типичная инфраструктура, которая не справляется с нагрузкой. «После» — с улучшениями: настройте их ползунками.</p>
-
-            <div class="ctls" id="ctls" data-locked="false">
+            <div class="ctls" id="ctls">
               <div class="ctl">
                 <div class="ctl-head"><label for="s-speed" data-i18n="s.speed">Ускорить сайт</label><output id="o-speed" for="s-speed">45</output></div>
                 <input type="range" id="s-speed" data-goal="speed" min="0" max="100" step="1" value="45">
@@ -572,6 +589,173 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
       </div>
     </div>
     <p class="visually-hidden" aria-live="polite" id="live"></p>
+  </section>
+
+  <!-- ============ before / after image comparison ============ -->
+  <section class="compare-section" aria-labelledby="compareH">
+    <h2 class="compare-h" id="compareH" data-i18n="compare.h">Типичная инфраструктура, которая не справляется — и во что она превращается после доработки.</h2>
+    <figure class="board panel compare-figure">
+      <div class="board-top">
+        <span class="board-cap"><i class="cap-dot" aria-hidden="true"></i><span data-i18n="compare.cap">инфраструктура: до и после</span></span>
+      </div>
+      <div class="compare" id="compare">
+
+        <!-- BEFORE: struggling infrastructure (clipped top layer, revealed from the left) -->
+        <div class="compare-top" id="compareTop">
+          <svg id="topoBefore" class="board-svg tone-bad" viewBox="0 0 1280 700" role="img" aria-labelledby="beforeTitle">
+            <title id="beforeTitle" data-i18n="compare.beforeTitle">Типичная инфраструктура без оптимизаций</title>
+            <rect width="1280" height="700" fill="var(--bg-card)"/>
+            <g aria-hidden="true"><path id="pBefore" class="route" d="M90 350 L1180 350"/></g>
+
+            <g class="node" transform="translate(90,350)">
+              <g fill="#3B3F3B">
+                <circle cx="-14" cy="-13" r="4.4"/><path d="M-21 2 c0-6.5 3.4-9.5 7-9.5 s7 3 7 9.5 z"/>
+                <circle cx="0" cy="-17" r="4.8"/><path d="M-7.5 0 c0-7 3.7-10.3 7.5-10.3 s7.5 3.3 7.5 10.3 z"/>
+                <circle cx="14" cy="-13" r="4.4"/><path d="M7 2 c0-6.5 3.4-9.5 7-9.5 s7 3 7 9.5 z"/>
+              </g>
+              <text class="nlabel" y="46" data-i18n="svg.users">Пользователи</text>
+            </g>
+            <g class="node" transform="translate(320,350)">
+              <circle class="shape" r="15.5"/>
+              <ellipse class="det" rx="6.8" ry="15.5"/>
+              <line class="det" x1="-15.5" y1="0" x2="15.5" y2="0"/>
+              <text class="nlabel" y="46" data-i18n="svg.dns">Интернет · DNS</text>
+            </g>
+            <g class="node" transform="translate(660,350)">
+              <rect class="shape" x="-40" y="-17" width="80" height="34" rx="5"/>
+              <circle class="led" cx="-28" cy="0" r="2.6"/><line class="det" x1="-15" y1="0" x2="28" y2="0"/>
+              <text class="nlabel" y="46" data-i18n="svg.frontend">Фронтенд</text>
+            </g>
+            <g class="node" transform="translate(920,350)">
+              <rect class="shape" x="-40" y="-17" width="80" height="34" rx="5"/>
+              <circle class="led" cx="-28" cy="0" r="2.6"/><line class="det" x1="-15" y1="0" x2="28" y2="0"/>
+              <text class="nlabel" y="46" data-i18n="svg.backend">Бэкенд</text>
+            </g>
+            <g class="node" transform="translate(1180,350)">
+              <path class="shape" d="M-26 -14 V16 A26 9 0 0 0 26 16 V-14"/>
+              <ellipse class="shape" cx="0" cy="-14" rx="26" ry="9"/>
+              <path class="det" d="M-26 1 A26 9 0 0 0 26 1"/>
+              <circle class="led" cx="19" cy="13" r="3"/>
+              <text class="nlabel" y="52" data-i18n="svg.db">База данных</text>
+            </g>
+
+            <g id="packetsBefore" aria-hidden="true"></g>
+          </svg>
+        </div>
+
+        <!-- AFTER: improved production infrastructure (always fully visible base layer) -->
+        <div class="compare-base">
+          <svg id="topoAfter" class="board-svg" viewBox="0 0 1280 700" role="img" aria-labelledby="afterTitle">
+            <title id="afterTitle" data-i18n="compare.afterTitle">Улучшенная production-инфраструктура</title>
+            <rect width="1280" height="700" fill="var(--bg-card)"/>
+            <g aria-hidden="true">
+              <path id="pFrontTop" class="route" d="M90 350 L620 350 C 680 300 720 270 760 260 C 800 270 840 300 920 350"/>
+              <path id="pFrontMid" class="route" d="M90 350 L920 350"/>
+              <path id="pFrontBottom" class="route" d="M90 350 L620 350 C 680 400 720 430 760 440 C 800 430 840 400 920 350"/>
+              <path id="pBackTop" class="route" d="M920 350 C 980 300 1020 270 1080 260 C 1110 270 1135 300 1150 350"/>
+              <path id="pBackMid" class="route" d="M920 350 L1150 350"/>
+              <path id="pBackBottom" class="route" d="M920 350 C 980 400 1020 430 1080 440 C 1110 430 1135 400 1150 350"/>
+              <path class="route opt on" d="M1150 378 L1150 436"/>
+            </g>
+
+            <g class="probe" aria-hidden="true">
+              <path class="det" stroke-dasharray="2 4" d="M575 76 L430 190"/>
+              <path class="det" stroke-dasharray="2 4" d="M595 76 L590 320"/>
+              <path class="det" stroke-dasharray="2 4" d="M615 76 L760 336"/>
+              <path class="det" stroke-dasharray="2 4" d="M635 76 L920 193"/>
+              <path class="det" stroke-dasharray="2 4" d="M655 76 L1080 336"/>
+              <path class="det" stroke-dasharray="2 4" d="M675 76 L1150 190"/>
+            </g>
+            <g id="n-hbAfter" data-hb="ok" transform="translate(561,40)">
+              <rect class="hb-box" width="118" height="36" rx="6"/>
+              <path class="hb-line" d="M8 20 h12 l4 -9 6 16 5 -12 4 5 h12 l4 -11 6 18 5 -12 4 5 h16"/>
+              <text class="techlabel minor" x="59" y="50" data-i18n="svg.mon">мониторинг</text>
+            </g>
+
+            <g class="node" transform="translate(90,350)">
+              <g fill="#3B3F3B">
+                <circle cx="-14" cy="-13" r="4.4"/><path d="M-21 2 c0-6.5 3.4-9.5 7-9.5 s7 3 7 9.5 z"/>
+                <circle cx="0" cy="-17" r="4.8"/><path d="M-7.5 0 c0-7 3.7-10.3 7.5-10.3 s7.5 3.3 7.5 10.3 z"/>
+                <circle cx="14" cy="-13" r="4.4"/><path d="M7 2 c0-6.5 3.4-9.5 7-9.5 s7 3 7 9.5 z"/>
+              </g>
+              <text class="nlabel" y="46" data-i18n="svg.users">Пользователи</text>
+            </g>
+            <g class="node" transform="translate(270,350)">
+              <circle class="shape" r="15.5"/>
+              <ellipse class="det" rx="6.8" ry="15.5"/>
+              <line class="det" x1="-15.5" y1="0" x2="15.5" y2="0"/>
+              <text class="nlabel" y="46" data-i18n="svg.dns">Интернет · DNS</text>
+            </g>
+            <g class="node" transform="translate(430,350)">
+              <rect class="shape" x="-20" y="-20" width="40" height="40" rx="6"/>
+              <g fill="#6C7168" opacity=".8">
+                <rect x="-12" y="-12" width="9" height="9" rx="1.5"/><rect x="3" y="-12" width="9" height="9" rx="1.5"/>
+                <rect x="-12" y="3" width="9" height="9" rx="1.5"/><rect x="3" y="3" width="9" height="9" rx="1.5"/>
+              </g>
+              <text class="nlabel" y="46" data-i18n="svg.cdn">CDN · Edge</text>
+            </g>
+            <g class="node" transform="translate(575,338)">
+              <path class="shape" d="M0 -13 L13 0 L0 13 L-13 0 Z"/>
+            </g>
+            <g class="node" transform="translate(605,362)">
+              <path class="shape" d="M0 -13 L13 0 L0 13 L-13 0 Z"/>
+              <text class="nlabel" y="42" data-i18n="svg.balancers">Балансировщики</text>
+            </g>
+            <g class="node" transform="translate(760,260)">
+              <rect class="shape" x="-38" y="-15" width="76" height="30" rx="5"/>
+              <circle class="led" cx="-26" cy="0" r="2.4"/><line class="det" x1="-14" y1="0" x2="26" y2="0"/>
+            </g>
+            <g class="node" transform="translate(760,350)">
+              <rect class="shape" x="-38" y="-15" width="76" height="30" rx="5"/>
+              <circle class="led" cx="-26" cy="0" r="2.4"/><line class="det" x1="-14" y1="0" x2="26" y2="0"/>
+            </g>
+            <g class="node" transform="translate(760,440)">
+              <rect class="shape" x="-38" y="-15" width="76" height="30" rx="5"/>
+              <circle class="led" cx="-26" cy="0" r="2.4"/><line class="det" x1="-14" y1="0" x2="26" y2="0"/>
+              <text class="nlabel" y="52" data-i18n="svg.frontend">Фронтенд</text>
+            </g>
+            <g class="node" transform="translate(920,350)">
+              <rect class="shape" x="-17" y="-17" width="34" height="34" rx="7"/>
+              <path d="M2.5 -10 L-6.5 2 L-1.5 2 L-2.5 10 L6.5 -2 L1.5 -2 Z" fill="#008A4A"/>
+              <text class="nlabel" y="46" data-i18n="svg.cache">Кэш</text>
+            </g>
+            <g class="node" transform="translate(1080,260)">
+              <rect class="shape" x="-38" y="-15" width="76" height="30" rx="5"/>
+              <circle class="led" cx="-26" cy="0" r="2.4"/><line class="det" x1="-14" y1="0" x2="26" y2="0"/>
+            </g>
+            <g class="node" transform="translate(1080,350)">
+              <rect class="shape" x="-38" y="-15" width="76" height="30" rx="5"/>
+              <circle class="led" cx="-26" cy="0" r="2.4"/><line class="det" x1="-14" y1="0" x2="26" y2="0"/>
+            </g>
+            <g class="node" transform="translate(1080,440)">
+              <rect class="shape" x="-38" y="-15" width="76" height="30" rx="5"/>
+              <circle class="led" cx="-26" cy="0" r="2.4"/><line class="det" x1="-14" y1="0" x2="26" y2="0"/>
+              <text class="nlabel" y="52" data-i18n="svg.backend">Бэкенд</text>
+            </g>
+            <g class="node" transform="translate(1150,350)">
+              <path class="shape" d="M-26 -14 V16 A26 9 0 0 0 26 16 V-14"/>
+              <ellipse class="shape" cx="0" cy="-14" rx="26" ry="9"/>
+              <path class="det" d="M-26 1 A26 9 0 0 0 26 1"/>
+              <circle class="led" cx="19" cy="13" r="3"/>
+              <text class="nlabel" y="52" data-i18n="svg.dbPrimary">Основная БД</text>
+            </g>
+            <g class="node" data-state="redundant" transform="translate(1150,460)">
+              <path class="shape" d="M-19 -10 V11 A19 7 0 0 0 19 11 V-10"/>
+              <ellipse class="shape" cx="0" cy="-10" rx="19" ry="7"/>
+              <circle class="led" cx="14" cy="9" r="2.4"/>
+              <text class="nlabel minor" y="36" data-i18n="svg.replica">Реплика БД</text>
+            </g>
+
+            <g id="packetsAfter" aria-hidden="true"></g>
+          </svg>
+        </div>
+
+        <div class="compare-divider" id="compareDivider" aria-hidden="true"></div>
+        <span class="compare-tag compare-tag-before" aria-hidden="true" data-i18n="stage.before">До</span>
+        <span class="compare-tag compare-tag-after" aria-hidden="true" data-i18n="stage.after">После</span>
+        <input type="range" id="compareSlider" class="compare-range" min="0" max="100" step="1" value="50" data-i18n-aria="compare.sliderAria" aria-label="Сравнение: до и после">
+      </div>
+    </figure>
   </section>
 
   <!-- ============ trust ============ -->
@@ -672,8 +856,12 @@ var I18N = {
     'foot.rights':'© 2026 VibeOps · DevOps & FinOps consulting','foot.note':'Interactive demo · no trackers',
     'valuetext':'{v} out of 100',
     'svg.cachehit':'cache hit',
-    'stage.before':'Before','stage.after':'After','stage.groupLabel':'Infrastructure: before or after',
-    'stage.note':'“Before” is a typical setup that can’t keep up. “After” reflects the improvements below — tune them with the sliders.'
+    'stage.before':'Before','stage.after':'After',
+    'compare.cap':'infrastructure: before & after',
+    'compare.h':'A typical struggling setup — and what it looks like after the work.',
+    'compare.beforeTitle':'A typical setup that can’t keep up','compare.afterTitle':'An improved production infrastructure',
+    'compare.sliderAria':'Comparison: before and after',
+    'svg.frontend':'Frontend','svg.backend':'Backend','svg.balancers':'Load balancers','svg.dbPrimary':'Primary DB'
   },
   ru: {
     'skip':'Перейти к содержанию',
@@ -708,8 +896,12 @@ var I18N = {
     'foot.rights':'© 2026 VibeOps · Консалтинг DevOps и FinOps','foot.note':'Интерактивное демо · без трекеров',
     'valuetext':'{v} из 100',
     'svg.cachehit':'кэш‑хит',
-    'stage.before':'До','stage.after':'После','stage.groupLabel':'Инфраструктура: до или после',
-    'stage.note':'«До» — типичная инфраструктура, которая не справляется с нагрузкой. «После» — с улучшениями: настройте их ползунками.'
+    'stage.before':'До','stage.after':'После',
+    'compare.cap':'инфраструктура: до и после',
+    'compare.h':'Типичная инфраструктура, которая не справляется — и во что она превращается после доработки.',
+    'compare.beforeTitle':'Типичная инфраструктура без оптимизаций','compare.afterTitle':'Улучшенная production-инфраструктура',
+    'compare.sliderAria':'Сравнение: до и после',
+    'svg.frontend':'Фронтенд','svg.backend':'Бэкенд','svg.balancers':'Балансировщики','svg.dbPrimary':'Основная БД'
   }
 };
 
@@ -730,7 +922,6 @@ function loc(){ return lang === 'ru' ? 'ru-RU' : 'en-US'; }
 
 /* ================= goals & state ================= */
 var DEFAULTS = { speed:45, cost:45, releases:50, reliability:55 };
-var BEFORE_GOALS = { speed:0, cost:0, releases:0, reliability:0 };
 var goals = { speed:45, cost:45, releases:50, reliability:55 };
 (function loadGoals(){
   var raw = store.get('vibeops-goals');
@@ -742,10 +933,6 @@ var goals = { speed:45, cost:45, releases:50, reliability:55 };
     }
   }catch(e){}
 })();
-
-/* "Before / after" infrastructure toggle — before ignores the 4 sliders. */
-var stage = store.get('vibeops-stage') === 'before' ? 'before' : 'after';
-function effectiveGoals(){ return stage === 'before' ? BEFORE_GOALS : goals; }
 
 /* Pure derivation — all demo math lives here. */
 function deriveInfrastructureState(g){
@@ -837,12 +1024,11 @@ function setTargets(s){
 /* ================= apply state to diagram ================= */
 function setNS(el, st){ el.setAttribute('data-state', st); }
 function toggleRoute(el, on){ el.classList.toggle('on', !!on); }
-var state = deriveInfrastructureState(effectiveGoals());
+var state = deriveInfrastructureState(goals);
 
-function applyState(s, stg){
-  var before = stg === 'before';
-  setNS(els.nCdn,   before ? 'inactive' : (s.sp > 0.33 ? 'optimized' : 'active'));
-  setNS(els.nCache, before ? 'inactive' : (s.sp > 0.5 ? 'optimized' : (s.sp < 0.12 ? 'degraded' : 'active')));
+function applyState(s){
+  setNS(els.nCdn,   s.sp > 0.33 ? 'optimized' : 'active');
+  setNS(els.nCache, s.sp > 0.5 ? 'optimized' : (s.sp < 0.12 ? 'degraded' : 'active'));
   setNS(els.nApps,  s.sp > 0.6 ? 'optimized' : 'active');
   setNS(els.nDb,    s.sp > 0.6 ? 'optimized' : 'active');
   setNS(els.app2,   s.appInstances >= 2 ? 'active' : 'inactive');
@@ -884,7 +1070,12 @@ var mqMob = window.matchMedia('(max-width: 720px)');
 reduced = mqReduce.matches;
 isMobile = mqMob.matches;
 function onReduceChange(e){ reduced = e.matches; syncMotion(); }
-function onMobChange(e){ isMobile = e.matches; svg.classList.toggle('compact', isMobile); }
+function onMobChange(e){
+  isMobile = e.matches;
+  svg.classList.toggle('compact', isMobile);
+  byId('topoBefore').classList.toggle('compact', isMobile);
+  byId('topoAfter').classList.toggle('compact', isMobile);
+}
 if(mqReduce.addEventListener){ mqReduce.addEventListener('change', onReduceChange); mqMob.addEventListener('change', onMobChange); }
 else { mqReduce.addListener(onReduceChange); mqMob.addListener(onMobChange); }
 
@@ -977,8 +1168,64 @@ function syncMotion(){
     els.art.removeAttribute('display');
     els.art2.removeAttribute('display');
   }
+  comparePools.forEach(function(p){ p.setMotion(); });
 }
 document.addEventListener('visibilitychange', function(){ tabHidden = document.hidden; });
+
+/* ================= before/after comparison packets =================
+   Same pooled-dot mechanism as the main diagram, simplified: fixed speed,
+   a small set of candidate paths chosen at random per packet. */
+function makeSimplePacketPool(containerEl, paths, speed, spawnGap, cap){
+  var pool = [], live = [], acc = 0;
+  function make(){
+    var g = document.createElementNS(SVGNS, 'g');
+    var halo = document.createElementNS(SVGNS, 'circle');
+    halo.setAttribute('r', '6.5'); halo.setAttribute('class', 'pkt-halo');
+    var core = document.createElementNS(SVGNS, 'circle');
+    core.setAttribute('r', '3'); core.setAttribute('class', 'pkt-core');
+    g.appendChild(halo); g.appendChild(core);
+    containerEl.appendChild(g);
+    return { g: g, t: 0, len: 1, path: paths[0], spd: speed };
+  }
+  function kill(p){
+    p.g.setAttribute('display', 'none');
+    var i = live.indexOf(p);
+    if(i > -1) live.splice(i, 1);
+    pool.push(p);
+  }
+  function spawn(){
+    var p = pool.pop() || make();
+    p.path = paths[Math.floor(Math.random() * paths.length)];
+    p.len = p.path.getTotalLength();
+    p.t = 0;
+    p.spd = speed * (0.85 + Math.random() * 0.3);
+    p.g.removeAttribute('display');
+    live.push(p);
+  }
+  function step(dt){
+    if(reduced || tabHidden) return;
+    acc += dt * 1000;
+    while(acc > spawnGap && live.length < cap){ acc = 0; spawn(); }
+    for(var i = live.length - 1; i >= 0; i--){
+      var p = live[i];
+      p.t += (p.spd * dt) / p.len;
+      if(p.t >= 1){ kill(p); }
+      else {
+        var pt = p.path.getPointAtLength(p.t * p.len);
+        p.g.setAttribute('transform', 'translate(' + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1) + ')');
+      }
+    }
+  }
+  function setMotion(){
+    if(reduced){ while(live.length) kill(live[0]); containerEl.setAttribute('display', 'none'); }
+    else { containerEl.removeAttribute('display'); }
+  }
+  return { step: step, setMotion: setMotion };
+}
+var beforePool = makeSimplePacketPool(byId('packetsBefore'), [byId('pBefore')], 110, 900, 6);
+var afterFrontPool = makeSimplePacketPool(byId('packetsAfter'), [byId('pFrontTop'), byId('pFrontMid'), byId('pFrontBottom')], 150, 480, 7);
+var afterBackPool = makeSimplePacketPool(byId('packetsAfter'), [byId('pBackTop'), byId('pBackMid'), byId('pBackBottom')], 150, 480, 7);
+var comparePools = [beforePool, afterFrontPool, afterBackPool];
 
 var lastT = performance.now();
 function frame(now){
@@ -987,8 +1234,20 @@ function frame(now){
   stepNumbers(dt);
   stepPackets(dt);
   stepPipeline(dt);
+  comparePools.forEach(function(p){ p.step(dt); });
   requestAnimationFrame(frame);
 }
+
+/* ================= before/after image comparison slider ================= */
+var compareTop = byId('compareTop'), compareDivider = byId('compareDivider'), compareSlider = byId('compareSlider');
+function syncCompare(){
+  var raw = parseInt(compareSlider.value, 10);
+  var v = clamp(isNaN(raw) ? 50 : raw, 0, 100);
+  compareTop.style.clipPath = 'inset(0 ' + (100 - v) + '% 0 0)';
+  compareDivider.style.left = v + '%';
+  compareSlider.setAttribute('aria-valuetext', t('valuetext').replace('{v}', v));
+}
+compareSlider.addEventListener('input', syncCompare);
 
 /* ================= sliders ================= */
 var sliders = $all('input[type="range"][data-goal]');
@@ -998,8 +1257,8 @@ function scheduleApply(){
   applyScheduled = true;
   requestAnimationFrame(function(){
     applyScheduled = false;
-    state = deriveInfrastructureState(effectiveGoals());
-    applyState(state, stage);
+    state = deriveInfrastructureState(goals);
+    applyState(state);
     store.set('vibeops-goals', JSON.stringify(goals));
   });
 }
@@ -1032,23 +1291,6 @@ sliders.forEach(function(input){
   });
 });
 
-/* ================= before / after stage ================= */
-var ctlsEl = byId('ctls');
-var stageButtons = $all('.stage-btn');
-function setStage(next){
-  stage = next === 'before' ? 'before' : 'after';
-  store.set('vibeops-stage', stage);
-  stageButtons.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-stage') === stage)); });
-  ctlsEl.setAttribute('data-locked', String(stage === 'before'));
-  sliders.forEach(function(s){ s.disabled = stage === 'before'; });
-  state = deriveInfrastructureState(effectiveGoals());
-  applyState(state, stage);
-  els.live.textContent = summaryText(state);
-}
-stageButtons.forEach(function(b){
-  b.addEventListener('click', function(){ setStage(b.getAttribute('data-stage')); });
-});
-
 /* ================= language ================= */
 function applyLang(l){
   lang = (l === 'ru') ? 'ru' : 'en';
@@ -1066,7 +1308,8 @@ function applyLang(l){
     b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
   });
   sliders.forEach(syncSliderUI);
-  applyState(state, stage);
+  applyState(state);
+  syncCompare();
   var k;
   for(k in METRICS){ METRICS[k].el.textContent = METRICS[k].fmt(METRICS[k].cur); }
   els.live.textContent = summaryText(state);
@@ -1220,9 +1463,11 @@ if('IntersectionObserver' in window){
 
 /* ================= init ================= */
 svg.classList.toggle('compact', isMobile);
-setStage(stage);
+byId('topoBefore').classList.toggle('compact', isMobile);
+byId('topoAfter').classList.toggle('compact', isMobile);
 applyLang(lang);
 sliders.forEach(syncSliderUI);
+syncCompare();
 (function primeMetrics(){
   var k;
   for(k in METRICS){
