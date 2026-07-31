@@ -82,11 +82,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero{padding:clamp(26px,4.5vh,46px) 0 clamp(18px,3vh,30px)}
 .eyebrow{display:flex;align-items:center;gap:10px;font:500 .72rem var(--mono);letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
 .eyebrow::before{content:"";width:9px;height:9px;background:var(--acc);flex:none}
-.hero h1{margin-top:14px;font-size:clamp(2.05rem,4.6vw,3.55rem);line-height:1.04;letter-spacing:-.022em;font-weight:600;max-width:19ch}
-.hero h1 em{font-style:normal;color:var(--acc-deep)}
-.hero-sub{margin-top:16px;max-width:56ch;color:var(--ink2);font-size:clamp(.98rem,1.35vw,1.08rem)}
-.hero-cred{margin-top:14px;display:flex;align-items:center;gap:9px;font:400 .74rem var(--mono);color:var(--muted);letter-spacing:.02em}
-.hero-cred::before{content:"";width:16px;height:1.5px;background:var(--acc)}
+.hero-pitch{margin-top:14px;max-width:62ch;font-size:clamp(1.15rem,2.1vw,1.5rem);line-height:1.35;letter-spacing:-.008em;font-weight:500;color:var(--ink)}
 
 /* ================= tuner layout ================= */
 .tuner{padding-bottom:clamp(26px,4vh,44px);scroll-margin-top:76px}
@@ -302,9 +298,7 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
   <!-- ============ hero ============ -->
   <section class="hero" aria-labelledby="heroH">
     <p class="eyebrow" data-i18n="hero.eyebrow">DEVOPS · FINOPS · PRODUCTION ENGINEERING</p>
-    <h1 id="heroH" data-i18n-html="hero.h1">Настройте инфраструктуру под то, <em>что важно вам.</em></h1>
-    <p class="hero-sub" data-i18n="hero.sub">Двигайте ползунки и смотрите, как меняются скорость, стоимость, доставка изменений и надёжность. Затем оставьте один контакт — я свяжусь с вами лично.</p>
-    <p class="hero-cred" data-i18n="hero.cred">От прототипа, созданного с AI, до наблюдаемого и экономичного production.</p>
+    <h1 id="heroH" class="hero-pitch" data-i18n="hero.pitch">Выполню диагностику бесплатно — если не смогу вам помочь, вы не платите. Оплата только за ускорение сайта, оптимизацию бюджета или повышение безопасности и отказоустойчивости.</h1>
   </section>
 
   <!-- ============ interactive tuner ============ -->
@@ -651,9 +645,7 @@ var I18N = {
     'meta.desc':'Reduce cloud costs, accelerate deployments, improve website performance and make AI-built products production-ready.',
     'nav.how':'How it works','nav.contact':'Contact',
     'hero.eyebrow':'DEVOPS · FINOPS · PRODUCTION ENGINEERING',
-    'hero.h1':'Tune your infrastructure around <em>what matters.</em>',
-    'hero.sub':'Move the controls. See how speed, cost, delivery and reliability change the system — then leave one contact and I’ll get back to you personally.',
-    'hero.cred':'From AI-built prototype to observable, cost-efficient production.',
+    'hero.pitch':'Free diagnosis first — if I can’t help you, you don’t pay. You’re only billed for real results: a faster site, a leaner cloud bill, or stronger security and reliability.',
     'tuner.h':'What do you want to improve?',
     's.speed':'Faster website','s.cost':'Lower cloud costs','s.releases':'Faster releases','s.reliability':'Higher reliability',
     'm.lat':'Request latency','m.cost':'Estimated monthly cost','m.dep':'Commit to production','m.avail':'Target availability',
@@ -689,9 +681,7 @@ var I18N = {
     'meta.desc':'Снижение расходов на инфраструктуру, ускорение CI/CD, CDN и кэширование, повышение производительности и надёжности production-систем.',
     'nav.how':'Как это работает','nav.contact':'Связаться',
     'hero.eyebrow':'DEVOPS · FINOPS · PRODUCTION ENGINEERING',
-    'hero.h1':'Настройте инфраструктуру под то, <em>что важно вам.</em>',
-    'hero.sub':'Двигайте ползунки и смотрите, как меняются скорость, стоимость, доставка изменений и надёжность. Затем оставьте один контакт — я свяжусь с вами лично.',
-    'hero.cred':'От прототипа, созданного с AI, до наблюдаемого и экономичного production.',
+    'hero.pitch':'Выполню диагностику бесплатно — если не смогу вам помочь, вы не платите. Оплата только за ускорение сайта, оптимизацию бюджета или повышение безопасности и отказоустойчивости.',
     'tuner.h':'Что вы хотите улучшить?',
     's.speed':'Ускорить сайт','s.cost':'Снизить расходы','s.releases':'Ускорить релизы','s.reliability':'Повысить надёжность',
     'm.lat':'Задержка запроса','m.cost':'Оценка расходов в месяц','m.dep':'От commit до production','m.avail':'Целевая доступность',
@@ -1065,8 +1055,6 @@ function applyLang(l){
   store.set('vibeops-lang', lang);
   document.documentElement.lang = lang;
   $all('[data-i18n]').forEach(function(el){ el.textContent = t(el.getAttribute('data-i18n')); });
-  var h1 = document.querySelector('[data-i18n-html="hero.h1"]');
-  if(h1) h1.innerHTML = t('hero.h1');
   $all('[data-i18n-ph]').forEach(function(el){ el.placeholder = t(el.getAttribute('data-i18n-ph')); });
   $all('[data-i18n-aria]').forEach(function(el){ el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
   els.svgTitle.textContent = t('svg.title');
