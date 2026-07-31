@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,15 +8,13 @@
   Placeholders to replace before production: [YOUR_NAME], [YOUR_DOMAIN], [YOUR_HANDLE],
   ownerEmail. In production the form posts to POST /api/lead (Astro endpoint on Cloudflare
   Workers → Resend + Turnstile server-side validation). Here the submit is simulated.
+  Language: single page, client-side toggle (EN/RU) — no separate localized routes.
 -->
-<title>DevOps, FinOps & Production Engineering | VibeOps</title>
-<meta name="description" content="Reduce cloud costs, accelerate deployments, improve website performance and make AI-built products production-ready.">
+<title>DevOps, FinOps и Production Engineering | VibeOps</title>
+<meta name="description" content="Снижение расходов на инфраструктуру, ускорение CI/CD, CDN и кэширование, повышение производительности и надёжности production-систем.">
 <link rel="canonical" href="https://[YOUR_DOMAIN]/">
-<link rel="alternate" hreflang="en" href="https://[YOUR_DOMAIN]/">
-<link rel="alternate" hreflang="ru" href="https://[YOUR_DOMAIN]/ru/">
-<link rel="alternate" hreflang="x-default" href="https://[YOUR_DOMAIN]/">
-<meta property="og:title" content="DevOps, FinOps & Production Engineering | VibeOps">
-<meta property="og:description" content="Reduce cloud costs, accelerate deployments, improve website performance and make AI-built products production-ready.">
+<meta property="og:title" content="DevOps, FinOps и Production Engineering | VibeOps">
+<meta property="og:description" content="Снижение расходов на инфраструктуру, ускорение CI/CD, CDN и кэширование, повышение производительности и надёжности production-систем.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://[YOUR_DOMAIN]/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -92,7 +90,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* ================= tuner layout ================= */
 .tuner{padding-bottom:clamp(26px,4vh,44px);scroll-margin-top:76px}
-.tuner-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(340px,1fr);gap:18px;align-items:stretch}
+.tuner-grid{display:flex;flex-direction:column;gap:18px}
 .panel{position:relative;background:var(--bg-card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
 .panel::before,.panel::after{content:"";position:absolute;width:12px;height:12px;pointer-events:none;z-index:2}
 .panel::before{top:-1px;left:-1px;border-top:1.5px solid var(--acc-deep);border-left:1.5px solid var(--acc-deep)}
@@ -145,6 +143,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #n-hb[data-hb="ok"] .hb-line{stroke:var(--acc-deep)}
 #n-hb[data-hb="bad"] .hb-line{stroke:var(--danger);stroke-dasharray:22 46;animation-duration:calc(var(--hb-dur,2.4s)*1.7)}
 .pkt-core{fill:var(--acc-deep)}
+.pkt-core.miss{fill:var(--warn)}
 .pkt-halo{fill:var(--acc);opacity:.25}
 #art,#art2{fill:var(--acc-deep)}
 .chip{opacity:.5;transition:opacity .3s}
@@ -161,15 +160,23 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .pulse-ring.go{animation:ring .7s ease-out}
 @keyframes ring{0%{opacity:.75;transform:scale(.35)}100%{opacity:0;transform:scale(2.4)}}
 /* compact (mobile) diagram */
-.compact .nlabel{font-size:21px}
-.compact .techlabel{font-size:15px}
-.compact .stage-l{font-size:16px}
+.compact .nlabel{font-size:13.5px}
+.compact .techlabel{font-size:11px}
+.compact .stage-l{font-size:13px}
 .compact .minor{display:none}
 
 /* ================= controls panel ================= */
 .controls{padding:20px 22px 22px;display:flex;flex-direction:column;gap:0}
 .ctl-title{font-size:1.22rem;font-weight:600;letter-spacing:-.015em;padding-bottom:14px;border-bottom:1px dashed var(--line)}
-.ctls{display:flex;flex-direction:column;gap:15px;padding:18px 0 6px}
+.controls-body{display:flex;flex-direction:column;gap:6px}
+.stage-switch{display:inline-flex;align-items:center;gap:2px;background:var(--bg-card2);border:1px solid var(--line2);border-radius:8px;padding:3px;margin:16px 0 4px}
+.stage-btn{flex:1;font:600 .78rem var(--mono);letter-spacing:.04em;color:var(--muted);padding:8px 12px;border-radius:6px;transition:background .2s,color .2s}
+.stage-btn[aria-pressed="true"]{background:var(--acc);color:#07130B}
+.stage-btn:not([aria-pressed="true"]):hover{color:var(--ink)}
+.stage-note{font:400 .68rem var(--mono);color:var(--muted);letter-spacing:.02em;margin-bottom:4px}
+.ctls{display:flex;flex-direction:column;gap:15px;padding:18px 0 6px;transition:opacity .25s}
+.ctls[data-locked="true"]{opacity:.4}
+.ctls[data-locked="true"] input[type="range"]{pointer-events:none}
 .ctl-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:2px}
 .ctl-head label{font:500 .92rem var(--disp);color:var(--ink)}
 .ctl-head output{font:500 .74rem var(--mono);color:var(--muted);min-width:3ch;text-align:right;transition:color .2s}
@@ -229,6 +236,7 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
 
 /* ================= modal ================= */
 .overlay{position:fixed;inset:0;z-index:100;background:rgba(24,26,23,.48);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;transition:opacity .22s}
+.overlay[hidden]{display:none}
 .overlay.show{opacity:1}
 .modal{position:relative;width:min(430px,100%);background:var(--bg-card);border:1px solid var(--line);border-radius:12px;box-shadow:0 24px 60px rgba(20,22,19,.28);padding:28px 26px 24px;transform:translateY(14px) scale(.98);transition:transform .24s cubic-bezier(.2,.9,.3,1.2)}
 .overlay.show .modal{transform:none}
@@ -250,12 +258,10 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
 .m-ok .btn{margin-top:20px}
 
 /* ================= responsive ================= */
+@media (min-width: 760px){
+  .controls-body{display:grid;grid-template-columns:1fr 1fr;gap:0 30px;align-items:start}
+}
 @media (max-width: 980px){
-  .tuner-grid{grid-template-columns:1fr}
-  .controls{display:flex}
-  .metrics{order:1}
-  .ctls{order:2}
-  .cta-row{order:3}
   .t-links{margin-left:0}
 }
 @media (max-width: 560px){
@@ -273,20 +279,20 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
 </style>
 </head>
 <body>
-<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+<a class="skip" href="#main" data-i18n="skip">Перейти к содержанию</a>
 
 <div id="page">
 <header class="hdr">
   <div class="wrap hdr-in">
-    <a class="brand" href="#" aria-label="VibeOps — home">
+    <a class="brand" href="#" aria-label="VibeOps — главная">
       <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 22 L16 8 L25 22 M16 8 V22" stroke="#008A4A" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="22" r="2.6" fill="#1B1D1B"/><circle cx="25" cy="22" r="2.6" fill="#1B1D1B"/><circle cx="16" cy="8" r="2.6" fill="#00A857"/></svg>
       VibeOps
     </a>
     <nav aria-label="Main">
-      <a class="hdr-link how" href="#tuner" data-i18n="nav.how">How it works</a>
-      <button class="hdr-cta js-open-modal" type="button" data-i18n="nav.contact">Contact</button>
+      <a class="hdr-link how" href="#tuner" data-i18n="nav.how">Как это работает</a>
+      <button class="hdr-cta js-open-modal" type="button" data-i18n="nav.contact">Связаться</button>
       <span class="lang" aria-label="Language">
-        <button type="button" data-lang="en" aria-pressed="true">EN</button><span aria-hidden="true">/</span><button type="button" data-lang="ru" aria-pressed="false">RU</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button><span aria-hidden="true">/</span><button type="button" data-lang="ru" aria-pressed="true">RU</button>
       </span>
     </nav>
   </div>
@@ -296,37 +302,37 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
   <!-- ============ hero ============ -->
   <section class="hero" aria-labelledby="heroH">
     <p class="eyebrow" data-i18n="hero.eyebrow">DEVOPS · FINOPS · PRODUCTION ENGINEERING</p>
-    <h1 id="heroH" data-i18n-html="hero.h1">Tune your infrastructure around <em>what matters.</em></h1>
-    <p class="hero-sub" data-i18n="hero.sub">Move the controls. See how speed, cost, delivery and reliability change the system — then leave one contact and I’ll get back to you personally.</p>
-    <p class="hero-cred" data-i18n="hero.cred">From AI-built prototype to observable, cost-efficient production.</p>
+    <h1 id="heroH" data-i18n-html="hero.h1">Настройте инфраструктуру под то, <em>что важно вам.</em></h1>
+    <p class="hero-sub" data-i18n="hero.sub">Двигайте ползунки и смотрите, как меняются скорость, стоимость, доставка изменений и надёжность. Затем оставьте один контакт — я свяжусь с вами лично.</p>
+    <p class="hero-cred" data-i18n="hero.cred">От прототипа, созданного с AI, до наблюдаемого и экономичного production.</p>
   </section>
 
   <!-- ============ interactive tuner ============ -->
   <section class="tuner" id="tuner" aria-labelledby="tunerH">
     <div class="tuner-grid">
 
-      <!-- diagram board -->
+      <!-- diagram board — the main visual of the page -->
       <figure class="board panel">
         <div class="board-top">
-          <span class="board-cap"><i class="cap-dot" aria-hidden="true"></i><span data-i18n="svg.live">live topology</span></span>
-          <span class="sys"><i class="sys-dot" id="sysDot" data-tone="ok" aria-hidden="true"></i><span id="sysTxt">system nominal</span></span>
+          <span class="board-cap"><i class="cap-dot" aria-hidden="true"></i><span data-i18n="svg.live">живая топология</span></span>
+          <span class="sys"><i class="sys-dot" id="sysDot" data-tone="ok" aria-hidden="true"></i><span id="sysTxt">система в норме</span></span>
         </div>
         <div class="board-svg-wrap">
           <svg id="topo" class="board-svg" viewBox="0 0 940 620" role="img" aria-labelledby="svgTitle svgDesc">
-            <title id="svgTitle">Interactive infrastructure diagram</title>
-            <desc id="svgDesc">Traffic flows from users through DNS, CDN, load balancer, application servers, cache and database. A CI pipeline below delivers changes to production.</desc>
+            <title id="svgTitle">Интерактивная схема инфраструктуры</title>
+            <desc id="svgDesc">Трафик идёт от пользователей через DNS, CDN и балансировщик к серверам приложений, затем в кэш; при промахе кэша — в базу данных. Мониторинг наблюдает за всеми узлами. CI-пайплайн внизу доставляет изменения в production.</desc>
 
             <!-- routes -->
             <g aria-hidden="true">
-              <path id="pFull" class="route" d="M88 210 L610 210 C 676 214 722 234 752 260"/>
-              <path id="hotFull" class="route-hot" d="M88 210 L610 210 C 676 214 722 234 752 260"/>
+              <path id="pFull" class="route" d="M70 210 L870 210"/>
+              <path id="hotFull" class="route-hot" d="M70 210 L870 210"/>
+              <path id="hotCache" class="route-hot" d="M70 210 L740 210"/>
               <path id="pEdge" class="route" d="M92 214 L322 214 C 318 242 272 256 210 256 C 152 256 112 248 92 234"/>
               <path id="hotEdge" class="route-hot" d="M92 214 L322 214 C 318 242 272 256 210 256 C 152 256 112 248 92 234"/>
-              <path id="pBackup1" class="route opt" d="M204 224 C 252 312 352 336 448 330"/>
-              <path id="pBackup2" class="route opt" d="M492 330 C 556 328 590 296 606 254"/>
+              <path id="pBackup1" class="route opt" d="M470 228 L470 322"/>
+              <path id="pBackup2" class="route opt" d="M486 330 C 540 324 570 280 588 228"/>
               <path id="pAlt" class="route opt" d="M336 192 C 420 122 556 122 634 190"/>
-              <path id="pRep" class="route opt" d="M780 298 C 806 326 828 338 846 348"/>
-              <path class="det" d="M846 94 C 800 142 706 154 652 192" stroke-dasharray="2 5"/>
+              <path id="pRep" class="route opt" d="M870 230 L870 320"/>
             </g>
 
             <!-- users -->
@@ -336,7 +342,7 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
                 <circle cx="0" cy="-17" r="4.8"/><path d="M-7.5 0 c0-7 3.7-10.3 7.5-10.3 s7.5 3.3 7.5 10.3 z"/>
                 <circle cx="14" cy="-13" r="4.4"/><path d="M7 2 c0-6.5 3.4-9.5 7-9.5 s7 3 7 9.5 z"/>
               </g>
-              <text class="nlabel" y="46" data-i18n="svg.users">Users</text>
+              <text class="nlabel" y="46" data-i18n="svg.users">Пользователи</text>
             </g>
 
             <!-- DNS -->
@@ -344,7 +350,7 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
               <circle class="shape" r="15.5"/>
               <ellipse class="det" rx="6.8" ry="15.5"/>
               <line class="det" x1="-15.5" y1="0" x2="15.5" y2="0"/>
-              <text class="nlabel" y="46" data-i18n="svg.dns">Internet · DNS</text>
+              <text class="nlabel" y="46" data-i18n="svg.dns">Интернет · DNS</text>
             </g>
 
             <!-- CDN -->
@@ -362,16 +368,16 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
             <g id="n-lb" class="node" data-state="active" transform="translate(470,210)">
               <path class="shape" d="M0 -18 L18 0 L0 18 L-18 0 Z"/>
               <path class="det" d="M-6 0 h12 M2 -4 l4 4 -4 4"/>
-              <text class="nlabel" y="46" data-i18n="svg.lb">Load Balancer</text>
+              <text class="nlabel" y="46" data-i18n="svg.lb">Балансировщик</text>
             </g>
 
             <!-- standby LB -->
-            <g id="n-lb2" class="node" data-state="inactive" transform="translate(470,332)">
+            <g id="n-lb2" class="node" data-state="inactive" transform="translate(470,340)">
               <path class="shape" d="M0 -15 L15 0 L0 15 L-15 0 Z"/>
-              <text class="nlabel minor" y="36" data-i18n="svg.lb2">LB · standby</text>
+              <text class="nlabel minor" y="36" data-i18n="svg.lb2">LB · резерв</text>
             </g>
 
-            <!-- app servers -->
+            <!-- app servers (frontend + backend) -->
             <g id="n-apps" class="node" data-state="active" transform="translate(610,210)">
               <g id="app1">
                 <rect class="shape" x="-26" y="-34" width="52" height="15" rx="3"/>
@@ -389,29 +395,29 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
               <rect class="det" x="38" y="-34" width="7" height="67" rx="1.5"/>
               <rect id="capFill" x="39.4" y="-32.6" width="4.2" height="64.2" rx="1"/>
               <line class="det minor" x1="35" y1="1.4" x2="48" y2="1.4" stroke-dasharray="2 2"/>
-              <text class="nlabel" y="56" data-i18n="svg.apps">Application Servers</text>
+              <text class="nlabel" y="56" data-i18n="svg.apps">Серверы приложений</text>
             </g>
 
-            <!-- cache -->
-            <g id="n-cache" class="node" data-state="active" transform="translate(740,150)">
+            <!-- cache (cache-aside: apps read/write here first) -->
+            <g id="n-cache" class="node" data-state="active" transform="translate(740,210)">
               <rect class="shape" x="-17" y="-17" width="34" height="34" rx="7"/>
               <path d="M2.5 -10 L-6.5 2 L-1.5 2 L-2.5 10 L6.5 -2 L1.5 -2 Z" fill="#008A4A"/>
-              <text class="nlabel" y="38" data-i18n="svg.cache">Cache</text>
+              <text class="nlabel" y="46" data-i18n="svg.cache">Кэш</text>
             </g>
 
-            <!-- database -->
-            <g id="n-db" class="node" data-state="active" transform="translate(762,282)">
+            <!-- database (only reached on a cache miss) -->
+            <g id="n-db" class="node" data-state="active" transform="translate(870,210)">
               <path class="shape" d="M-26 -14 V16 A26 9 0 0 0 26 16 V-14"/>
               <ellipse class="shape" cx="0" cy="-14" rx="26" ry="9"/>
               <path class="det" d="M-26 1 A26 9 0 0 0 26 1"/>
-              <text class="nlabel" y="52" data-i18n="svg.db">Database</text>
+              <text class="nlabel" y="52" data-i18n="svg.db">База данных</text>
             </g>
 
             <!-- db replica -->
-            <g id="n-replica" class="node" data-state="inactive" transform="translate(858,356)">
+            <g id="n-replica" class="node" data-state="inactive" transform="translate(870,340)">
               <path class="shape" d="M-19 -10 V11 A19 7 0 0 0 19 11 V-10"/>
               <ellipse class="shape" cx="0" cy="-10" rx="19" ry="7"/>
-              <text class="nlabel minor" y="36" data-i18n="svg.replica">DB replica</text>
+              <text class="nlabel minor" y="36" data-i18n="svg.replica">Реплика БД</text>
             </g>
 
             <!-- idle / unused resources (FinOps waste) -->
@@ -419,61 +425,68 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
               <g transform="translate(150,110)">
                 <rect class="shape" x="-13" y="-9" width="26" height="18" rx="3"/>
                 <line class="det" x1="-7" y1="0" x2="7" y2="0"/>
-                <text class="techlabel minor" y="24" data-i18n="svg.w1">idle VM</text>
+                <text class="techlabel minor" y="24" data-i18n="svg.w1">простаивающая ВМ</text>
               </g>
               <g transform="translate(212,102)">
                 <circle class="shape" r="5.5"/><line class="det" x1="-8" y1="8" x2="8" y2="-8"/>
-                <text class="techlabel minor" y="22" data-i18n="svg.w2">unused IP</text>
+                <text class="techlabel minor" y="22" data-i18n="svg.w2">неисп. IP</text>
               </g>
               <g transform="translate(180,156)">
                 <rect class="shape" x="-11" y="-7" width="22" height="14" rx="3"/>
                 <circle class="det" cx="5" cy="0" r="2"/>
-                <text class="techlabel minor" y="22" data-i18n="svg.w3">unattached disk</text>
+                <text class="techlabel minor" y="22" data-i18n="svg.w3">лишний диск</text>
               </g>
             </g>
 
-            <!-- monitoring heartbeat -->
-            <g id="n-hb" data-hb="warn" transform="translate(806,58)">
+            <!-- monitoring: watches every node, not just one -->
+            <g class="probe" aria-hidden="true">
+              <path class="det" stroke-dasharray="2 4" d="M425 76 L330 187"/>
+              <path class="det" stroke-dasharray="2 4" d="M448 76 L470 192"/>
+              <path class="det" stroke-dasharray="2 4" d="M470 76 L610 176"/>
+              <path class="det" stroke-dasharray="2 4" d="M492 76 L740 193"/>
+              <path class="det" stroke-dasharray="2 4" d="M515 76 L870 187"/>
+            </g>
+            <g id="n-hb" data-hb="warn" transform="translate(411,40)">
               <rect class="hb-box" width="118" height="36" rx="6"/>
               <path class="hb-line" d="M8 20 h12 l4 -9 6 16 5 -12 4 5 h12 l4 -11 6 18 5 -12 4 5 h16"/>
-              <text class="techlabel minor" x="59" y="50" data-i18n="svg.mon">monitoring</text>
+              <text class="techlabel minor" x="59" y="50" data-i18n="svg.mon">мониторинг</text>
             </g>
 
             <!-- CI pipeline -->
             <g aria-hidden="false">
-              <path id="pPipe" class="route" d="M118 520 L736 520"/>
+              <path id="pPipe" class="route" d="M118 520 L852 520"/>
               <g id="bypassG" aria-hidden="true">
-                <path id="pBypass" class="route" d="M214 512 C 268 480 342 480 400 508" stroke-dasharray="3 4"/>
+                <path id="pBypass" class="route" d="M195 512 C 280 480 420 480 500 508" stroke-dasharray="3 4"/>
                 <circle id="art2" r="3.4"/>
               </g>
               <g id="stCommit" class="stage" transform="translate(100,520)">
                 <rect class="shape" x="-6" y="-6" width="12" height="12" rx="2.5"/>
-                <text class="techlabel stage-l" y="28" data-i18n="svg.p1">Commit</text>
+                <text class="techlabel stage-l" y="28" data-i18n="svg.p1">Коммит</text>
               </g>
-              <g id="stBuild" class="stage" transform="translate(252,520)">
+              <g id="stBuild" class="stage" transform="translate(293,520)">
                 <rect class="shape" x="-6" y="-6" width="12" height="12" rx="2.5"/>
-                <text class="techlabel stage-l" y="28" data-i18n="svg.p2">Build</text>
+                <text class="techlabel stage-l" y="28" data-i18n="svg.p2">Сборка</text>
               </g>
-              <g id="stTest" class="stage" transform="translate(396,520)">
+              <g id="stTest" class="stage" transform="translate(485,520)">
                 <rect class="shape" x="-6" y="-6" width="12" height="12" rx="2.5"/>
-                <text class="techlabel stage-l" y="28" data-i18n="svg.p3">Test</text>
+                <text class="techlabel stage-l" y="28" data-i18n="svg.p3">Тесты</text>
               </g>
-              <g id="stDeploy" class="stage" transform="translate(556,520)">
+              <g id="stDeploy" class="stage" transform="translate(678,520)">
                 <rect class="shape" x="-6" y="-6" width="12" height="12" rx="2.5"/>
-                <text class="techlabel stage-l" y="28" data-i18n="svg.p4">Deploy</text>
+                <text class="techlabel stage-l" y="28" data-i18n="svg.p4">Деплой</text>
               </g>
-              <g id="stProd" class="stage" transform="translate(744,520)">
+              <g id="stProd" class="stage" transform="translate(870,520)">
                 <circle id="prodRing" class="pulse-ring" r="13"/>
                 <rect class="shape" x="-7" y="-7" width="14" height="14" rx="3"/>
-                <text class="techlabel stage-l" y="28" data-i18n="svg.p5">Production</text>
+                <text class="techlabel stage-l" y="28" data-i18n="svg.p5">Продакшен</text>
               </g>
-              <g id="chipDep" class="chip" data-state="off" transform="translate(252,470)">
-                <rect x="-31" y="-9" width="62" height="17" rx="8.5"/>
-                <text y="3.5" data-i18n="svg.c1">dep cache</text>
+              <g id="chipDep" class="chip" data-state="off" transform="translate(293,470)">
+                <rect x="-64" y="-9" width="128" height="17" rx="8.5"/>
+                <text y="3.5" data-i18n="svg.c1">кэш зависимостей</text>
               </g>
-              <g id="chipLay" class="chip" data-state="off" transform="translate(396,470)">
-                <rect x="-36" y="-9" width="72" height="17" rx="8.5"/>
-                <text y="3.5" data-i18n="svg.c2">layer cache</text>
+              <g id="chipLay" class="chip" data-state="off" transform="translate(485,470)">
+                <rect x="-41" y="-9" width="82" height="17" rx="8.5"/>
+                <text y="3.5" data-i18n="svg.c2">кэш слоёв</text>
               </g>
               <circle id="art" r="4.2"/>
             </g>
@@ -483,70 +496,82 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
           </svg>
         </div>
         <figcaption class="legend" aria-hidden="true">
-          <span><i class="lg lg-opt"></i><span data-i18n="svg.legend1">optimized</span></span>
-          <span><i class="lg lg-red"></i><span data-i18n="svg.legend2">standby / redundant</span></span>
-          <span><i class="lg lg-un"></i><span data-i18n="svg.legend3">unused</span></span>
+          <span><i class="lg lg-opt"></i><span data-i18n="svg.legend1">оптимизировано</span></span>
+          <span><i class="lg lg-red"></i><span data-i18n="svg.legend2">резерв</span></span>
+          <span><i class="lg lg-un"></i><span data-i18n="svg.legend3">не используется</span></span>
         </figcaption>
       </figure>
 
       <!-- controls -->
       <div class="controls panel">
-        <h2 class="ctl-title" id="tunerH" data-i18n="tuner.h">What do you want to improve?</h2>
+        <h2 class="ctl-title" id="tunerH" data-i18n="tuner.h">Что вы хотите улучшить?</h2>
 
-        <div class="metrics" role="group" aria-label="Demo metrics">
-          <div class="metric">
-            <span class="m-label" data-i18n="m.lat">Request latency</span>
-            <span class="m-val" data-m="latency">420</span><span class="m-unit" data-i18n="unit.ms">ms</span>
-            <i class="m-dot" data-dot="lat" data-tone="warn" aria-hidden="true"></i>
+        <div class="controls-body">
+          <div class="controls-left">
+            <div class="metrics" role="group" aria-label="Демо-метрики">
+              <div class="metric">
+                <span class="m-label" data-i18n="m.lat">Задержка запроса</span>
+                <span class="m-val" data-m="latency">420</span><span class="m-unit" data-i18n="unit.ms">мс</span>
+                <i class="m-dot" data-dot="lat" data-tone="warn" aria-hidden="true"></i>
+              </div>
+              <div class="metric">
+                <span class="m-label" data-i18n="m.cost">Оценка расходов в месяц</span>
+                <span class="m-val" data-m="monthly">$4,200</span>
+                <i class="m-dot" data-dot="cost" data-tone="warn" aria-hidden="true"></i>
+              </div>
+              <div class="metric">
+                <span class="m-label" data-i18n="m.dep">От commit до production</span>
+                <span class="m-val" data-m="commit">28</span><span class="m-unit" data-i18n="unit.min">мин</span>
+                <i class="m-dot" data-dot="dep" data-tone="warn" aria-hidden="true"></i>
+              </div>
+              <div class="metric">
+                <span class="m-label" data-i18n="m.avail">Целевая доступность</span>
+                <span class="m-val" data-m="avail">99.55%</span>
+                <i class="m-dot" data-dot="ha" data-tone="ok" aria-hidden="true"></i>
+              </div>
+            </div>
+            <p class="m-note" data-i18n="m.note">Демонстрационные значения — фактический результат зависит от системы.</p>
           </div>
-          <div class="metric">
-            <span class="m-label" data-i18n="m.cost">Estimated monthly cost</span>
-            <span class="m-val" data-m="monthly">$4,200</span>
-            <i class="m-dot" data-dot="cost" data-tone="warn" aria-hidden="true"></i>
-          </div>
-          <div class="metric">
-            <span class="m-label" data-i18n="m.dep">Commit to production</span>
-            <span class="m-val" data-m="commit">28</span><span class="m-unit" data-i18n="unit.min">min</span>
-            <i class="m-dot" data-dot="dep" data-tone="warn" aria-hidden="true"></i>
-          </div>
-          <div class="metric">
-            <span class="m-label" data-i18n="m.avail">Target availability</span>
-            <span class="m-val" data-m="avail">99.55%</span>
-            <i class="m-dot" data-dot="ha" data-tone="ok" aria-hidden="true"></i>
-          </div>
-        </div>
-        <p class="m-note" data-i18n="m.note">Illustrative demo — actual results depend on the system.</p>
 
-        <div class="ctls">
-          <div class="ctl">
-            <div class="ctl-head"><label for="s-speed" data-i18n="s.speed">Faster website</label><output id="o-speed" for="s-speed">45</output></div>
-            <input type="range" id="s-speed" data-goal="speed" min="0" max="100" step="1" value="45">
-          </div>
-          <div class="ctl">
-            <div class="ctl-head"><label for="s-cost" data-i18n="s.cost">Lower cloud costs</label><output id="o-cost" for="s-cost">45</output></div>
-            <input type="range" id="s-cost" data-goal="cost" min="0" max="100" step="1" value="45">
-          </div>
-          <div class="ctl">
-            <div class="ctl-head"><label for="s-releases" data-i18n="s.releases">Faster releases</label><output id="o-releases" for="s-releases">50</output></div>
-            <input type="range" id="s-releases" data-goal="releases" min="0" max="100" step="1" value="50">
-          </div>
-          <div class="ctl">
-            <div class="ctl-head"><label for="s-reliability" data-i18n="s.reliability">Higher reliability</label><output id="o-reliability" for="s-reliability">55</output></div>
-            <input type="range" id="s-reliability" data-goal="reliability" min="0" max="100" step="1" value="55">
+          <div class="controls-right">
+            <div class="stage-switch" role="group" aria-label="Инфраструктура: до или после" data-i18n-aria="stage.groupLabel">
+              <button type="button" class="stage-btn" id="stageBefore" data-stage="before" aria-pressed="false" data-i18n="stage.before">До</button>
+              <button type="button" class="stage-btn" id="stageAfter" data-stage="after" aria-pressed="true" data-i18n="stage.after">После</button>
+            </div>
+            <p class="stage-note" data-i18n="stage.note">«До» — типичная инфраструктура, которая не справляется с нагрузкой. «После» — с улучшениями: настройте их ползунками.</p>
+
+            <div class="ctls" id="ctls" data-locked="false">
+              <div class="ctl">
+                <div class="ctl-head"><label for="s-speed" data-i18n="s.speed">Ускорить сайт</label><output id="o-speed" for="s-speed">45</output></div>
+                <input type="range" id="s-speed" data-goal="speed" min="0" max="100" step="1" value="45">
+              </div>
+              <div class="ctl">
+                <div class="ctl-head"><label for="s-cost" data-i18n="s.cost">Снизить расходы</label><output id="o-cost" for="s-cost">45</output></div>
+                <input type="range" id="s-cost" data-goal="cost" min="0" max="100" step="1" value="45">
+              </div>
+              <div class="ctl">
+                <div class="ctl-head"><label for="s-releases" data-i18n="s.releases">Ускорить релизы</label><output id="o-releases" for="s-releases">50</output></div>
+                <input type="range" id="s-releases" data-goal="releases" min="0" max="100" step="1" value="50">
+              </div>
+              <div class="ctl">
+                <div class="ctl-head"><label for="s-reliability" data-i18n="s.reliability">Повысить надёжность</label><output id="o-reliability" for="s-reliability">55</output></div>
+                <input type="range" id="s-reliability" data-goal="reliability" min="0" max="100" step="1" value="55">
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="cta-row">
-          <button class="btn js-open-modal" type="button"><span data-i18n="cta.primary">Send my request</span><span class="arr" aria-hidden="true">→</span></button>
+          <button class="btn js-open-modal" type="button"><span data-i18n="cta.primary">Отправить заявку</span><span class="arr" aria-hidden="true">→</span></button>
           <div class="pop-wrap">
-            <button class="linkish" id="popBtn" type="button" aria-expanded="false" aria-controls="popList" data-i18n="cta.secondary">See what I can improve</button>
+            <button class="linkish" id="popBtn" type="button" aria-expanded="false" aria-controls="popList" data-i18n="cta.secondary">Что я могу улучшить</button>
             <ul class="pop" id="popList" hidden>
-              <li data-i18n="pop.1">Cloud cost optimization</li>
-              <li data-i18n="pop.2">CDN and caching</li>
-              <li data-i18n="pop.3">CI/CD optimization</li>
-              <li data-i18n="pop.4">Production infrastructure</li>
-              <li data-i18n="pop.5">Monitoring and reliability</li>
-              <li data-i18n="pop.6">AI coding-agent workflows</li>
+              <li data-i18n="pop.1">Оптимизация расходов на облако</li>
+              <li data-i18n="pop.2">CDN и кэширование</li>
+              <li data-i18n="pop.3">Оптимизация CI/CD</li>
+              <li data-i18n="pop.4">Production-инфраструктура</li>
+              <li data-i18n="pop.5">Мониторинг и надёжность</li>
+              <li data-i18n="pop.6">Workflow с AI-агентами</li>
             </ul>
           </div>
         </div>
@@ -558,8 +583,8 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
   <!-- ============ trust ============ -->
   <section class="trust reveal" aria-label="Credibility">
     <div class="trust-in">
-      <div class="t-num"><b>8+</b><span data-i18n="trust.y1">years in IT</span></div>
-      <div class="t-num"><b>5+</b><span data-i18n="trust.y2">years in DevOps</span></div>
+      <div class="t-num"><b>8+</b><span data-i18n="trust.y1">лет в IT</span></div>
+      <div class="t-num"><b>5+</b><span data-i18n="trust.y2">лет в DevOps</span></div>
       <p class="t-stack" data-i18n="trust.stack">AWS · Kubernetes · Bare Metal · CI/CD · Observability</p>
       <div class="t-links">
         <a id="fLinkedin" href="https://www.linkedin.com/in/[YOUR_HANDLE]" target="_blank" rel="noopener">LinkedIn ↗</a>
@@ -571,9 +596,9 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
 
 <footer class="ftr">
   <div class="wrap ftr-in">
-    <span data-i18n="foot.rights">© 2026 VibeOps · DevOps & FinOps consulting</span>
+    <span data-i18n="foot.rights">© 2026 VibeOps · Консалтинг DevOps и FinOps</span>
     <a id="fMail" href="mailto:hello@[YOUR_DOMAIN]">hello@[YOUR_DOMAIN]</a>
-    <span class="note" data-i18n="foot.note">Interactive demo · no trackers</span>
+    <span class="note" data-i18n="foot.note">Интерактивное демо · без трекеров</span>
   </div>
 </footer>
 </div><!-- /#page -->
@@ -581,23 +606,23 @@ input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;b
 <!-- ============ lead modal ============ -->
 <div class="overlay" id="overlay" hidden>
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-    <button class="m-close" id="mClose" type="button" aria-label="Close" data-i18n-aria="form.closeAria">✕</button>
+    <button class="m-close" id="mClose" type="button" aria-label="Закрыть" data-i18n-aria="form.closeAria">✕</button>
     <div id="mFormWrap">
-      <h3 id="mTitle" data-i18n="form.title">Leave one contact</h3>
-      <p class="m-desc" data-i18n="form.desc">Email, Telegram, LinkedIn or phone — I’ll contact you personally.</p>
+      <h3 id="mTitle" data-i18n="form.title">Оставьте один контакт</h3>
+      <p class="m-desc" data-i18n="form.desc">Email, Telegram, LinkedIn или телефон — я свяжусь с вами лично.</p>
       <form id="leadForm" novalidate>
-        <label for="contact" data-i18n="form.label">Your contact</label>
-        <input id="contact" name="contact" type="text" maxlength="200" autocomplete="email" placeholder="name@example.com or @username" data-i18n-ph="form.ph">
+        <label for="contact" data-i18n="form.label">Ваш контакт</label>
+        <input id="contact" name="contact" type="text" maxlength="200" autocomplete="email" placeholder="name@example.com или @username" data-i18n-ph="form.ph">
         <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
         <p class="f-err" id="fErr" role="alert" hidden></p>
-        <button class="btn btn-block" id="mSubmit" type="submit"><span id="mSubmitTxt" data-i18n="form.send">Send</span></button>
-        <p class="m-privacy" data-i18n="form.privacy">Your contact is used only to reply to this request.</p>
+        <button class="btn btn-block" id="mSubmit" type="submit"><span id="mSubmitTxt" data-i18n="form.send">Отправить</span></button>
+        <p class="m-privacy" data-i18n="form.privacy">Контакт будет использован только для ответа на эту заявку.</p>
       </form>
     </div>
     <div class="m-ok" id="mOk" hidden>
       <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="rgba(0,168,87,.12)" stroke="#008A4A" stroke-width="2"/><path d="M16 27 l7 7 l14 -15" fill="none" stroke="#008A4A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <p id="mOkTxt" data-i18n="form.ok">Thanks — I received your request and will contact you.</p>
-      <button class="btn" id="okClose" type="button" data-i18n="form.done">Done</button>
+      <p id="mOkTxt" data-i18n="form.ok">Спасибо — я получил заявку и свяжусь с вами.</p>
+      <button class="btn" id="okClose" type="button" data-i18n="form.done">Готово</button>
     </div>
   </div>
 </div>
@@ -614,8 +639,8 @@ var siteConfig = {
   ownerEmail: 'hello@[YOUR_DOMAIN]',
   githubUrl: 'https://github.com/[YOUR_HANDLE]',
   linkedinUrl: 'https://www.linkedin.com/in/[YOUR_HANDLE]',
-  defaultLocale: 'en',
-  locales: ['en','ru']
+  defaultLocale: 'ru',
+  locales: ['ru','en']
 };
 
 /* ================= i18n ================= */
@@ -653,7 +678,10 @@ var I18N = {
     'form.done':'Done','form.closeAria':'Close dialog',
     'trust.y1':'years in IT','trust.y2':'years in DevOps','trust.stack':'AWS · Kubernetes · Bare Metal · CI/CD · Observability',
     'foot.rights':'© 2026 VibeOps · DevOps & FinOps consulting','foot.note':'Interactive demo · no trackers',
-    'valuetext':'{v} out of 100'
+    'valuetext':'{v} out of 100',
+    'svg.cachehit':'cache hit',
+    'stage.before':'Before','stage.after':'After','stage.groupLabel':'Infrastructure: before or after',
+    'stage.note':'“Before” is a typical setup that can’t keep up. “After” reflects the improvements below — tune them with the sliders.'
   },
   ru: {
     'skip':'Перейти к содержанию',
@@ -688,7 +716,10 @@ var I18N = {
     'form.done':'Готово','form.closeAria':'Закрыть окно',
     'trust.y1':'лет в IT','trust.y2':'лет в DevOps','trust.stack':'AWS · Kubernetes · Bare Metal · CI/CD · Observability',
     'foot.rights':'© 2026 VibeOps · Консалтинг DevOps и FinOps','foot.note':'Интерактивное демо · без трекеров',
-    'valuetext':'{v} из 100'
+    'valuetext':'{v} из 100',
+    'svg.cachehit':'кэш‑хит',
+    'stage.before':'До','stage.after':'После','stage.groupLabel':'Инфраструктура: до или после',
+    'stage.note':'«До» — типичная инфраструктура, которая не справляется с нагрузкой. «После» — с улучшениями: настройте их ползунками.'
   }
 };
 
@@ -703,12 +734,13 @@ var store = {
   set: function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 };
 
-var lang = store.get('vibeops-lang') === 'ru' ? 'ru' : 'en';
+var lang = store.get('vibeops-lang') === 'en' ? 'en' : 'ru';
 function t(k){ return (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k; }
 function loc(){ return lang === 'ru' ? 'ru-RU' : 'en-US'; }
 
 /* ================= goals & state ================= */
 var DEFAULTS = { speed:45, cost:45, releases:50, reliability:55 };
+var BEFORE_GOALS = { speed:0, cost:0, releases:0, reliability:0 };
 var goals = { speed:45, cost:45, releases:50, reliability:55 };
 (function loadGoals(){
   var raw = store.get('vibeops-goals');
@@ -720,6 +752,10 @@ var goals = { speed:45, cost:45, releases:50, reliability:55 };
     }
   }catch(e){}
 })();
+
+/* "Before / after" infrastructure toggle — before ignores the 4 sliders. */
+var stage = store.get('vibeops-stage') === 'before' ? 'before' : 'after';
+function effectiveGoals(){ return stage === 'before' ? BEFORE_GOALS : goals; }
 
 /* Pure derivation — all demo math lives here. */
 function deriveInfrastructureState(g){
@@ -736,6 +772,7 @@ function deriveInfrastructureState(g){
     goals: { speed:g.speed, cost:g.cost, releases:g.releases, reliability:g.reliability },
     sp:sp, co:co, re:re, rl:rl,
     metrics: { latency:latency, cacheHit:cacheHit, monthly:monthly, commitMin:commitMin, availability:availability },
+    cacheHitFrac: cacheHit / 100,
     packetSpeed: lerp(58, 178, sp),
     spawnGap: lerp(1650, 430, sp),
     edgeShare: lerp(0.12, 0.78, sp),
@@ -759,7 +796,7 @@ function deriveInfrastructureState(g){
 var svg = byId('topo');
 var els = {
   pFull: byId('pFull'), pEdge: byId('pEdge'),
-  hotFull: byId('hotFull'), hotEdge: byId('hotEdge'),
+  hotFull: byId('hotFull'), hotEdge: byId('hotEdge'), hotCache: byId('hotCache'),
   pBackup1: byId('pBackup1'), pBackup2: byId('pBackup2'),
   pAlt: byId('pAlt'), pRep: byId('pRep'),
   pPipe: byId('pPipe'), pBypass: byId('pBypass'),
@@ -810,11 +847,12 @@ function setTargets(s){
 /* ================= apply state to diagram ================= */
 function setNS(el, st){ el.setAttribute('data-state', st); }
 function toggleRoute(el, on){ el.classList.toggle('on', !!on); }
-var state = deriveInfrastructureState(goals);
+var state = deriveInfrastructureState(effectiveGoals());
 
-function applyState(s){
-  setNS(els.nCdn,   s.sp > 0.33 ? 'optimized' : 'active');
-  setNS(els.nCache, s.sp > 0.5 ? 'optimized' : (s.sp < 0.12 ? 'degraded' : 'active'));
+function applyState(s, stg){
+  var before = stg === 'before';
+  setNS(els.nCdn,   before ? 'inactive' : (s.sp > 0.33 ? 'optimized' : 'active'));
+  setNS(els.nCache, before ? 'inactive' : (s.sp > 0.5 ? 'optimized' : (s.sp < 0.12 ? 'degraded' : 'active')));
   setNS(els.nApps,  s.sp > 0.6 ? 'optimized' : 'active');
   setNS(els.nDb,    s.sp > 0.6 ? 'optimized' : 'active');
   setNS(els.app2,   s.appInstances >= 2 ? 'active' : 'inactive');
@@ -826,6 +864,7 @@ function applyState(s){
   toggleRoute(els.pAlt, s.altRoute);
   toggleRoute(els.pRep, s.replica);
   toggleRoute(els.hotEdge, s.sp > 0.45);
+  toggleRoute(els.hotCache, s.sp > 0.3);
   toggleRoute(els.hotFull, s.sp > 0.72);
   els.waste.style.opacity = s.waste.toFixed(2);
   els.capFill.style.transform = 'scaleY(' + s.capacity.toFixed(3) + ')';
@@ -836,7 +875,7 @@ function applyState(s){
   els.bypassG.classList.toggle('on', s.parallel);
   els.stBuild.setAttribute('data-run', s.parallel ? '1' : '0');
   els.stTest.setAttribute('data-run', s.parallel ? '1' : '0');
-  els.cacheHitLbl.textContent = 'cache hit ' + s.metrics.cacheHit + '%';
+  els.cacheHitLbl.textContent = t('svg.cachehit') + ' ' + s.metrics.cacheHit + '%';
   var sysKey = s.hbBad ? 'sys.bad' : (s.hbOk ? 'sys.ok' : 'sys.watch');
   els.sysTxt.textContent = t(sysKey);
   els.sysDot.setAttribute('data-tone', s.hbBad ? 'bad' : (s.hbOk ? 'ok' : 'warn'));
@@ -866,6 +905,7 @@ var bypassLen = els.pBypass.getTotalLength();
 var pipe = { t: 0.15, pause: 0 };
 var pipe2 = { t: 0.55 };
 
+var CACHE_STOP_T = (740 - 70) / (870 - 70); // fraction of pFull where the cache node sits
 function makePacket(){
   var g = document.createElementNS(SVGNS, 'g');
   var halo = document.createElementNS(SVGNS, 'circle');
@@ -874,7 +914,7 @@ function makePacket(){
   core.setAttribute('r', '3'); core.setAttribute('class', 'pkt-core');
   g.appendChild(halo); g.appendChild(core);
   els.packetsG.appendChild(g);
-  return { g: g, t: 0, len: 1, spd: 80, path: els.pFull, kind: 'full' };
+  return { g: g, core: core, t: 0, len: 1, maxT: 1, spd: 80, path: els.pFull, kind: 'cached' };
 }
 function killPacket(p){
   p.g.setAttribute('display', 'none');
@@ -884,16 +924,23 @@ function killPacket(p){
 }
 function spawnPacket(){
   var p = PKT.pool.pop() || makePacket();
-  p.kind = Math.random() < state.edgeShare ? 'edge' : 'full';
-  p.path = p.kind === 'edge' ? els.pEdge : els.pFull;
+  var r = Math.random();
+  if(r < state.edgeShare){
+    p.kind = 'edge'; p.path = els.pEdge; p.maxT = 1;
+  } else if(r < state.edgeShare + (1 - state.edgeShare) * state.cacheHitFrac){
+    p.kind = 'cached'; p.path = els.pFull; p.maxT = CACHE_STOP_T;
+  } else {
+    p.kind = 'miss'; p.path = els.pFull; p.maxT = 1;
+  }
   p.len = p.path.getTotalLength();
   p.t = 0;
   p.spd = state.packetSpeed * (p.kind === 'edge' ? 1.18 : 1) * (0.88 + Math.random() * 0.26);
   p.g.removeAttribute('display');
+  p.core.classList.toggle('miss', p.kind === 'miss');
   PKT.live.push(p);
 }
 function place(p){
-  var pt = p.path.getPointAtLength(p.t * p.len);
+  var pt = p.path.getPointAtLength(p.t * p.len * p.maxT);
   p.g.setAttribute('transform', 'translate(' + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1) + ')');
 }
 function stepPackets(dt){
@@ -904,7 +951,7 @@ function stepPackets(dt){
   var i, p;
   for(i = PKT.live.length - 1; i >= 0; i--){
     p = PKT.live[i];
-    p.t += (p.spd * dt) / p.len;
+    p.t += (p.spd * dt) / (p.len * p.maxT);
     if(p.t >= 1){ killPacket(p); } else { place(p); }
   }
 }
@@ -961,8 +1008,8 @@ function scheduleApply(){
   applyScheduled = true;
   requestAnimationFrame(function(){
     applyScheduled = false;
-    state = deriveInfrastructureState(goals);
-    applyState(state);
+    state = deriveInfrastructureState(effectiveGoals());
+    applyState(state, stage);
     store.set('vibeops-goals', JSON.stringify(goals));
   });
 }
@@ -995,6 +1042,23 @@ sliders.forEach(function(input){
   });
 });
 
+/* ================= before / after stage ================= */
+var ctlsEl = byId('ctls');
+var stageButtons = $all('.stage-btn');
+function setStage(next){
+  stage = next === 'before' ? 'before' : 'after';
+  store.set('vibeops-stage', stage);
+  stageButtons.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-stage') === stage)); });
+  ctlsEl.setAttribute('data-locked', String(stage === 'before'));
+  sliders.forEach(function(s){ s.disabled = stage === 'before'; });
+  state = deriveInfrastructureState(effectiveGoals());
+  applyState(state, stage);
+  els.live.textContent = summaryText(state);
+}
+stageButtons.forEach(function(b){
+  b.addEventListener('click', function(){ setStage(b.getAttribute('data-stage')); });
+});
+
 /* ================= language ================= */
 function applyLang(l){
   lang = (l === 'ru') ? 'ru' : 'en';
@@ -1014,7 +1078,7 @@ function applyLang(l){
     b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
   });
   sliders.forEach(syncSliderUI);
-  applyState(state);
+  applyState(state, stage);
   var k;
   for(k in METRICS){ METRICS[k].el.textContent = METRICS[k].fmt(METRICS[k].cur); }
   els.live.textContent = summaryText(state);
@@ -1168,10 +1232,9 @@ if('IntersectionObserver' in window){
 
 /* ================= init ================= */
 svg.classList.toggle('compact', isMobile);
+setStage(stage);
 applyLang(lang);
 sliders.forEach(syncSliderUI);
-state = deriveInfrastructureState(goals);
-applyState(state);
 (function primeMetrics(){
   var k;
   for(k in METRICS){
