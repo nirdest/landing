@@ -1,0 +1,1189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  VibeOps — Interactive Infrastructure Tuner (single-file build of the landing spec)
+  Placeholders to replace before production: [YOUR_NAME], [YOUR_DOMAIN], [YOUR_HANDLE],
+  ownerEmail. In production the form posts to POST /api/lead (Astro endpoint on Cloudflare
+  Workers → Resend + Turnstile server-side validation). Here the submit is simulated.
+-->
+<title>DevOps, FinOps & Production Engineering | VibeOps</title>
+<meta name="description" content="Reduce cloud costs, accelerate deployments, improve website performance and make AI-built products production-ready.">
+<link rel="canonical" href="https://[YOUR_DOMAIN]/">
+<link rel="alternate" hreflang="en" href="https://[YOUR_DOMAIN]/">
+<link rel="alternate" hreflang="ru" href="https://[YOUR_DOMAIN]/ru/">
+<link rel="alternate" hreflang="x-default" href="https://[YOUR_DOMAIN]/">
+<meta property="og:title" content="DevOps, FinOps & Production Engineering | VibeOps">
+<meta property="og:description" content="Reduce cloud costs, accelerate deployments, improve website performance and make AI-built products production-ready.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://[YOUR_DOMAIN]/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23F6F4EE'/%3E%3Cpath d='M8 21 L16 9 L24 21 M16 9 V21' stroke='%23008A4A' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='8' cy='21' r='2.6' fill='%231B1D1B'/%3E%3Ccircle cx='24' cy='21' r='2.6' fill='%231B1D1B'/%3E%3Ccircle cx='16' cy='9' r='2.6' fill='%2300A857'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/space-grotesk/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/latin-400.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/latin-500.css" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"Person","name":"[YOUR_NAME]","jobTitle":"DevOps / FinOps Consultant"},
+{"@type":"ProfessionalService","name":"VibeOps","serviceType":["DevOps consulting","FinOps consulting","Production engineering"],"areaServed":"Worldwide"}
+]}
+</script>
+<style>
+/* ================= design tokens ================= */
+:root{
+  --bg:#F6F4EE; --bg-card:#FCFBF6; --bg-card2:#FFFDF7;
+  --ink:#1B1D1B; --ink2:#3B3F3B; --muted:#6C7168;
+  --line:#DDD8CA; --line2:#C9C3B2;
+  --acc:#00A857; --acc-deep:#00843F; --acc-soft:rgba(0,168,87,.10); --acc-ring:rgba(0,168,87,.22);
+  --warn:#A9761C; --danger:#BF4128;
+  --disp:'Space Grotesk Variable','Space Grotesk',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --shadow:0 10px 30px rgba(27,29,27,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+body{
+  font-family:var(--disp);color:var(--ink);background:var(--bg);
+  background-image:
+    radial-gradient(900px 420px at 88% -8%, rgba(0,168,87,.07), transparent 62%),
+    radial-gradient(700px 380px at -10% 30%, rgba(169,118,28,.05), transparent 60%);
+  line-height:1.5;overflow-x:hidden;
+}
+/* film grain */
+body::after{content:"";position:fixed;inset:0;z-index:120;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");}
+::selection{background:var(--acc-soft);color:var(--acc-deep)}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--acc-deep);outline-offset:2px;border-radius:4px}
+.visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-48px;z-index:200;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:6px;font:500 .85rem var(--mono);transition:top .2s}
+.skip:focus{top:12px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,3.4vw,36px)}
+
+/* ================= header ================= */
+.hdr{position:sticky;top:0;z-index:80;background:var(--bg);border-bottom:1px solid var(--line)}
+.hdr-in{display:flex;align-items:center;gap:22px;height:62px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:600 1.05rem var(--disp);letter-spacing:-.01em}
+.brand svg{display:block}
+.hdr nav{margin-left:auto;display:flex;align-items:center;gap:18px}
+.hdr-link{font:500 .88rem var(--disp);text-decoration:none;color:var(--ink2);border-bottom:1px solid transparent;padding:4px 1px;transition:color .2s,border-color .2s}
+.hdr-link:hover{color:var(--acc-deep);border-color:var(--acc)}
+.hdr-cta{font:500 .82rem var(--mono);letter-spacing:.04em;border:1px solid var(--ink);padding:7px 14px;border-radius:6px;transition:background .2s,color .2s,transform .15s}
+.hdr-cta:hover{background:var(--ink);color:var(--bg);transform:translateY(-1px)}
+.lang{display:flex;align-items:center;gap:7px;font:500 .78rem var(--mono);color:var(--line2)}
+.lang button{font:500 .78rem var(--mono);color:var(--muted);padding:4px 2px;border-bottom:1.5px solid transparent;transition:color .2s,border-color .2s}
+.lang button[aria-pressed="true"]{color:var(--ink);border-color:var(--acc)}
+.lang button:hover{color:var(--acc-deep)}
+
+/* ================= hero ================= */
+.hero{padding:clamp(26px,4.5vh,46px) 0 clamp(18px,3vh,30px)}
+.eyebrow{display:flex;align-items:center;gap:10px;font:500 .72rem var(--mono);letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.eyebrow::before{content:"";width:9px;height:9px;background:var(--acc);flex:none}
+.hero h1{margin-top:14px;font-size:clamp(2.05rem,4.6vw,3.55rem);line-height:1.04;letter-spacing:-.022em;font-weight:600;max-width:19ch}
+.hero h1 em{font-style:normal;color:var(--acc-deep)}
+.hero-sub{margin-top:16px;max-width:56ch;color:var(--ink2);font-size:clamp(.98rem,1.35vw,1.08rem)}
+.hero-cred{margin-top:14px;display:flex;align-items:center;gap:9px;font:400 .74rem var(--mono);color:var(--muted);letter-spacing:.02em}
+.hero-cred::before{content:"";width:16px;height:1.5px;background:var(--acc)}
+
+/* ================= tuner layout ================= */
+.tuner{padding-bottom:clamp(26px,4vh,44px);scroll-margin-top:76px}
+.tuner-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(340px,1fr);gap:18px;align-items:stretch}
+.panel{position:relative;background:var(--bg-card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+.panel::before,.panel::after{content:"";position:absolute;width:12px;height:12px;pointer-events:none;z-index:2}
+.panel::before{top:-1px;left:-1px;border-top:1.5px solid var(--acc-deep);border-left:1.5px solid var(--acc-deep)}
+.panel::after{bottom:-1px;right:-1px;border-bottom:1.5px solid var(--acc-deep);border-right:1.5px solid var(--acc-deep)}
+
+/* board / diagram */
+.board{display:flex;flex-direction:column;padding:14px 16px 12px}
+.board-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 2px 10px;border-bottom:1px dashed var(--line)}
+.board-cap{display:flex;align-items:center;gap:8px;font:500 .68rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.cap-dot{width:7px;height:7px;border-radius:50%;background:var(--acc);animation:blink 2.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.sys{display:flex;align-items:center;gap:7px;font:500 .68rem var(--mono);letter-spacing:.06em;color:var(--muted)}
+.sys-dot{width:8px;height:8px;border-radius:50%;background:var(--acc-deep);box-shadow:0 0 0 3px var(--acc-ring);transition:background .3s,box-shadow .3s}
+.sys-dot[data-tone="warn"]{background:var(--warn);box-shadow:0 0 0 3px rgba(169,118,28,.2)}
+.sys-dot[data-tone="bad"]{background:var(--danger);box-shadow:0 0 0 3px rgba(191,65,40,.2)}
+.board-svg-wrap{flex:1;display:flex;align-items:center;background-image:radial-gradient(var(--line) 1px,transparent 1.2px);background-size:22px 22px;border-radius:6px;margin-top:10px;padding:6px 2px}
+.board-svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:16px;padding:10px 2px 0;font:400 .66rem var(--mono);letter-spacing:.05em;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.lg{width:14px;height:9px;border-radius:2px;flex:none}
+.lg-opt{background:var(--acc-soft);border:1.5px solid var(--acc-deep)}
+.lg-red{background:var(--acc-soft);border:1.5px dashed var(--acc-deep)}
+.lg-un{background:transparent;border:1.5px dashed var(--line2);opacity:.6}
+
+/* SVG internals */
+.route{fill:none;stroke:var(--line2);stroke-width:1.4;stroke-linecap:round}
+.route-hot{fill:none;stroke:var(--acc);stroke-width:1.7;stroke-linecap:round;opacity:0;transition:opacity .35s}
+.route-hot.on{opacity:.7}
+.route.opt{opacity:0;transition:opacity .35s}
+.route.opt.on{opacity:.85;stroke:var(--acc-deep);stroke-dasharray:5 4}
+.shape{fill:var(--bg-card2);stroke:var(--ink2);stroke-width:1.4;transition:fill .25s,stroke .25s}
+.det{fill:none;stroke:var(--muted);stroke-width:1;opacity:.7}
+.node{transition:opacity .4s}
+.node[data-state="inactive"]{opacity:.22}
+.node[data-state="inactive"] .shape{stroke:var(--line2)}
+.node[data-state="optimized"] .shape{stroke:var(--acc-deep);fill:var(--acc-soft)}
+.node[data-state="redundant"] .shape{stroke:var(--acc-deep);stroke-dasharray:4 3;fill:var(--acc-soft)}
+.node[data-state="degraded"] .shape{stroke:var(--danger)}
+.node:hover .shape{stroke-width:2}
+.nlabel{font:500 12.5px var(--mono);fill:var(--ink2);text-anchor:middle;letter-spacing:.01em}
+.techlabel{font:500 10px var(--mono);fill:var(--muted);text-anchor:middle;letter-spacing:.03em}
+#cacheHitLbl{fill:var(--acc-deep);font-weight:500}
+.led{fill:var(--acc-deep)}
+#capFill{fill:var(--acc);opacity:.55;transform-box:fill-box;transform-origin:50% 100%;transition:transform .35s ease}
+#waste{transition:opacity .45s}
+#waste .shape{stroke-dasharray:3 3;stroke:var(--muted)}
+.hb-box{fill:var(--bg-card2);stroke:var(--line2)}
+.hb-line{fill:none;stroke:var(--warn);stroke-width:1.6;stroke-linecap:round;stroke-dasharray:70 170;animation:hb var(--hb-dur,2.4s) linear infinite}
+@keyframes hb{to{stroke-dashoffset:-240}}
+#n-hb[data-hb="ok"] .hb-line{stroke:var(--acc-deep)}
+#n-hb[data-hb="bad"] .hb-line{stroke:var(--danger);stroke-dasharray:22 46;animation-duration:calc(var(--hb-dur,2.4s)*1.7)}
+.pkt-core{fill:var(--acc-deep)}
+.pkt-halo{fill:var(--acc);opacity:.25}
+#art,#art2{fill:var(--acc-deep)}
+.chip{opacity:.5;transition:opacity .3s}
+.chip rect{fill:var(--bg-card2);stroke:var(--line2);transition:stroke .25s,fill .25s}
+.chip text{font:500 9px var(--mono);fill:var(--muted);text-anchor:middle;transition:fill .25s}
+.chip[data-state="on"]{opacity:1}
+.chip[data-state="on"] rect{stroke:var(--acc-deep);fill:var(--acc-soft)}
+.chip[data-state="on"] text{fill:var(--acc-deep)}
+.stage rect{transition:stroke .25s,fill .25s}
+.stage[data-run="1"] rect{stroke:var(--acc-deep);fill:var(--acc-soft)}
+#bypassG{opacity:0;transition:opacity .35s}
+#bypassG.on{opacity:1}
+.pulse-ring{fill:none;stroke:var(--acc-deep);stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
+.pulse-ring.go{animation:ring .7s ease-out}
+@keyframes ring{0%{opacity:.75;transform:scale(.35)}100%{opacity:0;transform:scale(2.4)}}
+/* compact (mobile) diagram */
+.compact .nlabel{font-size:21px}
+.compact .techlabel{font-size:15px}
+.compact .stage-l{font-size:16px}
+.compact .minor{display:none}
+
+/* ================= controls panel ================= */
+.controls{padding:20px 22px 22px;display:flex;flex-direction:column;gap:0}
+.ctl-title{font-size:1.22rem;font-weight:600;letter-spacing:-.015em;padding-bottom:14px;border-bottom:1px dashed var(--line)}
+.ctls{display:flex;flex-direction:column;gap:15px;padding:18px 0 6px}
+.ctl-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:2px}
+.ctl-head label{font:500 .92rem var(--disp);color:var(--ink)}
+.ctl-head output{font:500 .74rem var(--mono);color:var(--muted);min-width:3ch;text-align:right;transition:color .2s}
+.ctl:focus-within output{color:var(--acc-deep)}
+input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer;--p:50%}
+input[type="range"]::-webkit-slider-runnable-track{height:2px;border-radius:2px;background:linear-gradient(to right,var(--acc-deep) var(--p),var(--line2) var(--p))}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--bg-card2);border:2.5px solid var(--acc-deep);margin-top:-7.5px;box-shadow:0 1px 4px rgba(27,29,27,.2);transition:transform .15s,box-shadow .15s}
+input[type="range"]:hover::-webkit-slider-thumb{transform:scale(1.18)}
+input[type="range"]:active::-webkit-slider-thumb{transform:scale(1.28);box-shadow:0 0 0 6px var(--acc-ring)}
+input[type="range"]::-moz-range-track{height:2px;background:var(--line2);border-radius:2px}
+input[type="range"]::-moz-range-progress{height:2px;background:var(--acc-deep);border-radius:2px}
+input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--bg-card2);border:2.5px solid var(--acc-deep);box-shadow:0 1px 4px rgba(27,29,27,.2)}
+
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:14px}
+.metric{background:var(--bg-card2);padding:12px 14px 11px;position:relative}
+.m-label{display:block;font:500 .62rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.m-val{font:600 1.5rem/1 var(--disp);letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.m-unit{font:500 .72rem var(--mono);color:var(--muted);margin-left:4px}
+.m-dot{position:absolute;top:13px;right:13px;width:7px;height:7px;border-radius:50%;background:var(--acc-deep);box-shadow:0 0 0 3px var(--acc-ring);transition:background .3s,box-shadow .3s}
+.m-dot[data-tone="warn"]{background:var(--warn);box-shadow:0 0 0 3px rgba(169,118,28,.2)}
+.m-dot[data-tone="bad"]{background:var(--danger);box-shadow:0 0 0 3px rgba(191,65,40,.2)}
+.m-note{margin-top:9px;font:400 .66rem var(--mono);color:var(--muted);letter-spacing:.02em}
+
+.cta-row{margin-top:auto;padding-top:18px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font:600 .95rem var(--disp);letter-spacing:.01em;background:var(--acc);color:#07130B;padding:13px 26px;border-radius:7px;transition:transform .16s,box-shadow .2s,background .2s}
+.btn:hover{background:#00BC63;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,140,70,.28)}
+.btn:active{transform:translateY(0);box-shadow:none}
+.btn[disabled]{opacity:.6;pointer-events:none}
+.btn .arr{transition:transform .2s}
+.btn:hover .arr{transform:translateX(3px)}
+.pop-wrap{position:relative}
+.linkish{font:500 .84rem var(--disp);color:var(--ink2);border-bottom:1px solid var(--acc);padding-bottom:2px;display:inline-flex;gap:6px;align-items:center;transition:color .2s}
+.linkish:hover{color:var(--acc-deep)}
+.pop{position:absolute;left:0;top:calc(100% + 10px);z-index:40;min-width:270px;background:var(--bg-card2);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:10px 6px;animation:pop .18s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.pop li{list-style:none;display:flex;gap:10px;align-items:center;font:400 .84rem var(--disp);color:var(--ink2);padding:7px 10px;border-radius:5px;transition:background .15s,color .15s}
+.pop li:hover{background:var(--acc-soft);color:var(--acc-deep)}
+.pop li::before{content:"";width:6px;height:6px;background:var(--acc);flex:none}
+
+/* ================= trust + footer ================= */
+.trust{border-top:1px solid var(--line);padding:clamp(22px,4vh,38px) 0}
+.trust-in{display:flex;flex-wrap:wrap;align-items:center;gap:14px 34px}
+.t-num{display:flex;align-items:baseline;gap:8px}
+.t-num b{font:600 1.5rem var(--disp);letter-spacing:-.02em}
+.t-num span{font:400 .72rem var(--mono);color:var(--muted);letter-spacing:.04em}
+.t-stack{font:400 .74rem var(--mono);color:var(--ink2);letter-spacing:.03em}
+.t-links{margin-left:auto;display:flex;gap:18px}
+.t-links a{font:500 .74rem var(--mono);letter-spacing:.05em;text-decoration:none;color:var(--ink2);border-bottom:1px solid var(--line2);padding-bottom:2px;transition:color .2s,border-color .2s}
+.t-links a:hover{color:var(--acc-deep);border-color:var(--acc)}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+.ftr{border-top:1px solid var(--line);padding:20px 0 26px}
+.ftr-in{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:center;font:400 .7rem var(--mono);color:var(--muted);letter-spacing:.03em}
+.ftr a{color:var(--ink2);text-decoration:none;border-bottom:1px solid var(--line2)}
+.ftr a:hover{color:var(--acc-deep);border-color:var(--acc)}
+.ftr .note{margin-left:auto}
+
+/* ================= modal ================= */
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(24,26,23,.48);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;transition:opacity .22s}
+.overlay.show{opacity:1}
+.modal{position:relative;width:min(430px,100%);background:var(--bg-card);border:1px solid var(--line);border-radius:12px;box-shadow:0 24px 60px rgba(20,22,19,.28);padding:28px 26px 24px;transform:translateY(14px) scale(.98);transition:transform .24s cubic-bezier(.2,.9,.3,1.2)}
+.overlay.show .modal{transform:none}
+.modal::before{content:"";position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid var(--acc-deep);border-left:2px solid var(--acc-deep)}
+.m-close{position:absolute;top:12px;right:12px;width:34px;height:34px;display:grid;place-items:center;border-radius:6px;color:var(--muted);font-size:1.15rem;line-height:1;transition:background .15s,color .15s}
+.m-close:hover{background:var(--acc-soft);color:var(--acc-deep)}
+.modal h3{font-size:1.35rem;font-weight:600;letter-spacing:-.015em}
+.m-desc{margin-top:7px;font-size:.9rem;color:var(--ink2)}
+.modal label{display:block;margin:18px 0 7px;font:500 .68rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.modal input[type="text"]{width:100%;font:500 .95rem var(--mono);color:var(--ink);background:var(--bg-card2);border:1px solid var(--line2);border-radius:7px;padding:12px 14px;transition:border-color .2s,box-shadow .2s}
+.modal input[type="text"]:focus{outline:none;border-color:var(--acc-deep);box-shadow:0 0 0 3px var(--acc-ring)}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+.f-err{margin-top:9px;font:400 .74rem var(--mono);color:var(--danger)}
+.btn-block{width:100%;margin-top:16px}
+.m-privacy{margin-top:12px;font:400 .64rem var(--mono);color:var(--muted);letter-spacing:.02em;text-align:center}
+.m-ok{text-align:center;padding:14px 0 4px}
+.m-ok svg{display:block;margin:0 auto 14px}
+.m-ok p{font-size:.95rem;color:var(--ink2)}
+.m-ok .btn{margin-top:20px}
+
+/* ================= responsive ================= */
+@media (max-width: 980px){
+  .tuner-grid{grid-template-columns:1fr}
+  .controls{display:flex}
+  .metrics{order:1}
+  .ctls{order:2}
+  .cta-row{order:3}
+  .t-links{margin-left:0}
+}
+@media (max-width: 560px){
+  .hdr-link.how{display:none}
+  .metrics{grid-template-columns:1fr 1fr}
+  .m-val{font-size:1.28rem}
+  .hero h1{max-width:100%}
+}
+/* ================= reduced motion ================= */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+
+<div id="page">
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a class="brand" href="#" aria-label="VibeOps — home">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 22 L16 8 L25 22 M16 8 V22" stroke="#008A4A" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="22" r="2.6" fill="#1B1D1B"/><circle cx="25" cy="22" r="2.6" fill="#1B1D1B"/><circle cx="16" cy="8" r="2.6" fill="#00A857"/></svg>
+      VibeOps
+    </a>
+    <nav aria-label="Main">
+      <a class="hdr-link how" href="#tuner" data-i18n="nav.how">How it works</a>
+      <button class="hdr-cta js-open-modal" type="button" data-i18n="nav.contact">Contact</button>
+      <span class="lang" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button><span aria-hidden="true">/</span><button type="button" data-lang="ru" aria-pressed="false">RU</button>
+      </span>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <!-- ============ hero ============ -->
+  <section class="hero" aria-labelledby="heroH">
+    <p class="eyebrow" data-i18n="hero.eyebrow">DEVOPS · FINOPS · PRODUCTION ENGINEERING</p>
+    <h1 id="heroH" data-i18n-html="hero.h1">Tune your infrastructure around <em>what matters.</em></h1>
+    <p class="hero-sub" data-i18n="hero.sub">Move the controls. See how speed, cost, delivery and reliability change the system — then leave one contact and I’ll get back to you personally.</p>
+    <p class="hero-cred" data-i18n="hero.cred">From AI-built prototype to observable, cost-efficient production.</p>
+  </section>
+
+  <!-- ============ interactive tuner ============ -->
+  <section class="tuner" id="tuner" aria-labelledby="tunerH">
+    <div class="tuner-grid">
+
+      <!-- diagram board -->
+      <figure class="board panel">
+        <div class="board-top">
+          <span class="board-cap"><i class="cap-dot" aria-hidden="true"></i><span data-i18n="svg.live">live topology</span></span>
+          <span class="sys"><i class="sys-dot" id="sysDot" data-tone="ok" aria-hidden="true"></i><span id="sysTxt">system nominal</span></span>
+        </div>
+        <div class="board-svg-wrap">
+          <svg id="topo" class="board-svg" viewBox="0 0 940 620" role="img" aria-labelledby="svgTitle svgDesc">
+            <title id="svgTitle">Interactive infrastructure diagram</title>
+            <desc id="svgDesc">Traffic flows from users through DNS, CDN, load balancer, application servers, cache and database. A CI pipeline below delivers changes to production.</desc>
+
+            <!-- routes -->
+            <g aria-hidden="true">
+              <path id="pFull" class="route" d="M88 210 L610 210 C 676 214 722 234 752 260"/>
+              <path id="hotFull" class="route-hot" d="M88 210 L610 210 C 676 214 722 234 752 260"/>
+              <path id="pEdge" class="route" d="M92 214 L322 214 C 318 242 272 256 210 256 C 152 256 112 248 92 234"/>
+              <path id="hotEdge" class="route-hot" d="M92 214 L322 214 C 318 242 272 256 210 256 C 152 256 112 248 92 234"/>
+              <path id="pBackup1" class="route opt" d="M204 224 C 252 312 352 336 448 330"/>
+              <path id="pBackup2" class="route opt" d="M492 330 C 556 328 590 296 606 254"/>
+              <path id="pAlt" class="route opt" d="M336 192 C 420 122 556 122 634 190"/>
+              <path id="pRep" class="route opt" d="M780 298 C 806 326 828 338 846 348"/>
+              <path class="det" d="M846 94 C 800 142 706 154 652 192" stroke-dasharray="2 5"/>
+            </g>
+
+            <!-- users -->
+            <g id="n-users" class="node" data-state="active" transform="translate(70,210)">
+              <g fill="#3B3F3B">
+                <circle cx="-14" cy="-13" r="4.4"/><path d="M-21 2 c0-6.5 3.4-9.5 7-9.5 s7 3 7 9.5 z"/>
+                <circle cx="0" cy="-17" r="4.8"/><path d="M-7.5 0 c0-7 3.7-10.3 7.5-10.3 s7.5 3.3 7.5 10.3 z"/>
+                <circle cx="14" cy="-13" r="4.4"/><path d="M7 2 c0-6.5 3.4-9.5 7-9.5 s7 3 7 9.5 z"/>
+              </g>
+              <text class="nlabel" y="46" data-i18n="svg.users">Users</text>
+            </g>
+
+            <!-- DNS -->
+            <g id="n-dns" class="node" data-state="active" transform="translate(200,210)">
+              <circle class="shape" r="15.5"/>
+              <ellipse class="det" rx="6.8" ry="15.5"/>
+              <line class="det" x1="-15.5" y1="0" x2="15.5" y2="0"/>
+              <text class="nlabel" y="46" data-i18n="svg.dns">Internet · DNS</text>
+            </g>
+
+            <!-- CDN -->
+            <g id="n-cdn" class="node" data-state="active" transform="translate(330,210)">
+              <text id="cacheHitLbl" class="techlabel" y="-36">cache hit 42%</text>
+              <rect class="shape" x="-20" y="-20" width="40" height="40" rx="6"/>
+              <g fill="#6C7168" opacity=".8">
+                <rect x="-12" y="-12" width="9" height="9" rx="1.5"/><rect x="3" y="-12" width="9" height="9" rx="1.5"/>
+                <rect x="-12" y="3" width="9" height="9" rx="1.5"/><rect x="3" y="3" width="9" height="9" rx="1.5"/>
+              </g>
+              <text class="nlabel" y="46" data-i18n="svg.cdn">CDN · Edge</text>
+            </g>
+
+            <!-- LB -->
+            <g id="n-lb" class="node" data-state="active" transform="translate(470,210)">
+              <path class="shape" d="M0 -18 L18 0 L0 18 L-18 0 Z"/>
+              <path class="det" d="M-6 0 h12 M2 -4 l4 4 -4 4"/>
+              <text class="nlabel" y="46" data-i18n="svg.lb">Load Balancer</text>
+            </g>
+
+            <!-- standby LB -->
+            <g id="n-lb2" class="node" data-state="inactive" transform="translate(470,332)">
+              <path class="shape" d="M0 -15 L15 0 L0 15 L-15 0 Z"/>
+              <text class="nlabel minor" y="36" data-i18n="svg.lb2">LB · standby</text>
+            </g>
+
+            <!-- app servers -->
+            <g id="n-apps" class="node" data-state="active" transform="translate(610,210)">
+              <g id="app1">
+                <rect class="shape" x="-26" y="-34" width="52" height="15" rx="3"/>
+                <circle class="led" cx="-18" cy="-26.5" r="1.8"/><line class="det" x1="2" y1="-26.5" x2="20" y2="-26.5"/>
+              </g>
+              <g id="app2" class="node" data-state="active">
+                <rect class="shape" x="-26" y="-8" width="52" height="15" rx="3"/>
+                <circle class="led" cx="-18" cy="-0.5" r="1.8"/><line class="det" x1="2" y1="-0.5" x2="20" y2="-0.5"/>
+              </g>
+              <g id="app3" class="node" data-state="inactive">
+                <rect class="shape" x="-26" y="18" width="52" height="15" rx="3"/>
+                <circle class="led" cx="-18" cy="25.5" r="1.8"/><line class="det" x1="2" y1="25.5" x2="20" y2="25.5"/>
+              </g>
+              <!-- right-sizing capacity bar -->
+              <rect class="det" x="38" y="-34" width="7" height="67" rx="1.5"/>
+              <rect id="capFill" x="39.4" y="-32.6" width="4.2" height="64.2" rx="1"/>
+              <line class="det minor" x1="35" y1="1.4" x2="48" y2="1.4" stroke-dasharray="2 2"/>
+              <text class="nlabel" y="56" data-i18n="svg.apps">Application Servers</text>
+            </g>
+
+            <!-- cache -->
+            <g id="n-cache" class="node" data-state="active" transform="translate(740,150)">
+              <rect class="shape" x="-17" y="-17" width="34" height="34" rx="7"/>
+              <path d="M2.5 -10 L-6.5 2 L-1.5 2 L-2.5 10 L6.5 -2 L1.5 -2 Z" fill="#008A4A"/>
+              <text class="nlabel" y="38" data-i18n="svg.cache">Cache</text>
+            </g>
+
+            <!-- database -->
+            <g id="n-db" class="node" data-state="active" transform="translate(762,282)">
+              <path class="shape" d="M-26 -14 V16 A26 9 0 0 0 26 16 V-14"/>
+              <ellipse class="shape" cx="0" cy="-14" rx="26" ry="9"/>
+              <path class="det" d="M-26 1 A26 9 0 0 0 26 1"/>
+              <text class="nlabel" y="52" data-i18n="svg.db">Database</text>
+            </g>
+
+            <!-- db replica -->
+            <g id="n-replica" class="node" data-state="inactive" transform="translate(858,356)">
+              <path class="shape" d="M-19 -10 V11 A19 7 0 0 0 19 11 V-10"/>
+              <ellipse class="shape" cx="0" cy="-10" rx="19" ry="7"/>
+              <text class="nlabel minor" y="36" data-i18n="svg.replica">DB replica</text>
+            </g>
+
+            <!-- idle / unused resources (FinOps waste) -->
+            <g id="waste" aria-hidden="true">
+              <g transform="translate(150,110)">
+                <rect class="shape" x="-13" y="-9" width="26" height="18" rx="3"/>
+                <line class="det" x1="-7" y1="0" x2="7" y2="0"/>
+                <text class="techlabel minor" y="24" data-i18n="svg.w1">idle VM</text>
+              </g>
+              <g transform="translate(212,102)">
+                <circle class="shape" r="5.5"/><line class="det" x1="-8" y1="8" x2="8" y2="-8"/>
+                <text class="techlabel minor" y="22" data-i18n="svg.w2">unused IP</text>
+              </g>
+              <g transform="translate(180,156)">
+                <rect class="shape" x="-11" y="-7" width="22" height="14" rx="3"/>
+                <circle class="det" cx="5" cy="0" r="2"/>
+                <text class="techlabel minor" y="22" data-i18n="svg.w3">unattached disk</text>
+              </g>
+            </g>
+
+            <!-- monitoring heartbeat -->
+            <g id="n-hb" data-hb="warn" transform="translate(806,58)">
+              <rect class="hb-box" width="118" height="36" rx="6"/>
+              <path class="hb-line" d="M8 20 h12 l4 -9 6 16 5 -12 4 5 h12 l4 -11 6 18 5 -12 4 5 h16"/>
+              <text class="techlabel minor" x="59" y="50" data-i18n="svg.mon">monitoring</text>
+            </g>
+
+            <!-- CI pipeline -->
+            <g aria-hidden="false">
+              <path id="pPipe" class="route" d="M118 520 L736 520"/>
+              <g id="bypassG" aria-hidden="true">
+                <path id="pBypass" class="route" d="M214 512 C 268 480 342 480 400 508" stroke-dasharray="3 4"/>
+                <circle id="art2" r="3.4"/>
+              </g>
+              <g id="stCommit" class="stage" transform="translate(100,520)">
+                <rect class="shape" x="-6" y="-6" width="12" height="12" rx="2.5"/>
+                <text class="techlabel stage-l" y="28" data-i18n="svg.p1">Commit</text>
+              </g>
+              <g id="stBuild" class="stage" transform="translate(252,520)">
+                <rect class="shape" x="-6" y="-6" width="12" height="12" rx="2.5"/>
+                <text class="techlabel stage-l" y="28" data-i18n="svg.p2">Build</text>
+              </g>
+              <g id="stTest" class="stage" transform="translate(396,520)">
+                <rect class="shape" x="-6" y="-6" width="12" height="12" rx="2.5"/>
+                <text class="techlabel stage-l" y="28" data-i18n="svg.p3">Test</text>
+              </g>
+              <g id="stDeploy" class="stage" transform="translate(556,520)">
+                <rect class="shape" x="-6" y="-6" width="12" height="12" rx="2.5"/>
+                <text class="techlabel stage-l" y="28" data-i18n="svg.p4">Deploy</text>
+              </g>
+              <g id="stProd" class="stage" transform="translate(744,520)">
+                <circle id="prodRing" class="pulse-ring" r="13"/>
+                <rect class="shape" x="-7" y="-7" width="14" height="14" rx="3"/>
+                <text class="techlabel stage-l" y="28" data-i18n="svg.p5">Production</text>
+              </g>
+              <g id="chipDep" class="chip" data-state="off" transform="translate(252,470)">
+                <rect x="-31" y="-9" width="62" height="17" rx="8.5"/>
+                <text y="3.5" data-i18n="svg.c1">dep cache</text>
+              </g>
+              <g id="chipLay" class="chip" data-state="off" transform="translate(396,470)">
+                <rect x="-36" y="-9" width="72" height="17" rx="8.5"/>
+                <text y="3.5" data-i18n="svg.c2">layer cache</text>
+              </g>
+              <circle id="art" r="4.2"/>
+            </g>
+
+            <!-- animated request packets -->
+            <g id="packets" aria-hidden="true"></g>
+          </svg>
+        </div>
+        <figcaption class="legend" aria-hidden="true">
+          <span><i class="lg lg-opt"></i><span data-i18n="svg.legend1">optimized</span></span>
+          <span><i class="lg lg-red"></i><span data-i18n="svg.legend2">standby / redundant</span></span>
+          <span><i class="lg lg-un"></i><span data-i18n="svg.legend3">unused</span></span>
+        </figcaption>
+      </figure>
+
+      <!-- controls -->
+      <div class="controls panel">
+        <h2 class="ctl-title" id="tunerH" data-i18n="tuner.h">What do you want to improve?</h2>
+
+        <div class="metrics" role="group" aria-label="Demo metrics">
+          <div class="metric">
+            <span class="m-label" data-i18n="m.lat">Request latency</span>
+            <span class="m-val" data-m="latency">420</span><span class="m-unit" data-i18n="unit.ms">ms</span>
+            <i class="m-dot" data-dot="lat" data-tone="warn" aria-hidden="true"></i>
+          </div>
+          <div class="metric">
+            <span class="m-label" data-i18n="m.cost">Estimated monthly cost</span>
+            <span class="m-val" data-m="monthly">$4,200</span>
+            <i class="m-dot" data-dot="cost" data-tone="warn" aria-hidden="true"></i>
+          </div>
+          <div class="metric">
+            <span class="m-label" data-i18n="m.dep">Commit to production</span>
+            <span class="m-val" data-m="commit">28</span><span class="m-unit" data-i18n="unit.min">min</span>
+            <i class="m-dot" data-dot="dep" data-tone="warn" aria-hidden="true"></i>
+          </div>
+          <div class="metric">
+            <span class="m-label" data-i18n="m.avail">Target availability</span>
+            <span class="m-val" data-m="avail">99.55%</span>
+            <i class="m-dot" data-dot="ha" data-tone="ok" aria-hidden="true"></i>
+          </div>
+        </div>
+        <p class="m-note" data-i18n="m.note">Illustrative demo — actual results depend on the system.</p>
+
+        <div class="ctls">
+          <div class="ctl">
+            <div class="ctl-head"><label for="s-speed" data-i18n="s.speed">Faster website</label><output id="o-speed" for="s-speed">45</output></div>
+            <input type="range" id="s-speed" data-goal="speed" min="0" max="100" step="1" value="45">
+          </div>
+          <div class="ctl">
+            <div class="ctl-head"><label for="s-cost" data-i18n="s.cost">Lower cloud costs</label><output id="o-cost" for="s-cost">45</output></div>
+            <input type="range" id="s-cost" data-goal="cost" min="0" max="100" step="1" value="45">
+          </div>
+          <div class="ctl">
+            <div class="ctl-head"><label for="s-releases" data-i18n="s.releases">Faster releases</label><output id="o-releases" for="s-releases">50</output></div>
+            <input type="range" id="s-releases" data-goal="releases" min="0" max="100" step="1" value="50">
+          </div>
+          <div class="ctl">
+            <div class="ctl-head"><label for="s-reliability" data-i18n="s.reliability">Higher reliability</label><output id="o-reliability" for="s-reliability">55</output></div>
+            <input type="range" id="s-reliability" data-goal="reliability" min="0" max="100" step="1" value="55">
+          </div>
+        </div>
+
+        <div class="cta-row">
+          <button class="btn js-open-modal" type="button"><span data-i18n="cta.primary">Send my request</span><span class="arr" aria-hidden="true">→</span></button>
+          <div class="pop-wrap">
+            <button class="linkish" id="popBtn" type="button" aria-expanded="false" aria-controls="popList" data-i18n="cta.secondary">See what I can improve</button>
+            <ul class="pop" id="popList" hidden>
+              <li data-i18n="pop.1">Cloud cost optimization</li>
+              <li data-i18n="pop.2">CDN and caching</li>
+              <li data-i18n="pop.3">CI/CD optimization</li>
+              <li data-i18n="pop.4">Production infrastructure</li>
+              <li data-i18n="pop.5">Monitoring and reliability</li>
+              <li data-i18n="pop.6">AI coding-agent workflows</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="visually-hidden" aria-live="polite" id="live"></p>
+  </section>
+
+  <!-- ============ trust ============ -->
+  <section class="trust reveal" aria-label="Credibility">
+    <div class="trust-in">
+      <div class="t-num"><b>8+</b><span data-i18n="trust.y1">years in IT</span></div>
+      <div class="t-num"><b>5+</b><span data-i18n="trust.y2">years in DevOps</span></div>
+      <p class="t-stack" data-i18n="trust.stack">AWS · Kubernetes · Bare Metal · CI/CD · Observability</p>
+      <div class="t-links">
+        <a id="fLinkedin" href="https://www.linkedin.com/in/[YOUR_HANDLE]" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a id="fGithub" href="https://github.com/[YOUR_HANDLE]" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr-in">
+    <span data-i18n="foot.rights">© 2026 VibeOps · DevOps & FinOps consulting</span>
+    <a id="fMail" href="mailto:hello@[YOUR_DOMAIN]">hello@[YOUR_DOMAIN]</a>
+    <span class="note" data-i18n="foot.note">Interactive demo · no trackers</span>
+  </div>
+</footer>
+</div><!-- /#page -->
+
+<!-- ============ lead modal ============ -->
+<div class="overlay" id="overlay" hidden>
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <button class="m-close" id="mClose" type="button" aria-label="Close" data-i18n-aria="form.closeAria">✕</button>
+    <div id="mFormWrap">
+      <h3 id="mTitle" data-i18n="form.title">Leave one contact</h3>
+      <p class="m-desc" data-i18n="form.desc">Email, Telegram, LinkedIn or phone — I’ll contact you personally.</p>
+      <form id="leadForm" novalidate>
+        <label for="contact" data-i18n="form.label">Your contact</label>
+        <input id="contact" name="contact" type="text" maxlength="200" autocomplete="email" placeholder="name@example.com or @username" data-i18n-ph="form.ph">
+        <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="f-err" id="fErr" role="alert" hidden></p>
+        <button class="btn btn-block" id="mSubmit" type="submit"><span id="mSubmitTxt" data-i18n="form.send">Send</span></button>
+        <p class="m-privacy" data-i18n="form.privacy">Your contact is used only to reply to this request.</p>
+      </form>
+    </div>
+    <div class="m-ok" id="mOk" hidden>
+      <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="rgba(0,168,87,.12)" stroke="#008A4A" stroke-width="2"/><path d="M16 27 l7 7 l14 -15" fill="none" stroke="#008A4A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p id="mOkTxt" data-i18n="form.ok">Thanks — I received your request and will contact you.</p>
+      <button class="btn" id="okClose" type="button" data-i18n="form.done">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= config (replace placeholders) ================= */
+var siteConfig = {
+  brandName: 'VibeOps',
+  consultantName: '[YOUR_NAME]',
+  domain: 'https://[YOUR_DOMAIN]',
+  ownerEmail: 'hello@[YOUR_DOMAIN]',
+  githubUrl: 'https://github.com/[YOUR_HANDLE]',
+  linkedinUrl: 'https://www.linkedin.com/in/[YOUR_HANDLE]',
+  defaultLocale: 'en',
+  locales: ['en','ru']
+};
+
+/* ================= i18n ================= */
+var I18N = {
+  en: {
+    'skip':'Skip to content',
+    'meta.title':'DevOps, FinOps & Production Engineering | VibeOps',
+    'meta.desc':'Reduce cloud costs, accelerate deployments, improve website performance and make AI-built products production-ready.',
+    'nav.how':'How it works','nav.contact':'Contact',
+    'hero.eyebrow':'DEVOPS · FINOPS · PRODUCTION ENGINEERING',
+    'hero.h1':'Tune your infrastructure around <em>what matters.</em>',
+    'hero.sub':'Move the controls. See how speed, cost, delivery and reliability change the system — then leave one contact and I’ll get back to you personally.',
+    'hero.cred':'From AI-built prototype to observable, cost-efficient production.',
+    'tuner.h':'What do you want to improve?',
+    's.speed':'Faster website','s.cost':'Lower cloud costs','s.releases':'Faster releases','s.reliability':'Higher reliability',
+    'm.lat':'Request latency','m.cost':'Estimated monthly cost','m.dep':'Commit to production','m.avail':'Target availability',
+    'm.note':'Illustrative demo — actual results depend on the system.',
+    'unit.ms':'ms','unit.min':'min',
+    'cta.primary':'Send my request','cta.secondary':'See what I can improve',
+    'pop.1':'Cloud cost optimization','pop.2':'CDN and caching','pop.3':'CI/CD optimization','pop.4':'Production infrastructure','pop.5':'Monitoring and reliability','pop.6':'AI coding-agent workflows',
+    'svg.live':'live topology','svg.users':'Users','svg.dns':'Internet · DNS','svg.cdn':'CDN · Edge','svg.lb':'Load Balancer','svg.lb2':'LB · standby','svg.apps':'Application Servers','svg.cache':'Cache','svg.db':'Database','svg.replica':'DB replica','svg.mon':'monitoring',
+    'svg.w1':'idle VM','svg.w2':'unused IP','svg.w3':'unattached disk',
+    'svg.p1':'Commit','svg.p2':'Build','svg.p3':'Test','svg.p4':'Deploy','svg.p5':'Production','svg.c1':'dep cache','svg.c2':'layer cache',
+    'svg.legend1':'optimized','svg.legend2':'standby / redundant','svg.legend3':'unused',
+    'svg.title':'Interactive infrastructure diagram',
+    'svg.desc':'Traffic flows from users through DNS, CDN, load balancer, application servers, cache and database. A CI pipeline below delivers changes to production.',
+    'sys.ok':'system nominal','sys.watch':'system under watch','sys.bad':'system degraded',
+    'form.title':'Leave one contact','form.desc':'Email, Telegram, LinkedIn or phone — I’ll contact you personally.',
+    'form.label':'Your contact','form.ph':'name@example.com or @username',
+    'form.send':'Send','form.sending':'Sending…',
+    'form.ok':'Thanks — I received your request and will contact you.',
+    'form.err':'Couldn’t send the request. Please try again or contact me directly.',
+    'form.valErr':'Please enter a contact — at least 5 characters.',
+    'form.privacy':'Your contact is used only to reply to this request.',
+    'form.done':'Done','form.closeAria':'Close dialog',
+    'trust.y1':'years in IT','trust.y2':'years in DevOps','trust.stack':'AWS · Kubernetes · Bare Metal · CI/CD · Observability',
+    'foot.rights':'© 2026 VibeOps · DevOps & FinOps consulting','foot.note':'Interactive demo · no trackers',
+    'valuetext':'{v} out of 100'
+  },
+  ru: {
+    'skip':'Перейти к содержанию',
+    'meta.title':'DevOps, FinOps и Production Engineering | VibeOps',
+    'meta.desc':'Снижение расходов на инфраструктуру, ускорение CI/CD, CDN и кэширование, повышение производительности и надёжности production-систем.',
+    'nav.how':'Как это работает','nav.contact':'Связаться',
+    'hero.eyebrow':'DEVOPS · FINOPS · PRODUCTION ENGINEERING',
+    'hero.h1':'Настройте инфраструктуру под то, <em>что важно вам.</em>',
+    'hero.sub':'Двигайте ползунки и смотрите, как меняются скорость, стоимость, доставка изменений и надёжность. Затем оставьте один контакт — я свяжусь с вами лично.',
+    'hero.cred':'От прототипа, созданного с AI, до наблюдаемого и экономичного production.',
+    'tuner.h':'Что вы хотите улучшить?',
+    's.speed':'Ускорить сайт','s.cost':'Снизить расходы','s.releases':'Ускорить релизы','s.reliability':'Повысить надёжность',
+    'm.lat':'Задержка запроса','m.cost':'Оценка расходов в месяц','m.dep':'От commit до production','m.avail':'Целевая доступность',
+    'm.note':'Демонстрационные значения — фактический результат зависит от системы.',
+    'unit.ms':'мс','unit.min':'мин',
+    'cta.primary':'Отправить заявку','cta.secondary':'Что я могу улучшить',
+    'pop.1':'Оптимизация расходов на облако','pop.2':'CDN и кэширование','pop.3':'Оптимизация CI/CD','pop.4':'Production-инфраструктура','pop.5':'Мониторинг и надёжность','pop.6':'Workflow с AI-агентами',
+    'svg.live':'живая топология','svg.users':'Пользователи','svg.dns':'Интернет · DNS','svg.cdn':'CDN · Edge','svg.lb':'Балансировщик','svg.lb2':'LB · резерв','svg.apps':'Серверы приложений','svg.cache':'Кэш','svg.db':'База данных','svg.replica':'Реплика БД','svg.mon':'мониторинг',
+    'svg.w1':'простаивающая ВМ','svg.w2':'неиспользуемый IP','svg.w3':'отключённый диск',
+    'svg.p1':'Коммит','svg.p2':'Сборка','svg.p3':'Тесты','svg.p4':'Деплой','svg.p5':'Продакшен','svg.c1':'кэш зависимостей','svg.c2':'кэш слоёв',
+    'svg.legend1':'оптимизировано','svg.legend2':'резерв','svg.legend3':'не используется',
+    'svg.title':'Интерактивная схема инфраструктуры',
+    'svg.desc':'Трафик проходит от пользователей через DNS, CDN, балансировщик, серверы приложений, кэш и базу данных. CI-пайплайн внизу доставляет изменения в production.',
+    'sys.ok':'система в норме','sys.watch':'система под наблюдением','sys.bad':'система деградировала',
+    'form.title':'Оставьте один контакт','form.desc':'Email, Telegram, LinkedIn или телефон — я свяжусь с вами лично.',
+    'form.label':'Ваш контакт','form.ph':'name@example.com или @username',
+    'form.send':'Отправить','form.sending':'Отправляем…',
+    'form.ok':'Спасибо — я получил заявку и свяжусь с вами.',
+    'form.err':'Не удалось отправить заявку. Попробуйте ещё раз или напишите мне напрямую.',
+    'form.valErr':'Укажите контакт — не короче 5 символов.',
+    'form.privacy':'Контакт будет использован только для ответа на эту заявку.',
+    'form.done':'Готово','form.closeAria':'Закрыть окно',
+    'trust.y1':'лет в IT','trust.y2':'лет в DevOps','trust.stack':'AWS · Kubernetes · Bare Metal · CI/CD · Observability',
+    'foot.rights':'© 2026 VibeOps · Консалтинг DevOps и FinOps','foot.note':'Интерактивное демо · без трекеров',
+    'valuetext':'{v} из 100'
+  }
+};
+
+/* ================= helpers ================= */
+function $(s){ return document.querySelector(s); }
+function $all(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
+function byId(id){ return document.getElementById(id); }
+function clamp(v,a,b){ return Math.min(b, Math.max(a, v)); }
+function lerp(a,b,t){ return a + (b-a)*t; }
+var store = {
+  get: function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set: function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+};
+
+var lang = store.get('vibeops-lang') === 'ru' ? 'ru' : 'en';
+function t(k){ return (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k; }
+function loc(){ return lang === 'ru' ? 'ru-RU' : 'en-US'; }
+
+/* ================= goals & state ================= */
+var DEFAULTS = { speed:45, cost:45, releases:50, reliability:55 };
+var goals = { speed:45, cost:45, releases:50, reliability:55 };
+(function loadGoals(){
+  var raw = store.get('vibeops-goals');
+  if(!raw) return;
+  try{
+    var p = JSON.parse(raw);
+    for(var k in DEFAULTS){
+      if(typeof p[k] === 'number' && isFinite(p[k])) goals[k] = clamp(Math.round(p[k]), 0, 100);
+    }
+  }catch(e){}
+})();
+
+/* Pure derivation — all demo math lives here. */
+function deriveInfrastructureState(g){
+  var sp = clamp(g.speed,0,100)/100,
+      co = clamp(g.cost,0,100)/100,
+      re = clamp(g.releases,0,100)/100,
+      rl = clamp(g.reliability,0,100)/100;
+  var latency   = Math.round(lerp(420, 65, sp));
+  var cacheHit  = Math.round(lerp(18, 86, sp));
+  var monthly   = Math.round(lerp(4200, 2350, co));
+  var commitMin = Math.round(lerp(28, 5, re));
+  var availability = 99 + 0.99 * rl;
+  return {
+    goals: { speed:g.speed, cost:g.cost, releases:g.releases, reliability:g.reliability },
+    sp:sp, co:co, re:re, rl:rl,
+    metrics: { latency:latency, cacheHit:cacheHit, monthly:monthly, commitMin:commitMin, availability:availability },
+    packetSpeed: lerp(58, 178, sp),
+    spawnGap: lerp(1650, 430, sp),
+    edgeShare: lerp(0.12, 0.78, sp),
+    pipelineDur: lerp(9, 2.6, re),
+    parallel: re > 0.6, depCache: re > 0.45, layerCache: re > 0.55,
+    appInstances: 1 + (rl > 0.4 ? 1 : 0) + (rl > 0.75 ? 1 : 0),
+    lb2: rl > 0.45, replica: rl > 0.6, altRoute: rl > 0.7,
+    waste: Math.max(0, 1 - co * 1.35),
+    capacity: lerp(1, 0.55, co),
+    hbBad: rl < 0.25, hbOk: rl > 0.5, hbDur: lerp(3.2, 1.5, rl),
+    tone: {
+      lat:  sp > 0.55 ? 'ok' : sp > 0.25 ? 'warn' : 'bad',
+      cost: co > 0.55 ? 'ok' : co > 0.25 ? 'warn' : 'bad',
+      dep:  re > 0.55 ? 'ok' : re > 0.25 ? 'warn' : 'bad',
+      ha:   rl > 0.55 ? 'ok' : rl > 0.25 ? 'warn' : 'bad'
+    }
+  };
+}
+
+/* ================= DOM refs ================= */
+var svg = byId('topo');
+var els = {
+  pFull: byId('pFull'), pEdge: byId('pEdge'),
+  hotFull: byId('hotFull'), hotEdge: byId('hotEdge'),
+  pBackup1: byId('pBackup1'), pBackup2: byId('pBackup2'),
+  pAlt: byId('pAlt'), pRep: byId('pRep'),
+  pPipe: byId('pPipe'), pBypass: byId('pBypass'),
+  nCdn: byId('n-cdn'), nCache: byId('n-cache'), nApps: byId('n-apps'), nDb: byId('n-db'),
+  nLb2: byId('n-lb2'), nReplica: byId('n-replica'),
+  app2: byId('app2'), app3: byId('app3'),
+  capFill: byId('capFill'), waste: byId('waste'), hb: byId('n-hb'),
+  cacheHitLbl: byId('cacheHitLbl'),
+  prodRing: byId('prodRing'), art: byId('art'), art2: byId('art2'), bypassG: byId('bypassG'),
+  stBuild: byId('stBuild'), stTest: byId('stTest'),
+  chipDep: byId('chipDep'), chipLay: byId('chipLay'),
+  packetsG: byId('packets'),
+  sysDot: byId('sysDot'), sysTxt: byId('sysTxt'), live: byId('live'),
+  svgTitle: byId('svgTitle'), svgDesc: byId('svgDesc')
+};
+
+/* ================= metric tweening ================= */
+function fmtAvail(v){
+  var s = v.toFixed(2);
+  if(s.charAt(s.length-1) === '0') s = s.slice(0,-1);
+  return s + '%';
+}
+var METRICS = {
+  latency: { el: document.querySelector('[data-m="latency"]'), cur:420, tgt:420, fmt:function(v){ return String(Math.round(v)); } },
+  monthly: { el: document.querySelector('[data-m="monthly"]'), cur:4200, tgt:4200, fmt:function(v){ return '$' + Math.round(v).toLocaleString(loc()); } },
+  commit:  { el: document.querySelector('[data-m="commit"]'),  cur:28, tgt:28, fmt:function(v){ return String(Math.round(v)); } },
+  avail:   { el: document.querySelector('[data-m="avail"]'),   cur:99.55, tgt:99.55, fmt:fmtAvail }
+};
+function stepNumbers(dt){
+  var k, m, d, eps;
+  for(k in METRICS){
+    m = METRICS[k];
+    if(m.cur === m.tgt) continue;
+    d = m.tgt - m.cur;
+    eps = (k === 'avail') ? 0.002 : 0.6;
+    m.cur += d * Math.min(1, dt * 9);
+    if(Math.abs(m.tgt - m.cur) < eps) m.cur = m.tgt;
+    m.el.textContent = m.fmt(m.cur);
+  }
+}
+function setTargets(s){
+  METRICS.latency.tgt = s.metrics.latency;
+  METRICS.monthly.tgt = s.metrics.monthly;
+  METRICS.commit.tgt  = s.metrics.commitMin;
+  METRICS.avail.tgt   = s.metrics.availability;
+}
+
+/* ================= apply state to diagram ================= */
+function setNS(el, st){ el.setAttribute('data-state', st); }
+function toggleRoute(el, on){ el.classList.toggle('on', !!on); }
+var state = deriveInfrastructureState(goals);
+
+function applyState(s){
+  setNS(els.nCdn,   s.sp > 0.33 ? 'optimized' : 'active');
+  setNS(els.nCache, s.sp > 0.5 ? 'optimized' : (s.sp < 0.12 ? 'degraded' : 'active'));
+  setNS(els.nApps,  s.sp > 0.6 ? 'optimized' : 'active');
+  setNS(els.nDb,    s.sp > 0.6 ? 'optimized' : 'active');
+  setNS(els.app2,   s.appInstances >= 2 ? 'active' : 'inactive');
+  setNS(els.app3,   s.appInstances >= 3 ? 'active' : 'inactive');
+  setNS(els.nLb2,     s.lb2 ? 'redundant' : 'inactive');
+  setNS(els.nReplica, s.replica ? 'redundant' : 'inactive');
+  toggleRoute(els.pBackup1, s.lb2);
+  toggleRoute(els.pBackup2, s.lb2);
+  toggleRoute(els.pAlt, s.altRoute);
+  toggleRoute(els.pRep, s.replica);
+  toggleRoute(els.hotEdge, s.sp > 0.45);
+  toggleRoute(els.hotFull, s.sp > 0.72);
+  els.waste.style.opacity = s.waste.toFixed(2);
+  els.capFill.style.transform = 'scaleY(' + s.capacity.toFixed(3) + ')';
+  els.hb.setAttribute('data-hb', s.hbBad ? 'bad' : (s.hbOk ? 'ok' : 'warn'));
+  document.documentElement.style.setProperty('--hb-dur', s.hbDur.toFixed(2) + 's');
+  els.chipDep.setAttribute('data-state', s.depCache ? 'on' : 'off');
+  els.chipLay.setAttribute('data-state', s.layerCache ? 'on' : 'off');
+  els.bypassG.classList.toggle('on', s.parallel);
+  els.stBuild.setAttribute('data-run', s.parallel ? '1' : '0');
+  els.stTest.setAttribute('data-run', s.parallel ? '1' : '0');
+  els.cacheHitLbl.textContent = 'cache hit ' + s.metrics.cacheHit + '%';
+  var sysKey = s.hbBad ? 'sys.bad' : (s.hbOk ? 'sys.ok' : 'sys.watch');
+  els.sysTxt.textContent = t(sysKey);
+  els.sysDot.setAttribute('data-tone', s.hbBad ? 'bad' : (s.hbOk ? 'ok' : 'warn'));
+  var dot;
+  for(dot in s.tone){
+    var el = document.querySelector('[data-dot="' + dot + '"]');
+    if(el) el.setAttribute('data-tone', s.tone[dot]);
+  }
+  setTargets(s);
+}
+
+/* ================= packets ================= */
+var reduced = false, tabHidden = document.hidden, isMobile = false;
+var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+var mqMob = window.matchMedia('(max-width: 720px)');
+reduced = mqReduce.matches;
+isMobile = mqMob.matches;
+function onReduceChange(e){ reduced = e.matches; syncMotion(); }
+function onMobChange(e){ isMobile = e.matches; svg.classList.toggle('compact', isMobile); }
+if(mqReduce.addEventListener){ mqReduce.addEventListener('change', onReduceChange); mqMob.addEventListener('change', onMobChange); }
+else { mqReduce.addListener(onReduceChange); mqMob.addListener(onMobChange); }
+
+var SVGNS = 'http://www.w3.org/2000/svg';
+var PKT = { pool: [], live: [], acc: 0 };
+var pipeLen = els.pPipe.getTotalLength();
+var bypassLen = els.pBypass.getTotalLength();
+var pipe = { t: 0.15, pause: 0 };
+var pipe2 = { t: 0.55 };
+
+function makePacket(){
+  var g = document.createElementNS(SVGNS, 'g');
+  var halo = document.createElementNS(SVGNS, 'circle');
+  halo.setAttribute('r', '6.5'); halo.setAttribute('class', 'pkt-halo');
+  var core = document.createElementNS(SVGNS, 'circle');
+  core.setAttribute('r', '3'); core.setAttribute('class', 'pkt-core');
+  g.appendChild(halo); g.appendChild(core);
+  els.packetsG.appendChild(g);
+  return { g: g, t: 0, len: 1, spd: 80, path: els.pFull, kind: 'full' };
+}
+function killPacket(p){
+  p.g.setAttribute('display', 'none');
+  var i = PKT.live.indexOf(p);
+  if(i > -1) PKT.live.splice(i, 1);
+  PKT.pool.push(p);
+}
+function spawnPacket(){
+  var p = PKT.pool.pop() || makePacket();
+  p.kind = Math.random() < state.edgeShare ? 'edge' : 'full';
+  p.path = p.kind === 'edge' ? els.pEdge : els.pFull;
+  p.len = p.path.getTotalLength();
+  p.t = 0;
+  p.spd = state.packetSpeed * (p.kind === 'edge' ? 1.18 : 1) * (0.88 + Math.random() * 0.26);
+  p.g.removeAttribute('display');
+  PKT.live.push(p);
+}
+function place(p){
+  var pt = p.path.getPointAtLength(p.t * p.len);
+  p.g.setAttribute('transform', 'translate(' + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1) + ')');
+}
+function stepPackets(dt){
+  if(reduced || tabHidden) return;
+  PKT.acc += dt * 1000;
+  var cap = isMobile ? 5 : 9;
+  while(PKT.acc > state.spawnGap && PKT.live.length < cap){ PKT.acc = 0; spawnPacket(); }
+  var i, p;
+  for(i = PKT.live.length - 1; i >= 0; i--){
+    p = PKT.live[i];
+    p.t += (p.spd * dt) / p.len;
+    if(p.t >= 1){ killPacket(p); } else { place(p); }
+  }
+}
+function pulseProd(){
+  els.prodRing.classList.remove('go');
+  void els.prodRing.getBoundingClientRect();
+  els.prodRing.classList.add('go');
+}
+function stepPipeline(dt){
+  if(reduced || tabHidden) return;
+  if(pipe.pause > 0){ pipe.pause -= dt; }
+  else {
+    pipe.t += dt / state.pipelineDur;
+    if(pipe.t >= 1){ pipe.t = 0; pipe.pause = 0.8; pulseProd(); }
+  }
+  var pt = els.pPipe.getPointAtLength(pipe.t * pipeLen);
+  els.art.setAttribute('transform', 'translate(' + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1) + ')');
+  if(state.parallel){
+    pipe2.t += dt / (state.pipelineDur * 1.25);
+    if(pipe2.t >= 1) pipe2.t = 0;
+    var p2 = els.pBypass.getPointAtLength(pipe2.t * bypassLen);
+    els.art2.setAttribute('transform', 'translate(' + p2.x.toFixed(1) + ' ' + p2.y.toFixed(1) + ')');
+  }
+}
+function syncMotion(){
+  if(reduced){
+    while(PKT.live.length) killPacket(PKT.live[0]);
+    els.packetsG.setAttribute('display', 'none');
+    els.art.setAttribute('display', 'none');
+    els.art2.setAttribute('display', 'none');
+  } else {
+    els.packetsG.removeAttribute('display');
+    els.art.removeAttribute('display');
+    els.art2.removeAttribute('display');
+  }
+}
+document.addEventListener('visibilitychange', function(){ tabHidden = document.hidden; });
+
+var lastT = performance.now();
+function frame(now){
+  var dt = Math.min(0.05, (now - lastT) / 1000);
+  lastT = now;
+  stepNumbers(dt);
+  stepPackets(dt);
+  stepPipeline(dt);
+  requestAnimationFrame(frame);
+}
+
+/* ================= sliders ================= */
+var sliders = $all('input[type="range"][data-goal]');
+var applyScheduled = false;
+function scheduleApply(){
+  if(applyScheduled) return;
+  applyScheduled = true;
+  requestAnimationFrame(function(){
+    applyScheduled = false;
+    state = deriveInfrastructureState(goals);
+    applyState(state);
+    store.set('vibeops-goals', JSON.stringify(goals));
+  });
+}
+function summaryText(s){
+  var m = s.metrics;
+  var cost = '$' + m.monthly.toLocaleString(loc());
+  if(lang === 'ru'){
+    return 'Задержка запроса ' + m.latency + ' мс. Оценка расходов ' + cost + ' в месяц. От commit до production ' + m.commitMin + ' мин. Целевая доступность ' + fmtAvail(m.availability) + '.';
+  }
+  return 'Request latency ' + m.latency + ' ms. Estimated monthly cost ' + cost + '. Commit to production ' + m.commitMin + ' min. Target availability ' + fmtAvail(m.availability) + '.';
+}
+function syncSliderUI(input){
+  var key = input.getAttribute('data-goal');
+  var v = goals[key];
+  input.value = v;
+  input.style.setProperty('--p', v + '%');
+  var out = input.closest('.ctl').querySelector('output');
+  out.textContent = v;
+  input.setAttribute('aria-valuetext', t('valuetext').replace('{v}', v));
+}
+sliders.forEach(function(input){
+  var key = input.getAttribute('data-goal');
+  input.addEventListener('input', function(){
+    goals[key] = clamp(parseInt(input.value, 10) || 0, 0, 100);
+    syncSliderUI(input);
+    scheduleApply();
+  });
+  input.addEventListener('change', function(){
+    els.live.textContent = summaryText(state);
+  });
+});
+
+/* ================= language ================= */
+function applyLang(l){
+  lang = (l === 'ru') ? 'ru' : 'en';
+  store.set('vibeops-lang', lang);
+  document.documentElement.lang = lang;
+  $all('[data-i18n]').forEach(function(el){ el.textContent = t(el.getAttribute('data-i18n')); });
+  var h1 = document.querySelector('[data-i18n-html="hero.h1"]');
+  if(h1) h1.innerHTML = t('hero.h1');
+  $all('[data-i18n-ph]').forEach(function(el){ el.placeholder = t(el.getAttribute('data-i18n-ph')); });
+  $all('[data-i18n-aria]').forEach(function(el){ el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
+  els.svgTitle.textContent = t('svg.title');
+  els.svgDesc.textContent = t('svg.desc');
+  document.title = t('meta.title');
+  var md = document.querySelector('meta[name="description"]');
+  if(md) md.setAttribute('content', t('meta.desc'));
+  $all('.lang button').forEach(function(b){
+    b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
+  });
+  sliders.forEach(syncSliderUI);
+  applyState(state);
+  var k;
+  for(k in METRICS){ METRICS[k].el.textContent = METRICS[k].fmt(METRICS[k].cur); }
+  els.live.textContent = summaryText(state);
+}
+$all('.lang button').forEach(function(b){
+  b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); });
+});
+
+/* ================= popover ================= */
+var popBtn = byId('popBtn'), popList = byId('popList');
+function closePop(){ popList.hidden = true; popBtn.setAttribute('aria-expanded', 'false'); }
+popBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  var willOpen = popList.hidden;
+  popList.hidden = !willOpen;
+  popBtn.setAttribute('aria-expanded', String(willOpen));
+});
+document.addEventListener('click', function(e){
+  if(!popList.hidden && !e.target.closest('.pop-wrap')) closePop();
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && !popList.hidden){ closePop(); popBtn.focus(); }
+});
+
+/* ================= lead modal ================= */
+var overlay = byId('overlay'), modal = byId('modal'), page = byId('page');
+var leadForm = byId('leadForm'), contactInput = byId('contact');
+var fErr = byId('fErr'), mSubmit = byId('mSubmit'), mSubmitTxt = byId('mSubmitTxt');
+var mFormWrap = byId('mFormWrap'), mOk = byId('mOk');
+var lastFocus = null, sending = false, wasSuccess = false;
+
+function modalKeydown(e){
+  if(e.key === 'Escape'){ e.preventDefault(); closeModal(); return; }
+  if(e.key !== 'Tab') return;
+  var f = Array.prototype.filter.call(
+    modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'),
+    function(el){ return !el.disabled && el.offsetParent !== null && !el.classList.contains('hp'); }
+  );
+  if(!f.length) return;
+  var first = f[0], lastEl = f[f.length - 1];
+  if(e.shiftKey && document.activeElement === first){ e.preventDefault(); lastEl.focus(); }
+  else if(!e.shiftKey && document.activeElement === lastEl){ e.preventDefault(); first.focus(); }
+}
+function openModal(){
+  lastFocus = document.activeElement;
+  overlay.hidden = false;
+  requestAnimationFrame(function(){ overlay.classList.add('show'); });
+  page.setAttribute('inert', '');
+  page.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', modalKeydown);
+  setTimeout(function(){ contactInput.focus(); }, 60);
+}
+function closeModal(){
+  overlay.classList.remove('show');
+  document.removeEventListener('keydown', modalKeydown);
+  page.removeAttribute('inert');
+  page.removeAttribute('aria-hidden');
+  document.body.style.overflow = '';
+  setTimeout(function(){
+    overlay.hidden = true;
+    if(wasSuccess){
+      wasSuccess = false;
+      mOk.hidden = true;
+      mFormWrap.hidden = false;
+      leadForm.reset();
+      fErr.hidden = true;
+    }
+  }, 230);
+  if(lastFocus) lastFocus.focus();
+}
+$all('.js-open-modal').forEach(function(b){ b.addEventListener('click', openModal); });
+byId('mClose').addEventListener('click', closeModal);
+byId('okClose').addEventListener('click', closeModal);
+overlay.addEventListener('mousedown', function(e){ if(e.target === overlay) closeModal(); });
+
+function utmParams(){
+  var usp = new URLSearchParams(location.search);
+  return {
+    source: usp.get('utm_source') || '',
+    medium: usp.get('utm_medium') || '',
+    campaign: usp.get('utm_campaign') || ''
+  };
+}
+function buildPayload(contact){
+  return {
+    contact: contact,
+    language: lang,
+    goals: {
+      speed: goals.speed, cost: goals.cost, releases: goals.releases, reliability: goals.reliability
+    },
+    url: location.href,
+    referrer: document.referrer || '',
+    utm: utmParams(),
+    timestamp: new Date().toISOString()
+    /* PRODUCTION: append turnstileToken from the Turnstile widget here. */
+  };
+}
+function sendLead(payload){
+  /* PRODUCTION: return fetch('/api/lead', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+     The Astro endpoint validates the Turnstile token server-side and sends the owner email via Resend. */
+  void payload;
+  return new Promise(function(resolve){ setTimeout(resolve, 900); });
+}
+function setSubmitLabel(key){ mSubmitTxt.textContent = t(key); }
+leadForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  if(sending) return;
+  var honeypot = leadForm.querySelector('[name="company"]');
+  var contact = contactInput.value.trim();
+  if(honeypot && honeypot.value){ /* bot — pretend success, send nothing */
+    mFormWrap.hidden = true; mOk.hidden = false; wasSuccess = true; byId('okClose').focus(); return;
+  }
+  if(contact.length < 5 || contact.length > 200){
+    fErr.textContent = t('form.valErr');
+    fErr.hidden = false;
+    contactInput.focus();
+    return;
+  }
+  fErr.hidden = true;
+  sending = true;
+  mSubmit.disabled = true;
+  setSubmitLabel('form.sending');
+  sendLead(buildPayload(contact)).then(function(){
+    mFormWrap.hidden = true;
+    mOk.hidden = false;
+    wasSuccess = true;
+    byId('okClose').focus();
+  }).catch(function(){
+    fErr.textContent = t('form.err');
+    fErr.hidden = false;
+    contactInput.focus();
+  }).then(function(){
+    sending = false;
+    mSubmit.disabled = false;
+    setSubmitLabel('form.send');
+  });
+});
+
+/* ================= scroll reveal ================= */
+if('IntersectionObserver' in window){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.12 });
+  $all('.reveal').forEach(function(el){ io.observe(el); });
+} else {
+  $all('.reveal').forEach(function(el){ el.classList.add('in'); });
+}
+
+/* ================= init ================= */
+svg.classList.toggle('compact', isMobile);
+applyLang(lang);
+sliders.forEach(syncSliderUI);
+state = deriveInfrastructureState(goals);
+applyState(state);
+(function primeMetrics(){
+  var k;
+  for(k in METRICS){
+    METRICS[k].cur = METRICS[k].tgt;
+    METRICS[k].el.textContent = METRICS[k].fmt(METRICS[k].cur);
+  }
+})();
+syncMotion();
+lastT = performance.now();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
+
