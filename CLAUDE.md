@@ -4,9 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A bilingual (RU default / EN toggle) one-page landing site for an independent DevOps / FinOps / Production Engineering consultant. The whole site is **one file: `index.html`** — markup, CSS and JS inline, no build step, no dependencies, no package.json. The only tracked file is `index.html`.
+A bilingual (RU default / EN toggle) one-page landing site for an independent DevOps / FinOps / Production Engineering consultant.
 
-Fonts are the sole external dependency, loaded from jsDelivr (`@fontsource-variable/inter`, `@fontsource/jetbrains-mono`).
+**As of the website-intelligence rebuild (2026-08), this is no longer a single file.** `index.html` still lives at the repo root (GitHub Pages needs it there), but markup-only now — CSS lives in `css/styles.css`, JS in `js/main.js` (i18n / modal / slider / packet animation, unchanged logic) and `js/animations.js` (GSAP ScrollTrigger reveals, new). There is still **no build step and no package.json** — every file is hand-written and served as-is; splitting into files did not add a bundler.
+
+External dependencies, all loaded from CDN via plain `<script>`/`<link>` tags:
+- Fonts from jsDelivr (`@fontsource-variable/inter`, `@fontsource/jetbrains-mono`)
+- GSAP + ScrollTrigger from jsDelivr (`gsap@3/dist/gsap.min.js`, `gsap@3/dist/ScrollTrigger.min.js`) — used only for `js/animations.js`'s scroll-reveal; everything else (i18n, modal, slider, packet animation) has zero dependencies and would keep working if GSAP failed to load, since `animations.js` guards on `typeof gsap === 'undefined'` and no element ships a baked-in `opacity:0`.
 
 ## Commands
 
@@ -16,7 +20,7 @@ There is no build, lint or test tooling in the repo. Work is verified by driving
 # view locally — just open the file, no server needed
 open index.html
 
-# deploy: GitHub Pages serves index.html from main
+# deploy: GitHub Pages serves index.html (+ css/, js/) from main
 git push origin main
 
 # confirm the deploy actually landed (Pages lags ~30-60s; compare checksums)
@@ -49,9 +53,15 @@ Checks worth running after any visual change, at viewports 1440 / 1100 / 800 / 6
 
 ## Architecture
 
-Everything lives in `index.html`, sectioned by banner comments (`/* ===== tokens ===== */`, `<!-- ===== hero ===== -->`, etc.). Grep those to navigate.
+Markup in `index.html`, styles in `css/styles.css`, behavior in `js/main.js` + `js/animations.js` — all sectioned by banner comments (`/* ===== tokens ===== */`, `<!-- ===== hero ===== -->`, etc.). Grep those to navigate; the banner names are consistent across all three files.
 
-Page order: header → hero → before/after comparison → services → process → experience → FAQ → final CTA → footer → lead modal.
+Page order: header → hero (with a reserved, empty 3D-asset zone, see below) → before/after comparison → **what I won't do** → services → process → experience → **alternatives comparison** → FAQ → final CTA → footer → lead modal. The two bold sections were added in the 2026-08 rebuild; see `research/03-build-brief.md` for why.
+
+Single-page is a **deliberate** choice, re-confirmed by competitor research in `research/02-competitor-analysis.md`: the top-scoring competitors win search visibility through 45+-page programmatic architecture that doesn't fit a solo consultant's actual sales motion. Don't split this into multiple pages without re-reading that file first.
+
+### Hero 3D placeholder
+
+`.hero-3d` in `index.html` is an empty, reserved 640×640 zone, absolutely positioned to the right of the hero text, hidden below 1150px (`css/styles.css`). Nothing renders there today — it's a slot for a future scroll-driven asset (see the HTML comment right above it for the exact contract). If you fill it, wire its scroll progress through `js/animations.js`, not a new file.
 
 ### i18n
 
@@ -66,9 +76,11 @@ Client-side only; no localized routes. RU is the default, EN is a toggle persist
 | `data-i18n-ph` | `placeholder` |
 | `data-i18n-aria` | `aria-label` |
 
-Static markup ships the **Russian** strings so there is no flash of the wrong language before JS runs.
+Static markup ships the **Russian** strings so there is no flash of the wrong language before JS runs. `I18N` itself now lives in `js/main.js`, not inline in `index.html`.
 
-**Invariant:** every key referenced in markup must exist in both `I18N.ru` and `I18N.en`, and the two dictionaries must stay the same size. A missing key silently renders the raw key string. Verify after editing content:
+Section eyebrows are numbered (`01 — …` through `07 — …`) and the numbers are baked into the translated strings, not generated — inserting or removing a section means renumbering every `*.eyebrow` key by hand in both `ru` and `en`.
+
+**Invariant:** every key referenced in markup must exist in both `I18N.ru` and `I18N.en`, and the two dictionaries must stay the same size (170 keys each as of the 2026-08 rebuild). A missing key silently renders the raw key string. Verify after editing content:
 
 ```bash
 grep -oE 'data-i18n(-ph|-aria|-html)?="[^"]+"' index.html | sed -E 's/.*="(.*)"/\1/' | sort -u
@@ -101,6 +113,10 @@ A single `requestAnimationFrame` loop drives all pools. Motion is suppressed whe
 
 Focus trap, Escape to close, `inert` on `#page`, focus returned to opener, honeypot field. `sendLead()` is **simulated** — it resolves after a timeout. There is no backend; wiring `POST /api/lead` is unfinished work.
 
+### Scroll animations (`js/animations.js`)
+
+GSAP ScrollTrigger fades/translates each `.sec` up on scroll-in (`once: true`, so it doesn't replay), plus a one-time staggered reveal of the hero's direct children on load. This is **pure progressive enhancement by construction**: no element carries a baked-in `opacity:0` in CSS, and the script bails out immediately (`return`) if `gsap`/`ScrollTrigger` are undefined or the visitor has `prefers-reduced-motion: reduce` — so a CDN failure or reduced-motion preference both leave every section simply visible, never stuck invisible. Keep that invariant if you touch this file: don't move the initial-state opacity into CSS, or a blocked CDN script turns into a blank page.
+
 ## Footguns hit in this codebase
 
 These are real bugs that shipped here. Re-check them when touching related code.
@@ -120,3 +136,6 @@ Breakpoints are `980 / 900 / 760 / 620` and are **not** written in descending or
 - The lead form does not submit anywhere.
 - The tech stack listed in the Experience section was partly inferred and has not been confirmed by the owner. Don't present it as verified.
 - Don't invent metrics, case studies or client names — an earlier interactive "tuner" showing fabricated latency/cost numbers was removed for exactly this reason.
+- The `.hero-3d` zone is an empty placeholder — no asset exists yet. See "Hero 3D placeholder" above.
+- The **"what I won't do"** (`#avoid`) and **alternatives comparison** (`#alt`) sections were drafted by Claude from `research/03-build-brief.md`, following the existing site's tone and already-stated positioning (free diagnosis, pay-for-result, no lock-in) — not fabricated metrics, but still the owner should read them once before this goes live, since they're first-person claims about how the consultant actually works.
+- Full competitive research behind this rebuild: `research/01-client-brand.md`, `research/02-competitor-analysis.md`, `research/03-build-brief.md`, and the client-facing `competitive-analysis.html` in the repo root.

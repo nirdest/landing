@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeOps — Competitive Analysis Report</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --ink: #0a0a0a;
+            --paper: #f6f4f0;
+            --accent: #c45d3e;
+            --accent-light: #e8a48e;
+            --muted: #8a8580;
+            --divider: #d6d2cc;
+            --card: #fffefa;
+            --shadow: rgba(10, 10, 10, 0.06);
+            --good: #4c7a5c;
+            --bad: #b23a22;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+        header { padding: 5rem 0 3rem; text-align: center; position: relative; }
+        header::before {
+            content: '';
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 1px; height: 80px;
+            background: linear-gradient(to bottom, transparent, var(--accent));
+        }
+        .badge {
+            display: inline-block; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent); border: 1px solid var(--accent-light); border-radius: 100px;
+            padding: 0.4rem 1rem; margin-bottom: 1.75rem; font-weight: 500;
+        }
+        .eyebrow { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 1rem; }
+        h1 {
+            font-family: 'Instrument Serif', serif; font-size: clamp(2.6rem, 6vw, 4.2rem);
+            font-weight: 400; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1.25rem;
+        }
+        h1 em { color: var(--accent); font-style: italic; }
+        .subtitle { font-size: 1.02rem; color: var(--muted); max-width: 560px; margin: 0 auto; line-height: 1.7; }
+        .meta-row {
+            display: flex; justify-content: center; gap: 2rem; margin-top: 2.25rem;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em;
+        }
+        .meta-row b { color: var(--ink); font-weight: 500; }
+
+        .divider { width: 60px; height: 1px; background: var(--accent); margin: 3.5rem auto; }
+
+        section.block { padding-bottom: 4rem; }
+        .sec-eyebrow { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 0.6rem; }
+        h2.sec-title { font-family: 'Instrument Serif', serif; font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 400; letter-spacing: -0.015em; margin-bottom: 1.5rem; }
+        h3.sub-title { font-family: 'Instrument Serif', serif; font-size: 1.35rem; font-weight: 400; margin-bottom: 0.75rem; }
+
+        p.body-text { font-size: 0.93rem; color: #3a3835; line-height: 1.8; margin-bottom: 0.9rem; max-width: 68ch; }
+        p.body-text:last-child { margin-bottom: 0; }
+
+        /* Cards */
+        .card {
+            background: var(--card); border: 1px solid var(--divider); border-radius: 16px;
+            padding: 2rem 2.25rem; position: relative; overflow: hidden; margin-bottom: 1.5rem;
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: linear-gradient(to bottom, var(--accent), var(--accent-light)); border-radius: 4px 0 0 4px;
+        }
+        .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+        .card-head h3 { font-family: 'Instrument Serif', serif; font-size: 1.5rem; font-weight: 400; }
+        .card-head .rank { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; }
+        .card-url { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); word-break: break-all; margin-bottom: 1rem; display: block; }
+
+        .swatch-row { display: flex; gap: 0.5rem; margin: 0.9rem 0 1.1rem; }
+        .swatch { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--divider); flex-shrink: 0; position: relative; }
+        .swatch::after {
+            content: attr(data-hex); position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--muted); white-space: nowrap;
+        }
+        .swatch-row { margin-bottom: 1.8rem; }
+
+        .kv-grid { display: grid; grid-template-columns: 110px 1fr; gap: 0.5rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; }
+        .kv-grid dt { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); padding-top: 0.15rem; }
+        .kv-grid dd { color: #3a3835; }
+
+        .sw-block { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.1rem; }
+        .sw-block h4 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; font-weight: 600; }
+        .sw-block .strengths h4 { color: var(--good); }
+        .sw-block .weaknesses h4 { color: var(--bad); }
+        .sw-block ul { list-style: none; }
+        .sw-block li { font-size: 0.85rem; color: #3a3835; line-height: 1.6; margin-bottom: 0.4rem; padding-left: 1rem; position: relative; }
+        .sw-block li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
+
+        .steal {
+            margin-top: 1.25rem; background: linear-gradient(135deg, #fdf6f3, #fef9f6);
+            border: 1px dashed var(--accent-light); border-radius: 12px; padding: 1.1rem 1.4rem;
+        }
+        .steal p { font-size: 0.85rem; color: #4a2e22; line-height: 1.65; }
+        .steal b { color: var(--accent); }
+
+        /* Comparison table */
+        .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--divider); background: var(--card); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.78rem; min-width: 720px; }
+        th, td { padding: 0.7rem 0.65rem; text-align: center; border-bottom: 1px solid var(--divider); }
+        th { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 500; }
+        td:first-child, th:first-child { text-align: left; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--ink); font-weight: 500; padding-left: 1.1rem; }
+        tr:last-child td { border-bottom: none; }
+        tr.top5 td:first-child { color: var(--accent); }
+        td.total { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--ink); }
+        tr.client-row td { background: #fdf6f3; font-weight: 600; }
+        tr.client-row td:first-child { color: var(--accent); }
+
+        .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.1rem; }
+        .tag { font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.32rem 0.8rem; border-radius: 100px; background: var(--paper); border: 1px solid var(--divider); color: var(--muted); font-weight: 500; }
+
+        .pattern-num { font-family: 'Instrument Serif', serif; font-size: 2.2rem; color: var(--accent); opacity: 0.35; line-height: 1; display: block; margin-bottom: 0.3rem; }
+
+        .checkpoint {
+            background: linear-gradient(135deg, #fdf6f3, #fef9f6); border: 1px dashed var(--accent-light);
+            border-radius: 12px; padding: 1.4rem 1.75rem; margin-top: 1.5rem;
+        }
+        .checkpoint p { font-size: 0.83rem; color: var(--accent); font-weight: 500; line-height: 1.6; }
+
+        footer { text-align: center; padding: 3rem 0 4rem; border-top: 1px solid var(--divider); }
+        footer p { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.05em; }
+
+        @media (max-width: 640px) {
+            header { padding: 3.5rem 0 2.5rem; }
+            .card { padding: 1.5rem 1.5rem; }
+            .meta-row { flex-direction: column; gap: 0.5rem; }
+            .kv-grid { grid-template-columns: 90px 1fr; }
+            .sw-block { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            body::after { display: none; }
+            .card, .table-wrap { break-inside: avoid; box-shadow: none; }
+            @page { size: A4; margin: 16mm; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <p class="badge">Competitive Analysis</p>
+        <p class="eyebrow">Prepared for VibeOps</p>
+        <h1>Where VibeOps stands<br><em>against the market</em></h1>
+        <p class="subtitle">A research-driven look at ten competitors in the independent DevOps / FinOps / production-engineering space — what the top tier does that the rest doesn't, and where VibeOps's own positioning already has an edge.</p>
+        <div class="meta-row">
+            <span>Client: <b>VibeOps</b></span>
+            <span>Date: <b>31 July 2026</b></span>
+            <span>Candidates reviewed: <b>10</b></span>
+        </div>
+    </header>
+
+    <div class="divider"></div>
+
+    <!-- Executive summary -->
+    <section class="block">
+        <p class="sec-eyebrow">Executive Summary</p>
+        <h2 class="sec-title">The short version</h2>
+        <p class="body-text">VibeOps competes in a niche defined by ten sites reviewed here, ranging from full-time boutique agencies (MeteorOps, StackTrack) to a single fractional consultant (Buoyant Cloud Tech) — the same structural position VibeOps occupies. The five top scorers share three habits VibeOps's current one-pager doesn't yet have: a <em>named</em> free-diagnostic artifact instead of a generic "book a call," a positioning argument made against explicit named alternatives rather than in isolation, and proof that is specific and attributable even when small in volume.</p>
+        <p class="body-text">The most important single finding: Pelotech runs a dedicated "Vibe Coding Cleanup Consulting" service page built on almost exactly VibeOps's own AI-prototype-productionization wedge (Lovable/Bolt/Cursor apps that aren't production-ready). This is VibeOps's closest direct competitor for its most distinctive differentiator, and its comparison-table format is the strongest single conversion device found across the whole set.</p>
+        <p class="body-text">None of this requires VibeOps to abandon its one-page, no-blog, no-fabricated-metrics constraints — the recommendations below work within them. The gap isn't scale, it's structure: naming the free diagnostic, adding a "what I won't do / who this isn't for" block, and giving the pay-for-result mechanism the comparison-table treatment.</p>
+    </section>
+
+    <!-- Comparison table -->
+    <section class="block">
+        <p class="sec-eyebrow">Scoring</p>
+        <h2 class="sec-title">All ten, scored side by side</h2>
+        <p class="body-text" style="margin-bottom:1.25rem;">Scored 1–10 on eight criteria, from what was directly observable via scraping — nothing here is a guessed review count. Columns marked <code>*</code> in the source research are platform-informed estimates (no live Lighthouse run was performed against competitor sites).</p>
+        <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Site</th><th>Search vis.</th><th>Reviews</th><th>Visual</th><th>Mobile*</th><th>Content</th><th>Social proof</th><th>CTA</th><th>Speed*</th><th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="top5"><td>MeteorOps</td><td>8</td><td>9</td><td>9</td><td>7</td><td>9</td><td>9</td><td>9</td><td>6</td><td class="total">66</td></tr>
+                <tr class="top5"><td>StackTrack</td><td>6</td><td>7</td><td>8</td><td>6</td><td>8</td><td>8</td><td>9</td><td>6</td><td class="total">58</td></tr>
+                <tr class="top5"><td>Duckbill</td><td>9</td><td>5</td><td>9</td><td>6</td><td>6</td><td>9</td><td>5</td><td>5</td><td class="total">54</td></tr>
+                <tr class="top5"><td>Pelotech</td><td>6</td><td>6</td><td>8</td><td>6</td><td>9</td><td>8</td><td>8</td><td>5</td><td class="total">56</td></tr>
+                <tr class="top5"><td>AppRecode</td><td>6</td><td>6</td><td>5</td><td>6</td><td>9</td><td>6</td><td>6</td><td>5</td><td class="total">49</td></tr>
+                <tr><td>ITSumma</td><td>6</td><td>5</td><td>7</td><td>6</td><td>8</td><td>8</td><td>6</td><td>5</td><td class="total">46</td></tr>
+                <tr><td>Git in Sky</td><td>7</td><td>5</td><td>5</td><td>6</td><td>9</td><td>7</td><td>6</td><td>5</td><td class="total">45</td></tr>
+                <tr><td>Alpacked</td><td>5</td><td>5</td><td>4</td><td>5</td><td>6</td><td>5</td><td>5</td><td>5</td><td class="total">40</td></tr>
+                <tr><td>GART Solutions</td><td>6</td><td>5</td><td>6</td><td>5</td><td>7</td><td>5</td><td>6</td><td>5</td><td class="total">40</td></tr>
+                <tr><td>Buoyant Cloud Tech</td><td>4</td><td>5</td><td>5</td><td>5</td><td>8</td><td>4</td><td>7</td><td>5</td><td class="total">38</td></tr>
+            </tbody>
+        </table>
+        </div>
+        <p class="body-text" style="margin-top:1rem; font-size:0.82rem;">Top 5 by score — <b>MeteorOps, StackTrack, Duckbill, Pelotech, AppRecode</b> — deep-profiled below.</p>
+    </section>
+
+    <!-- Competitor profiles -->
+    <section class="block">
+        <p class="sec-eyebrow">Competitor Profiles</p>
+        <h2 class="sec-title">The top five, up close</h2>
+
+        <div class="card">
+            <div class="card-head"><h3>MeteorOps</h3><span class="rank">#1 · 66/80</span></div>
+            <span class="card-url">meteorops.com</span>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#E0A96D" data-hex="#E0A96D"></div>
+                <div class="swatch" style="background:#10101B" data-hex="#10101B"></div>
+                <div class="swatch" style="background:#F1EAE0" data-hex="#F1EAE0"></div>
+            </div>
+            <dl class="kv-grid">
+                <dt>Typography</dt><dd>Bricolage Grotesque (headings) / Hanken Grotesk (body)</dd>
+                <dt>Architecture</dt><dd>45+ pages — 4 practice areas × 6 delivery models, programmatic long-tail SEO</dd>
+                <dt>Conversion</dt><dd>"Talk to an engineer" (Calendly) + a free 12-question, 6-dimension Maturity Assessment</dd>
+                <dt>Proof</dt><dd>"4.9/5 on Clutch, 13 verified reviews" — linked, checkable</dd>
+            </dl>
+            <div class="sw-block">
+                <div class="strengths"><h4>Strengths</h4><ul><li>Only site with a productized free-diagnostic tool, not just a call link</li><li>Funnel-shaped selectivity stat: "we vet 1,000 to trust you with 7"</li></ul></div>
+                <div class="weaknesses"><h4>Weaknesses</h4><ul><li>Service-matrix pages repeat the same content reworded per delivery model</li></ul></div>
+            </div>
+            <div class="steal"><p><b>Steal for VibeOps:</b> a concrete selectivity stat, and a "show don't tell" illustrative example (MeteorOps uses a sample monthly-hours log, clearly labeled as illustrative) as a proof pattern that doesn't require a real case study.</p></div>
+        </div>
+
+        <div class="card">
+            <div class="card-head"><h3>StackTrack</h3><span class="rank">#2 · 58/80</span></div>
+            <span class="card-url">stacktrack.com</span>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#475569" data-hex="#475569"></div>
+                <div class="swatch" style="background:#253BFA" data-hex="#253BFA"></div>
+                <div class="swatch" style="background:#FFFFFF" data-hex="#FFFFFF"></div>
+            </div>
+            <dl class="kv-grid">
+                <dt>Typography</dt><dd>Manrope, single family, Tailwind design system</dd>
+                <dt>Architecture</dt><dd>48 pages — services × cloud provider × technology hire pages</dd>
+                <dt>Conversion</dt><dd>Named 4-stage funnel: Friction Assessment → Delivery Review → Improvement Sprint → Managed Delivery</dd>
+                <dt>Proof</dt><dd>Linux Foundation, LVMH, Tag Heuer logos; dated attributed testimonials via Senja</dd>
+            </dl>
+            <div class="sw-block">
+                <div class="strengths"><h4>Strengths</h4><ul><li>Opens with a "what we will not do" section — the most distinctive move in the set</li><li>Every funnel stage is a named, sellable unit</li></ul></div>
+                <div class="weaknesses"><h4>Weaknesses</h4><ul><li>FAQ answers hidden behind JS accordions — invisible to a static scan</li><li>"4.9/5 average" with no visible review count</li></ul></div>
+            </div>
+            <div class="steal"><p><b>Steal for VibeOps:</b> a one-line "what I won't do" list — "I won't sell you a rewrite when a fix will do," "I won't recommend Kubernetes for a project that doesn't need it" — matches VibeOps's already-confident tone at zero design cost.</p></div>
+        </div>
+
+        <div class="card">
+            <div class="card-head"><h3>Pelotech — Vibe Coding Cleanup</h3><span class="rank">#4 · 56/80</span></div>
+            <span class="card-url">pelotech.com/vibe-coding-cleanup-consulting</span>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#00588B" data-hex="#00588B"></div>
+                <div class="swatch" style="background:#0050BD" data-hex="#0050BD"></div>
+                <div class="swatch" style="background:#F4F2EF" data-hex="#F4F2EF"></div>
+            </div>
+            <dl class="kv-grid">
+                <dt>Typography</dt><dd>Red Hat Display (headings) / Inter (body — shared with VibeOps)</dd>
+                <dt>Architecture</dt><dd>~15 service landing pages; this one is <code>noindex, nofollow</code></dd>
+                <dt>Conversion</dt><dd>Single consistent CTA: "Schedule a free diagnostic call," repeated at every section</dd>
+                <dt>Proof</dt><dd>Named testimonials with photo/title/company, no aggregate score shown</dd>
+            </dl>
+            <div class="sw-block">
+                <div class="strengths"><h4>Strengths</h4><ul><li>Explicit comparison table vs. 3 named alternatives (more AI / cleanup contractor / internal SOPs) across 6 criteria — the strongest conversion asset in the whole set</li></ul></div>
+                <div class="weaknesses"><h4>Weaknesses</h4><ul><li><code>noindex</code> caps organic search visibility despite strong on-page work</li></ul></div>
+            </div>
+            <div class="steal"><p><b>Steal for VibeOps — highest-priority item in this report:</b> the direct-alternatives comparison table maps almost exactly onto VibeOps's own pitch. Run the same structure against "fix it yourself with more AI prompts," "hire a cheap freelancer," and "do nothing until it breaks."</p></div>
+        </div>
+
+        <div class="card">
+            <div class="card-head"><h3>Duckbill</h3><span class="rank">#3 · 54/80</span></div>
+            <span class="card-url">duckbillhq.com</span>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#455061" data-hex="#455061"></div>
+                <div class="swatch" style="background:#16243A" data-hex="#16243A"></div>
+                <div class="swatch" style="background:#F16503" data-hex="#F16503"></div>
+            </div>
+            <dl class="kv-grid">
+                <dt>Typography</dt><dd>ABC Oracle / MADE Awelier — licensed foundry fonts, the only paid-type site in the set</dd>
+                <dt>Architecture</dt><dd>47 pages — named-author blog, persona pages (finance/eng-leadership/procurement), legal sub-pages</dd>
+                <dt>Conversion</dt><dd>Single "Schedule a demo" CTA — enterprise sales motion</dd>
+                <dt>Proof</dt><dd>9 named logo case studies (Honeycomb, Fanatics, Scribd); CTO-attributed quotes</dd>
+            </dl>
+            <div class="sw-block">
+                <div class="strengths"><h4>Strengths</h4><ul><li>Strongest brand recognition and press-quality writing in the set</li></ul></div>
+                <div class="weaknesses"><h4>Weaknesses</h4><ul><li>Pivoted from boutique AWS-bill consulting to enterprise SaaS — no longer a close positioning match for a startup-facing solo consultant</li></ul></div>
+            </div>
+            <div class="steal"><p><b>Steal for VibeOps:</b> not the go-to-market — the principle. Distinctive typography alone visibly separates the top 2 sites in this table from the rest; it's a cheap, one-time differentiator.</p></div>
+        </div>
+
+        <div class="card">
+            <div class="card-head"><h3>AppRecode</h3><span class="rank">#5 · 49/80</span></div>
+            <span class="card-url">apprecode.com/services/ci-cd-consulting</span>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#00FFD8" data-hex="#00FFD8"></div>
+                <div class="swatch" style="background:#047E6F" data-hex="#047E6F"></div>
+                <div class="swatch" style="background:#070B12" data-hex="#070B12"></div>
+            </div>
+            <dl class="kv-grid">
+                <dt>Typography</dt><dd>Rubik (heading) / Epilogue (body), free Google Fonts</dd>
+                <dt>Architecture</dt><dd>48 pages — 30+ service lines, 11 case studies, conference/event proof</dd>
+                <dt>Conversion</dt><dd>Generic "Talk to Our Experts" everywhere + AI chat widget</dd>
+                <dt>Proof</dt><dd>"21 ratings, 4.9/5" with 6 attributed reviews; real conference presence (MWC, Slush, RSAC)</dd>
+            </dl>
+            <div class="sw-block">
+                <div class="strengths"><h4>Strengths</h4><ul><li>Quantified case-study number in the H1 ("cut one client's costs by $85,000/month")</li></ul></div>
+                <div class="weaknesses"><h4>Weaknesses</h4><ul><li>Logo wall (BMW, Huawei, Nvidia) reads implausible for the agency's apparent size — a credibility risk, not a pattern to copy</li><li>Weakest visual design of the top 5</li></ul></div>
+            </div>
+            <div class="steal"><p><b>Caution, not steal:</b> a specific number in the hero is effective, but only when it's one VibeOps can actually stand behind — per its own no-fabricated-metrics rule.</p></div>
+        </div>
+    </section>
+
+    <!-- Patterns -->
+    <section class="block">
+        <p class="sec-eyebrow">Synthesis</p>
+        <h2 class="sec-title">Patterns of the top 10%</h2>
+
+        <div class="card">
+            <span class="pattern-num">01</span>
+            <h3 class="sub-title">The free diagnostic is named and productized</h3>
+            <p class="body-text">MeteorOps ships a scored 12-question Maturity Assessment. StackTrack's funnel opens with a named "CI/CD Friction Assessment" quiz. Neither is a vague "book a call" — both give the visitor something concrete to receive before any sales conversation. VibeOps already promises a free diagnosis; the gap is that it isn't named or scoped into an artifact the way the top 2 do it.</p>
+        </div>
+
+        <div class="card">
+            <span class="pattern-num">02</span>
+            <h3 class="sub-title">Positioning is argued against named alternatives</h3>
+            <p class="body-text">Pelotech runs a full comparison table against "more AI / cleanup specialist / staff-aug / internal SOPs." StackTrack opens with an explicit "what we will not do" list. None of the bottom five sites in this set argue against anything — they only describe their own offering.</p>
+        </div>
+
+        <div class="card">
+            <span class="pattern-num">03</span>
+            <h3 class="sub-title">Conversion is a named, multi-stage ladder</h3>
+            <p class="body-text">MeteorOps: assessment → call → engineer intro → 3 engagement models. StackTrack: friction assessment → delivery review → improvement sprint → managed support. Every stage has its own name and its own implicit commitment level. The bottom five repeat one identical CTA throughout the page.</p>
+        </div>
+
+        <div class="card">
+            <span class="pattern-num">04</span>
+            <h3 class="sub-title">Programmatic site architecture owns long-tail search</h3>
+            <p class="body-text">The top 3 all mapped at 45–48+ URLs — services crossed with delivery models, cloud providers, or technologies. This is architecturally irrelevant to VibeOps as a deliberate one-pager, but it explains the structural ceiling on organic search visibility a single-page site will always have against these competitors — it's not a copy problem to fix.</p>
+        </div>
+
+        <div class="card">
+            <span class="pattern-num">05</span>
+            <h3 class="sub-title">Proof is specific and checkable, even when small</h3>
+            <p class="body-text">"4.9/5 on Clutch across 13 verified reviews," linked. A named CTO quote. "21 ratings, average 4.9." Even modest proof states a real count and an attribution. The lower tier shows trust badges with no visible score, or unattributed round numbers ("300+ projects"). For a brand-new solo site with no clients yet, this means leaning harder on the mechanism itself — free diagnosis, pay-for-result, the before/after comparison — rather than manufacturing attribution that doesn't exist yet.</p>
+        </div>
+    </section>
+
+    <!-- SEO landscape -->
+    <section class="block">
+        <p class="sec-eyebrow">SEO Landscape</p>
+        <h2 class="sec-title">Where the search terms live</h2>
+        <p class="body-text">The top 3 competitors by search visibility (MeteorOps, Duckbill, StackTrack) all win long-tail volume through programmatic page architecture VibeOps's single-page constraint deliberately rules out. Within that constraint, the realistic opportunities are on-page, not architectural:</p>
+        <div class="sw-block" style="grid-template-columns:1fr; gap:0.75rem; margin-top:1rem;">
+            <ul style="list-style:none;">
+                <li style="font-size:0.88rem;color:#3a3835;line-height:1.7;padding-left:1rem;position:relative;margin-bottom:0.5rem;"><span style="position:absolute;left:0;color:var(--accent);">–</span>Title/meta already target "DevOps, FinOps, Production Engineering" — competitive but correctly scoped terms.</li>
+                <li style="font-size:0.88rem;color:#3a3835;line-height:1.7;padding-left:1rem;position:relative;margin-bottom:0.5rem;"><span style="position:absolute;left:0;color:var(--accent);">–</span>None of the 10 competitors reviewed own the specific phrase "production-ready" + named AI builder tools (Lovable, Bolt, Cursor, Claude Code) as a page-level keyword target the way Pelotech's page does structurally — but Pelotech's own page is <code>noindex</code>, leaving this term genuinely open.</li>
+                <li style="font-size:0.88rem;color:#3a3835;line-height:1.7;padding-left:1rem;position:relative;margin-bottom:0.5rem;"><span style="position:absolute;left:0;color:var(--accent);">–</span>JSON-LD is already present (Person + ProfessionalService) — once <code>[YOUR_NAME]</code> / <code>[YOUR_DOMAIN]</code> placeholders are resolved, this is ahead of several lower-tier competitors who have no schema markup at all.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Design direction -->
+    <section class="block">
+        <p class="sec-eyebrow">Recommendation</p>
+        <h2 class="sec-title">Design direction</h2>
+        <p class="body-text">VibeOps's current palette (warm cream <code>#F5F2EA</code>, ink <code>#15170F</code>, green accent <code>#00A857</code>/<code>#00703A</code>) and typography (Inter Variable + JetBrains Mono) already sit closer to the top tier of this set than most — Pelotech's own background (<code>#F4F2EF</code>) and shared use of Inter validate the direction rather than contradict it. No repaint is recommended.</p>
+        <p class="body-text">What the data supports changing is structural, not visual: name the free diagnostic as a specific artifact, add a short "what I won't do" block, and give the pay-for-result pitch a direct-alternatives comparison table. All three fit inside the existing single-file, single-page, no-fabricated-metrics constraints already governing this site.</p>
+        <div class="tag-row">
+            <span class="tag">Keep existing palette</span>
+            <span class="tag">Keep Inter + JetBrains Mono</span>
+            <span class="tag">Name the diagnostic</span>
+            <span class="tag">Add alternatives comparison</span>
+            <span class="tag">No new pages</span>
+        </div>
+        <div class="checkpoint">
+            <p>This report feeds directly into the Build Brief (research/03-build-brief.md). No site changes are made from this document alone — see the brief for the specific, approvable recommendations.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>WEBSITE INTELLIGENCE — COMPETITIVE ANALYSIS FOR VIBEOPS</p>
+    </footer>
+</div>
+
+</body>
+</html>

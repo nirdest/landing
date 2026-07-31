@@ -8,6 +8,8 @@
   Placeholders to replace before production: [YOUR_NAME], [YOUR_DOMAIN], [YOUR_HANDLE].
   The lead form is simulated here; in production it POSTs to /api/lead.
   Language: single page, client-side RU/EN toggle (RU is the default).
+  Markup/CSS/JS live in separate files (css/styles.css, js/main.js, js/animations.js) —
+  index.html stays at the repo root so GitHub Pages keeps serving it unchanged.
 -->
 <title>DevOps, FinOps и Production Engineering | VibeOps</title>
 <meta name="description" content="Ускорение сайтов, снижение расходов на облако, надёжный production. Диагностика бесплатно — оплата только за результат.">
@@ -24,264 +26,13 @@
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-400.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/latin-500.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
+<link href="css/styles.css" rel="stylesheet">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"Person","name":"[YOUR_NAME]","jobTitle":"DevOps / FinOps Consultant"},
 {"@type":"ProfessionalService","name":"VibeOps","serviceType":["DevOps consulting","FinOps consulting","Production engineering"],"areaServed":"Worldwide"}
 ]}
 </script>
-<style>
-/* ============ tokens ============ */
-:root{
-  --bg:#F5F2EA; --bg-2:#FAF8F1; --card:#FFFDF7;
-  --ink:#15170F; --ink-2:#454940; --muted:#71756A;
-  --line:#E4DFD0; --line-2:#CEC7B4;
-  --acc:#00A857; --acc-deep:#00703A; --acc-soft:rgba(0,168,87,.08);
-  --danger:#B23A22;
-  --sans:'Inter Variable','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
-@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
-body{
-  font-family:var(--sans);font-size:1rem;line-height:1.6;color:var(--ink);background:var(--bg);
-  -webkit-font-smoothing:antialiased;font-feature-settings:"cv05","ss01";overflow-x:hidden;
-}
-a{color:inherit;text-decoration:none}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-:focus-visible{outline:2px solid var(--acc-deep);outline-offset:3px;border-radius:3px}
-::selection{background:var(--acc-soft);color:var(--acc-deep)}
-.wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,44px)}
-.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.skip{position:absolute;left:16px;top:-56px;z-index:200;background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:7px;font:500 .85rem var(--mono);transition:top .2s}
-.skip:focus{top:14px}
-
-/* ============ type scale ============ */
-h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
-.h1{font-size:clamp(2.2rem,5.1vw,4rem);line-height:1.04;letter-spacing:-.038em;font-weight:660;max-width:17ch}
-.h1 em{font-style:normal;color:var(--acc-deep)}
-.h2{font-size:clamp(1.6rem,3.1vw,2.45rem);letter-spacing:-.028em;max-width:20ch}
-.lead{font-size:clamp(1rem,1.45vw,1.2rem);line-height:1.55;color:var(--ink-2);max-width:60ch}
-.eyebrow{display:flex;align-items:center;gap:11px;font:500 .7rem var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.eyebrow::before{content:"";width:22px;height:1.5px;background:var(--acc);flex:none}
-
-/* ============ header ============ */
-.hdr{position:sticky;top:0;z-index:80;background:rgba(245,242,234,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.hdr-in{display:flex;align-items:center;gap:clamp(14px,2.4vw,30px);height:66px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:640;font-size:1.06rem;letter-spacing:-.02em}
-.hdr nav{margin-left:auto;display:flex;align-items:center;gap:clamp(14px,1.8vw,26px)}
-.nav-a{font-size:.9rem;color:var(--ink-2);padding:5px 0;border-bottom:1.5px solid transparent;transition:color .18s,border-color .18s}
-.nav-a:hover{color:var(--ink);border-color:var(--acc)}
-.hdr-cta{font:500 .84rem var(--sans);border:1.5px solid var(--ink);padding:8px 16px;border-radius:7px;transition:background .18s,color .18s}
-.hdr-cta:hover{background:var(--ink);color:var(--bg)}
-.lang{display:flex;align-items:center;gap:6px;font:500 .76rem var(--mono);color:var(--line-2)}
-.lang button{font:500 .76rem var(--mono);color:var(--muted);padding:3px 1px;border-bottom:1.5px solid transparent;transition:color .18s,border-color .18s}
-.lang button[aria-pressed="true"]{color:var(--ink);border-color:var(--acc)}
-.lang button:hover{color:var(--acc-deep)}
-
-/* ============ sections ============ */
-/* padding-block only — a `padding` shorthand here would wipe .wrap's inline padding */
-.sec{padding-block:clamp(58px,8.5vw,116px);border-top:1px solid var(--line)}
-.sec-head{margin-bottom:clamp(30px,4.2vw,54px)}
-.sec-head .h2{margin-top:15px}
-.sec-head .lead{margin-top:15px;font-size:clamp(.98rem,1.25vw,1.1rem)}
-
-/* ============ hero ============ */
-.hero{padding-block:clamp(46px,7vw,92px) clamp(34px,4.5vw,56px)}
-.hero .h1{margin-top:20px}
-.hero .lead{margin-top:22px}
-.cta-row{margin-top:clamp(26px,3.4vw,38px);display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px}
-.btn{display:inline-flex;align-items:center;gap:10px;background:var(--acc-deep);color:#fff;font-weight:600;font-size:1rem;padding:15px 28px;border-radius:8px;transition:background .18s,transform .15s,box-shadow .2s}
-.btn:hover{background:var(--acc);transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,112,58,.22)}
-.btn:active{transform:none;box-shadow:none}
-.btn[disabled]{opacity:.55;pointer-events:none}
-.btn .arr{transition:transform .18s}
-.btn:hover .arr{transform:translateX(3px)}
-.btn-ghost{font-weight:500;font-size:.95rem;color:var(--ink-2);border-bottom:1.5px solid var(--line-2);padding-bottom:3px;transition:color .18s,border-color .18s}
-.btn-ghost:hover{color:var(--acc-deep);border-color:var(--acc)}
-.hero-trust{margin-top:clamp(32px,4.5vw,52px);display:flex;flex-wrap:wrap;gap:12px 30px;align-items:center;padding-top:22px;border-top:1px solid var(--line)}
-.hero-trust span{font:400 .78rem var(--mono);color:var(--muted);letter-spacing:.02em}
-.hero-trust b{color:var(--ink);font-weight:600}
-
-/* ============ before/after comparison ============ */
-/* Panel chrome: bordered card with accent corner brackets, a per-state header
-   inside each layer (so the clip reveals the matching status), and a legend. */
-.cmp-panel{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px}
-.cmp-panel::before,.cmp-panel::after{content:"";position:absolute;width:15px;height:15px;pointer-events:none;z-index:6}
-.cmp-panel::before{top:-1px;left:-1px;border-top:2px solid var(--acc-deep);border-left:2px solid var(--acc-deep);border-top-left-radius:12px}
-.cmp-panel::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--acc-deep);border-right:2px solid var(--acc-deep);border-bottom-right-radius:12px}
-.cmp-shell{position:relative}
-.cmp-wrap{border-radius:12px 12px 0 0;overflow:hidden}
-.cmp{position:relative;overflow:hidden;background-image:radial-gradient(var(--line) 1px,transparent 1.3px);background-size:24px 24px}
-/* base layer sits in flow and defines the height; top layer is overlaid and clipped */
-.cmp-base{position:relative;z-index:1}
-.cmp-top{position:absolute;inset:0;z-index:2;clip-path:inset(0 50% 0 0)}
-.cmp-layer{display:block;width:100%;height:auto}
-.cmp-chrome{display:flex;align-items:center;gap:14px;height:52px;padding:0 clamp(14px,1.6vw,20px);border-bottom:1px dashed var(--line);background:var(--card)}
-.cmp-cap,.cmp-status{display:flex;align-items:center;gap:9px;font:500 .68rem var(--mono);letter-spacing:.13em;text-transform:uppercase;white-space:nowrap;color:var(--muted)}
-.cmp-status{margin-left:auto;letter-spacing:.06em}
-.cmp-cap b{font-weight:700}
-.cmp-dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--acc)}
-.cap-dot{animation:blink 2.4s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.cmp-chrome.ok b,.cmp-chrome.ok .cmp-status{color:var(--acc-deep)}
-.cmp-chrome.bad b,.cmp-chrome.bad .cmp-status{color:var(--danger)}
-.cmp-chrome.bad .cmp-dot{background:var(--danger)}
-.cmp-legend{display:flex;flex-wrap:wrap;gap:10px 26px;padding:13px clamp(14px,1.6vw,20px);border-top:1px dashed var(--line);font:400 .7rem var(--mono);color:var(--muted)}
-.cmp-legend span{display:inline-flex;align-items:center;gap:8px}
-.lg-dot{width:8px;height:8px;border-radius:50%;background:var(--acc);flex:none}
-.lg-dash{width:17px;height:11px;border:1.5px dashed var(--acc-deep);border-radius:3px;flex:none}
-.lg-probe{width:17px;border-top:1.5px dotted var(--line-2);flex:none}
-.cmp-div{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--acc-deep);pointer-events:none;transform:translateX(-1px);z-index:3}
-.cmp-div::before{content:"";position:absolute;top:50%;left:50%;width:42px;height:42px;border-radius:50%;background:var(--card);border:1.5px solid var(--acc-deep);transform:translate(-50%,-50%);box-shadow:0 4px 14px rgba(21,23,15,.14)}
-.cmp-div::after{content:"⟷";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font:500 15px var(--mono);color:var(--acc-deep)}
-.cmp-range{position:absolute;inset:0;width:100%;height:100%;margin:0;z-index:5;-webkit-appearance:none;appearance:none;background:transparent;cursor:ew-resize}
-.cmp-range::-webkit-slider-runnable-track{-webkit-appearance:none;height:100%;background:transparent}
-.cmp-range::-webkit-slider-thumb{-webkit-appearance:none;width:2px;height:2px;background:transparent;border:0}
-.cmp-range::-moz-range-track{height:100%;background:transparent;border:0}
-.cmp-range::-moz-range-thumb{width:2px;height:2px;background:transparent;border:0;opacity:0}
-.cmp-hint{display:none;margin:10px clamp(14px,1.6vw,20px) 0;font:400 .74rem var(--mono);color:var(--muted)}
-.changes{margin-top:clamp(28px,3.6vw,44px);display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:clamp(20px,2.6vw,36px)}
-.change dt{display:flex;align-items:baseline;gap:9px;font-weight:620;font-size:.98rem;margin-bottom:8px;letter-spacing:-.012em}
-.change dt::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--acc);flex:none;transform:translateY(-1px)}
-.change dd{color:var(--ink-2);font-size:.91rem;line-height:1.62}
-
-/* ---- SVG diagram internals ---- */
-.topo{display:block}
-.route{fill:none;stroke:var(--line-2);stroke-width:1.6;stroke-linecap:round}
-.route-opt{stroke:var(--acc-deep);stroke-dasharray:5 4;opacity:.75}
-.shape{fill:var(--card);stroke:var(--ink-2);stroke-width:1.6}
-.det{fill:none;stroke:var(--muted);stroke-width:1.1;opacity:.75}
-.glyph{fill:var(--ink-2)}
-.led{fill:var(--acc-deep)}
-.nlabel{font:500 17px var(--sans);fill:var(--ink-2);text-anchor:middle;letter-spacing:.005em}
-.tag{font:500 16px var(--sans);fill:var(--acc-deep);text-anchor:middle}
-.group-box{fill:none;stroke:var(--line-2);stroke-width:1.4;stroke-dasharray:6 5}
-.probe path{fill:none;stroke:var(--line-2);stroke-width:1;stroke-dasharray:2 5;opacity:.85}
-.hb rect{fill:var(--card);stroke:var(--acc-deep);stroke-width:1.4}
-.hb-line{fill:none;stroke:var(--acc-deep);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:110 230;animation:hb 2.4s linear infinite}
-@keyframes hb{to{stroke-dashoffset:-340}}
-.hb-txt{font:500 16px var(--mono);fill:var(--muted);text-anchor:middle;letter-spacing:.08em}
-.pkt-core{fill:var(--acc-deep)}
-.pkt-halo{fill:var(--acc);opacity:.2}
-/* "before" state — the same primitives, degraded palette */
-.tone-bad .shape{stroke:var(--danger)}
-.tone-bad .det{stroke:var(--danger);opacity:.55}
-.tone-bad .route{stroke:var(--danger);opacity:.45}
-.tone-bad .led{fill:var(--danger)}
-.tone-bad .tag{fill:var(--danger)}
-.tone-bad .pkt-core{fill:var(--danger)}
-.tone-bad .pkt-halo{fill:var(--danger);opacity:.2}
-
-/* ============ cards / services ============ */
-/* fixed column counts: 6 cards must always fill whole rows, or empty grid cells
-   show through as stray coloured boxes */
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.card{background:var(--card);padding:clamp(22px,2.5vw,32px);transition:background .2s}
-.card:hover{background:var(--bg-2)}
-.card-i{font:500 .68rem var(--mono);letter-spacing:.14em;color:var(--acc-deep)}
-.card h3{margin:14px 0 10px;font-size:1.07rem}
-.card p{color:var(--ink-2);font-size:.93rem;line-height:1.62}
-
-/* ============ process ============ */
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(24px,3vw,40px)}
-.step{padding-top:20px;border-top:2px solid var(--line-2)}
-.step h3{margin:11px 0 9px;font-size:1.05rem}
-.step p{color:var(--ink-2);font-size:.92rem;line-height:1.62}
-.step-n{font:500 .68rem var(--mono);letter-spacing:.14em;color:var(--muted)}
-.step.free{border-top-color:var(--acc)}
-.step.free .step-n{color:var(--acc-deep)}
-.badge{display:inline-block;margin-left:8px;font:500 .62rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--acc-deep);background:var(--acc-soft);border:1px solid rgba(0,112,58,.25);padding:3px 7px;border-radius:4px;vertical-align:2px}
-
-/* ============ experience ============ */
-.exp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(34px,5vw,72px);align-items:start}
-.nums{display:flex;flex-wrap:wrap;gap:clamp(26px,4vw,52px)}
-.num b{display:block;font-size:clamp(2.3rem,4.6vw,3.4rem);font-weight:660;letter-spacing:-.04em;line-height:1}
-.num span{display:block;margin-top:9px;font:400 .78rem var(--mono);color:var(--muted);max-width:14ch}
-.stack{border-top:1px solid var(--line)}
-.stack div{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:8px 26px;padding:15px 0;border-bottom:1px solid var(--line)}
-.stack dt{font:500 .72rem var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding-top:2px}
-.stack dd{font-size:.95rem;color:var(--ink-2)}
-
-/* ============ faq ============ */
-.faq{max-width:78ch;border-top:1px solid var(--line)}
-.faq details{border-bottom:1px solid var(--line)}
-.faq summary{list-style:none;cursor:pointer;position:relative;padding:21px 46px 21px 0;font-weight:620;font-size:1.03rem;letter-spacing:-.014em;transition:color .18s}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary:hover{color:var(--acc-deep)}
-.faq summary::after{content:"";position:absolute;right:10px;top:50%;width:13px;height:1.6px;background:var(--acc-deep);transform:translateY(-50%)}
-.faq summary::before{content:"";position:absolute;right:10px;top:50%;width:13px;height:1.6px;background:var(--acc-deep);transform:translateY(-50%) rotate(90deg);transition:transform .22s}
-.faq details[open] summary::before{transform:translateY(-50%) rotate(0)}
-.faq-a{padding:0 46px 24px 0;color:var(--ink-2);font-size:.96rem;line-height:1.68;max-width:64ch}
-
-/* ============ final cta ============ */
-.final{text-align:center;padding-block:clamp(62px,9vw,124px)}
-.final .h2{margin:16px auto 0;max-width:22ch}
-.final .lead{margin:18px auto 0;text-align:center}
-.final .eyebrow{justify-content:center}
-.final .btn{margin-top:30px}
-
-/* ============ footer ============ */
-.ftr{border-top:1px solid var(--line);padding:26px 0 34px}
-.ftr-in{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center;font:400 .76rem var(--mono);color:var(--muted)}
-.ftr a{color:var(--ink-2);border-bottom:1px solid var(--line-2);transition:color .18s,border-color .18s}
-.ftr a:hover{color:var(--acc-deep);border-color:var(--acc)}
-.ftr .right{margin-left:auto;display:flex;gap:20px}
-
-/* ============ modal ============ */
-.ovl{position:fixed;inset:0;z-index:100;background:rgba(20,22,16,.5);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .22s}
-.ovl[hidden]{display:none}
-.ovl.show{opacity:1}
-.modal{position:relative;width:min(440px,100%);background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 26px 64px rgba(18,20,14,.3);padding:30px 28px 26px;transform:translateY(14px) scale(.985);transition:transform .24s cubic-bezier(.2,.9,.3,1.15)}
-.ovl.show .modal{transform:none}
-.m-close{position:absolute;top:13px;right:13px;width:34px;height:34px;display:grid;place-items:center;border-radius:7px;color:var(--muted);font-size:1.1rem;transition:background .16s,color .16s}
-.m-close:hover{background:var(--acc-soft);color:var(--acc-deep)}
-.modal h3{font-size:1.32rem}
-.m-desc{margin-top:9px;font-size:.93rem;color:var(--ink-2)}
-.modal label{display:block;margin:20px 0 8px;font:500 .68rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.modal input[type="text"]{width:100%;font:400 .97rem var(--sans);color:var(--ink);background:var(--bg-2);border:1.5px solid var(--line-2);border-radius:8px;padding:13px 15px;transition:border-color .18s,box-shadow .18s}
-.modal input[type="text"]:focus{outline:none;border-color:var(--acc-deep);box-shadow:0 0 0 3px rgba(0,168,87,.16)}
-.hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
-.f-err{margin-top:10px;font-size:.85rem;color:var(--danger)}
-.btn-block{width:100%;margin-top:18px;justify-content:center}
-.m-priv{margin-top:14px;font:400 .72rem var(--mono);color:var(--muted);text-align:center;line-height:1.5}
-.m-ok{text-align:center;padding:12px 0 4px}
-.m-ok svg{display:block;margin:0 auto 16px}
-.m-ok p{font-size:.97rem;color:var(--ink-2)}
-.m-ok .btn{margin-top:22px}
-
-/* ============ responsive ============ */
-@media (max-width:980px){
-  .cards{grid-template-columns:repeat(2,1fr)}
-  .steps{grid-template-columns:repeat(2,1fr)}
-}
-@media (max-width:900px){
-  .nav-a{display:none}
-}
-@media (max-width:620px){
-  .cards{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr}
-}
-@media (max-width:760px){
-  .cmp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .cmp{min-width:1040px}
-  .cmp-range{position:static;width:100%;height:36px;margin-top:16px;cursor:pointer;background:transparent}
-  .cmp-range::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:linear-gradient(to right,var(--danger) var(--p,50%),var(--acc-deep) var(--p,50%))}
-  .cmp-range::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--card);border:2px solid var(--acc-deep);margin-top:-11.5px;box-shadow:0 2px 8px rgba(21,23,15,.2)}
-  .cmp-range::-moz-range-track{height:3px;border-radius:3px;background:var(--line-2)}
-  .cmp-range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--card);border:2px solid var(--acc-deep)}
-  .cmp-hint{display:block}
-  .stack div{grid-template-columns:1fr;gap:5px}
-  .ftr .right{margin-left:0}
-}
-
-/* ============ reduced motion ============ */
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
-  html{scroll-behavior:auto}
-}
-</style>
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="skip">Перейти к содержанию</a>
@@ -310,6 +61,13 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
 
   <!-- ============ hero ============ -->
   <section class="wrap hero">
+    <!-- 3D SCROLL ASSET HERE — reserved 640×640 zone, right-aligned, vertically
+         centered on the hero. Hidden below 1150px (see .hero-3d in styles.css).
+         Drop a <canvas>/<model-viewer>/Spline embed in here and wire its scroll
+         progress to ScrollTrigger in js/animations.js; nothing currently renders
+         in this box. -->
+    <div class="hero-3d" aria-hidden="true"></div>
+    <div class="wrap-in">
     <p class="eyebrow" data-i18n="hero.eyebrow">DEVOPS · FINOPS · PRODUCTION ENGINEERING</p>
     <h1 class="h1" data-i18n-html="hero.h1">Быстрые сайты, меньший счёт за облако и <em>продакшен, который не падает</em>.</h1>
     <p class="lead" data-i18n="hero.lead">Диагностику проведу бесплатно. Если не смогу помочь — вы не платите. Оплата только за результат: ускорение сайта, оптимизацию бюджета или повышение отказоустойчивости.</p>
@@ -321,6 +79,7 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
       <span><b>8+</b> <span data-i18n="hero.t1">лет в IT</span></span>
       <span><b>5+</b> <span data-i18n="hero.t2">лет в DevOps</span></span>
       <span data-i18n="hero.t3">AWS · Kubernetes · Bare Metal · CI/CD · Observability</span>
+    </div>
     </div>
   </section>
 
@@ -521,10 +280,37 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
     </dl>
   </section>
 
+  <!-- ============ what I won't do ============ -->
+  <section class="wrap sec" id="avoid" aria-labelledby="avoidH">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="avoid.eyebrow">02 — Границы</p>
+      <h2 class="h2" id="avoidH" data-i18n="avoid.h">Чего я не делаю</h2>
+      <p class="lead" data-i18n="avoid.lead">Четыре вещи, на которые я не соглашусь, даже если попросите.</p>
+    </div>
+    <div class="avoid-list">
+      <div>
+        <svg class="avoid-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5 L15 15 M15 5 L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <p data-i18n="avoid.1">Не продаю переписывание с нуля, если хватит точечного фикса.</p>
+      </div>
+      <div>
+        <svg class="avoid-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5 L15 15 M15 5 L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <p data-i18n="avoid.2">Не тащу Kubernetes туда, где хватит одного сервера.</p>
+      </div>
+      <div>
+        <svg class="avoid-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5 L15 15 M15 5 L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <p data-i18n="avoid.3">Не беру предоплату и не выставляю счёт за диагностику.</p>
+      </div>
+      <div>
+        <svg class="avoid-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5 L15 15 M15 5 L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <p data-i18n="avoid.4">Не подсаживаю на постоянный ретейнер, если задача разовая.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ services ============ -->
   <section class="wrap sec" id="services" aria-labelledby="svcH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="svc.eyebrow">02 — Услуги</p>
+      <p class="eyebrow" data-i18n="svc.eyebrow">03 — Услуги</p>
       <h2 class="h2" id="svcH" data-i18n="svc.h">Что именно я делаю</h2>
       <p class="lead" data-i18n="svc.lead">Беру задачи, где результат можно измерить: время ответа, счёт за облако, время выкатки, время простоя.</p>
     </div>
@@ -541,12 +327,21 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
   <!-- ============ process ============ -->
   <section class="wrap sec" id="process" aria-labelledby="prcH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="prc.eyebrow">03 — Как я работаю</p>
+      <p class="eyebrow" data-i18n="prc.eyebrow">04 — Как я работаю</p>
       <h2 class="h2" id="prcH" data-i18n="prc.h">Четыре шага, первый — бесплатный</h2>
       <p class="lead" data-i18n="prc.lead">Никакой предоплаты и долгих обследований за ваш счёт.</p>
     </div>
     <div class="steps">
-      <div class="step free"><p class="step-n">01</p><h3><span data-i18n="prc.1t">Диагностика</span><span class="badge" data-i18n="prc.free">бесплатно</span></h3><p data-i18n="prc.1d">Смотрю инфраструктуру, метрики и счёт за облако. Нахожу узкие места и то, за что вы переплачиваете.</p></div>
+      <div class="step free">
+        <p class="step-n">01</p>
+        <h3><span data-i18n="prc.1t">Инфраструктурный аудит</span><span class="badge" data-i18n="prc.free">бесплатно</span></h3>
+        <p data-i18n="prc.1d">Смотрю инфраструктуру, метрики и счёт за облако. На выходе — конкретный список узких мест и переплат, а не общие слова.</p>
+        <ul class="step-deliv">
+          <li data-i18n="prc.1x1">Отчёт с находками</li>
+          <li data-i18n="prc.1x2">Разбивка расходов</li>
+          <li data-i18n="prc.1x3">Список приоритетов</li>
+        </ul>
+      </div>
       <div class="step"><p class="step-n">02</p><h3 data-i18n="prc.2t">Отчёт и оценка</h3><p data-i18n="prc.2d">Показываю, что именно тормозит и куда уходят деньги. С планом работ, сроками и ожидаемым эффектом.</p></div>
       <div class="step"><p class="step-n">03</p><h3 data-i18n="prc.3t">Работа</h3><p data-i18n="prc.3d">Внедряю изменения по согласованному плану — без простоя продакшена и без сюрпризов для вашей команды.</p></div>
       <div class="step"><p class="step-n">04</p><h3 data-i18n="prc.4t">Оплата за результат</h3><p data-i18n="prc.4d">Платите, когда результат достигнут и измерен. Если помочь не смог — не платите ничего.</p></div>
@@ -556,7 +351,7 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
   <!-- ============ experience ============ -->
   <section class="wrap sec" id="experience" aria-labelledby="expH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="exp.eyebrow">04 — Опыт</p>
+      <p class="eyebrow" data-i18n="exp.eyebrow">05 — Опыт</p>
       <h2 class="h2" id="expH" data-i18n="exp.h">Почему мне можно доверить продакшен</h2>
     </div>
     <div class="exp-grid">
@@ -578,10 +373,62 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
     </div>
   </section>
 
+  <!-- ============ alternatives ============ -->
+  <section class="wrap sec" id="alt" aria-labelledby="altH">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="alt.eyebrow">06 — Альтернативы</p>
+      <h2 class="h2" id="altH" data-i18n="alt.h">С чем вы на самом деле сравниваете</h2>
+      <p class="lead" data-i18n="alt.lead">Если не я — то что? Честное сравнение с тем, что обычно пробуют вместо этого.</p>
+    </div>
+    <div class="alt-wrap">
+      <table class="alt-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="vibeops" data-i18n="alt.colVibeops">VibeOps</th>
+            <th data-i18n="alt.colPrompts">Чинить самому промптами</th>
+            <th data-i18n="alt.colFreelancer">Дешёвый фрилансер</th>
+            <th data-i18n="alt.colNothing">Ничего не делать</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="alt.row1">Причина или симптом</td>
+            <td class="vibeops" data-i18n="alt.v1">Причина — с чёткой первопричиной</td>
+            <td data-i18n="alt.p1">Симптом — правите одно и то же место</td>
+            <td data-i18n="alt.f1">Зависит от исполнителя</td>
+            <td data-i18n="alt.n1">Проблема остаётся и растёт</td>
+          </tr>
+          <tr>
+            <td data-i18n="alt.row2">Оплата</td>
+            <td class="vibeops" data-i18n="alt.v2">Только за измеренный результат</td>
+            <td data-i18n="alt.p2">Ваше время на бесконечные правки</td>
+            <td data-i18n="alt.f2">Почасово, независимо от исхода</td>
+            <td data-i18n="alt.n2">Технический долг копится</td>
+          </tr>
+          <tr>
+            <td data-i18n="alt.row3">Зависимость (lock-in)</td>
+            <td class="vibeops" data-i18n="alt.v3">Нет — система остаётся вашей</td>
+            <td data-i18n="alt.p3">Зависимость от новых промптов</td>
+            <td data-i18n="alt.f3">Зависимость от конкретного человека</td>
+            <td data-i18n="alt.n3">Зависимость от везения</td>
+          </tr>
+          <tr>
+            <td data-i18n="alt.row4">Стоимость диагностики</td>
+            <td class="vibeops" data-i18n="alt.v4">Бесплатно</td>
+            <td data-i18n="alt.p4">—</td>
+            <td data-i18n="alt.f4">Часто платно</td>
+            <td data-i18n="alt.n4">Бесплатно, пока не упадёт</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <!-- ============ faq ============ -->
   <section class="wrap sec" id="faq" aria-labelledby="faqH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="faq.eyebrow">05 — Вопросы</p>
+      <p class="eyebrow" data-i18n="faq.eyebrow">07 — Вопросы</p>
       <h2 class="h2" id="faqH" data-i18n="faq.h">Частые вопросы</h2>
     </div>
     <div class="faq">
@@ -639,360 +486,9 @@ h1,h2,h3{font-weight:640;letter-spacing:-.025em;line-height:1.12}
   </div>
 </div>
 
-<script>
-(function(){
-'use strict';
-
-/* ================= i18n ================= */
-var I18N = {
-  ru: {
-    'skip':'Перейти к содержанию',
-    'meta.title':'DevOps, FinOps и Production Engineering | VibeOps',
-    'meta.desc':'Ускорение сайтов, снижение расходов на облако, надёжный production. Диагностика бесплатно — оплата только за результат.',
-    'nav.services':'Услуги','nav.process':'Как я работаю','nav.exp':'Опыт','nav.faq':'Вопросы','nav.contact':'Связаться',
-    'hero.eyebrow':'DEVOPS · FINOPS · PRODUCTION ENGINEERING',
-    'hero.h1':'Быстрые сайты, меньший счёт за облако и <em>продакшен, который не падает</em>.',
-    'hero.lead':'Диагностику проведу бесплатно. Если не смогу помочь — вы не платите. Оплата только за результат: ускорение сайта, оптимизацию бюджета или повышение отказоустойчивости.',
-    'hero.cta1':'Оставить контакт','hero.cta2':'Что именно я делаю',
-    'hero.t1':'лет в IT','hero.t2':'лет в DevOps','hero.t3':'AWS · Kubernetes · Bare Metal · CI/CD · Observability',
-
-    'cmp.eyebrow':'01 — Что меняется','cmp.h':'Было и стало',
-    'cmp.lead':'Слева — инфраструктура, которая не справляется с нагрузкой. Справа — та же система после работы. Потяните ползунок, чтобы сравнить.',
-    'cmp.before':'До','cmp.after':'После',
-    'cmp.live':'· живая топология','cmp.sysOk':'система в норме','cmp.sysBad':'система деградировала',
-    'cmp.lg1':'поток запросов','cmp.lg2':'дублирование и резерв','cmp.lg3':'проверки мониторинга',
-    'cmp.hint':'Потяните ползунок · схему можно прокрутить вбок',
-    'cmp.sliderAria':'Сравнение: до и после',
-    'cmp.beforeTitle':'Инфраструктура до работы','cmp.afterTitle':'Инфраструктура после работы',
-    'cmp.b1':'нет CDN','cmp.b2':'один инстанс','cmp.b3':'нет кэша','cmp.b4':'нет реплики',
-    'cmp.a1':'CDN на edge','cmp.a2':'резерв и HA','cmp.a3':'кэширование','cmp.a4':'бэкапы и реплика',
-    'cmp.c1t':'CDN и кэш','cmp.c1d':'Статика и частые запросы отдаются с ближайшего к пользователю узла, а не тянутся каждый раз с вашего сервера.',
-    'cmp.c2t':'Резерв на каждом уровне','cmp.c2d':'Балансировщики, несколько инстансов приложения и реплика базы. Отказ одного узла больше не роняет продукт.',
-    'cmp.c3t':'База данных разгружена','cmp.c3d':'Кэш забирает большую часть чтения на себя, и база перестаёт быть узким местом при росте трафика.',
-    'cmp.c4t':'Мониторинг всех узлов','cmp.c4d':'Метрики и алерты по всей цепочке. О деградации вы узнаёте по графику, а не из письма клиента.',
-
-    'n.users':'Пользователи','n.dns':'Интернет · DNS','n.cdn':'CDN · Edge','n.lb':'Балансировщики',
-    'n.frontend':'Фронтенд','n.backend':'Бэкенд','n.cache':'Кэш','n.db':'База данных','n.mon':'мониторинг',
-    'n.dbPrimary':'Основная','n.dbReplica':'Реплика','n.db2':'БД',
-
-    'svc.eyebrow':'02 — Услуги','svc.h':'Что именно я делаю',
-    'svc.lead':'Беру задачи, где результат можно измерить: время ответа, счёт за облако, время выкатки, время простоя.',
-    'svc.1t':'Ускорение сайта и API','svc.1d':'CDN, кэширование, оптимизация запросов и бэкенда. Цель — время ответа в десятки миллисекунд вместо секунд ожидания.',
-    'svc.2t':'Снижение расходов на облако','svc.2d':'Нахожу то, за что вы платите зря: простаивающие ресурсы, переразмеренные инстансы, забытые диски и балансировщики.',
-    'svc.3t':'Отказоустойчивость','svc.3d':'Резервирование, реплики базы, автоматическое восстановление. Падение одного узла не должно ронять весь продукт.',
-    'svc.4t':'CI/CD и скорость релизов','svc.4d':'Пайплайны, кэш сборок, параллельные шаги. От коммита до продакшена — минуты вместо часов и ручных действий.',
-    'svc.5t':'Мониторинг и алерты','svc.5d':'Метрики, логи и осмысленные оповещения. Чтобы о проблеме вы узнавали раньше, чем о ней напишут клиенты.',
-    'svc.6t':'Продакшен для AI-прототипов','svc.6d':'Проекты на Lovable, Bolt, Cursor или Claude Code довожу до состояния, в котором их не страшно открыть пользователям.',
-
-    'prc.eyebrow':'03 — Как я работаю','prc.h':'Четыре шага, первый — бесплатный',
-    'prc.lead':'Никакой предоплаты и долгих обследований за ваш счёт.','prc.free':'бесплатно',
-    'prc.1t':'Диагностика','prc.1d':'Смотрю инфраструктуру, метрики и счёт за облако. Нахожу узкие места и то, за что вы переплачиваете.',
-    'prc.2t':'Отчёт и оценка','prc.2d':'Показываю, что именно тормозит и куда уходят деньги. С планом работ, сроками и ожидаемым эффектом.',
-    'prc.3t':'Работа','prc.3d':'Внедряю изменения по согласованному плану — без простоя продакшена и без сюрпризов для вашей команды.',
-    'prc.4t':'Оплата за результат','prc.4d':'Платите, когда результат достигнут и измерен. Если помочь не смог — не платите ничего.',
-
-    'exp.eyebrow':'04 — Опыт','exp.h':'Почему мне можно доверить продакшен',
-    'exp.lead':'Восемь лет в IT, пять из них — в DevOps и production engineering. Работаю и с облаком, и с железом: от небольших SaaS до систем, где простой считают в деньгах.',
-    'exp.n1':'лет в IT','exp.n2':'лет в DevOps','exp.n3':'за диагностику',
-    'exp.s1k':'Облако и железо','exp.s1v':'AWS · Bare metal · VPS',
-    'exp.s2k':'Оркестрация','exp.s2v':'Kubernetes · Docker',
-    'exp.s3k':'Доставка','exp.s3v':'CI/CD · GitHub Actions · GitLab CI',
-    'exp.s4k':'Наблюдаемость','exp.s4v':'Prometheus · Grafana · логи · алерты',
-    'exp.s5k':'Инфраструктура как код','exp.s5v':'Terraform · Ansible',
-
-    'faq.eyebrow':'05 — Вопросы','faq.h':'Частые вопросы',
-    'faq.q1':'Сколько это стоит?','faq.a1':'Диагностика бесплатна. Стоимость работ называю после неё — когда понятен реальный объём. Оплата привязана к результату, а не к количеству потраченных часов.',
-    'faq.q2':'Сколько занимает диагностика?','faq.a2':'Обычно один-три дня. Основное время уходит не на анализ, а на получение доступов и данных с вашей стороны.',
-    'faq.q3':'Нужен ли вам доступ к продакшену?','faq.a3':'Для диагностики, как правило, хватает доступа на чтение: метрики, конфигурация, счёт за облако. Полный доступ — только на этапе работ и по вашим правилам безопасности.',
-    'faq.q4':'У нас проект на Lovable / Bolt / Cursor. Возьмётесь?','faq.a4':'Да, это один из самых частых запросов. Прототип собран и работает, но не готов к реальной нагрузке, не наблюдаем и не переживёт первый всплеск трафика. Это решаемо.',
-    'faq.q5':'У нас нет DevOps-инженера. Это проблема?','faq.a5':'Нет, это обычная ситуация и как раз повод обратиться. Я закрываю эту роль на время работ и оставляю систему в состоянии, которым сможет управлять ваша команда без меня.',
-    'faq.q6':'А если вы не сможете помочь?','faq.a6':'Скажу об этом прямо по итогам диагностики, и вы ничего не заплатите. Если задача не моя — по возможности подскажу, к кому с ней идти.',
-
-    'cta.eyebrow':'Следующий шаг','cta.h':'Начнём с бесплатной диагностики',
-    'cta.p':'Оставьте один контакт — email, Telegram, LinkedIn или телефон. Посмотрю вашу систему и отвечу лично.','cta.btn':'Оставить контакт',
-
-    'form.title':'Оставьте один контакт','form.desc':'Email, Telegram, LinkedIn или телефон — я свяжусь с вами лично.',
-    'form.label':'Ваш контакт','form.ph':'name@example.com или @username',
-    'form.send':'Отправить','form.sending':'Отправляем…',
-    'form.ok':'Спасибо — я получил заявку и свяжусь с вами.',
-    'form.err':'Не удалось отправить заявку. Попробуйте ещё раз или напишите мне напрямую.',
-    'form.valErr':'Укажите контакт — не короче 5 символов.',
-    'form.privacy':'Контакт будет использован только для ответа на эту заявку.',
-    'form.done':'Готово','form.closeAria':'Закрыть окно',
-    'foot.rights':'© 2026 VibeOps · Консалтинг DevOps и FinOps'
-  },
-  en: {
-    'skip':'Skip to content',
-    'meta.title':'DevOps, FinOps & Production Engineering | VibeOps',
-    'meta.desc':'Faster sites, lower cloud bills, reliable production. The diagnosis is free — you only pay for results.',
-    'nav.services':'Services','nav.process':'How I work','nav.exp':'Experience','nav.faq':'FAQ','nav.contact':'Contact',
-    'hero.eyebrow':'DEVOPS · FINOPS · PRODUCTION ENGINEERING',
-    'hero.h1':'Faster sites, smaller cloud bills and <em>a production that stays up</em>.',
-    'hero.lead':'The diagnosis is free. If I can’t help you, you don’t pay. You’re billed only for results: a faster site, a leaner cloud bill, or stronger reliability.',
-    'hero.cta1':'Leave one contact','hero.cta2':'What exactly I do',
-    'hero.t1':'years in IT','hero.t2':'years in DevOps','hero.t3':'AWS · Kubernetes · Bare Metal · CI/CD · Observability',
-
-    'cmp.eyebrow':'01 — What changes','cmp.h':'Before and after',
-    'cmp.lead':'On the left, infrastructure that can’t keep up with load. On the right, the same system after the work. Drag the handle to compare.',
-    'cmp.before':'Before','cmp.after':'After',
-    'cmp.live':'· live topology','cmp.sysOk':'system nominal','cmp.sysBad':'system degraded',
-    'cmp.lg1':'request flow','cmp.lg2':'redundancy and standby','cmp.lg3':'monitoring probes',
-    'cmp.hint':'Drag the slider · the diagram scrolls sideways',
-    'cmp.sliderAria':'Comparison: before and after',
-    'cmp.beforeTitle':'Infrastructure before the work','cmp.afterTitle':'Infrastructure after the work',
-    'cmp.b1':'no CDN','cmp.b2':'single instance','cmp.b3':'no cache','cmp.b4':'no replica',
-    'cmp.a1':'CDN at the edge','cmp.a2':'redundant + HA','cmp.a3':'caching','cmp.a4':'replica + backups',
-    'cmp.c1t':'CDN and cache','cmp.c1d':'Static files and hot requests are served from the node nearest the user, instead of being pulled from your server every time.',
-    'cmp.c2t':'Redundancy at every layer','cmp.c2d':'Load balancers, several application instances and a database replica. One node failing no longer takes the product down.',
-    'cmp.c3t':'The database can breathe','cmp.c3d':'The cache absorbs most of the reads, so the database stops being the bottleneck as traffic grows.',
-    'cmp.c4t':'Every node monitored','cmp.c4d':'Metrics and alerts across the whole chain. You see degradation on a graph, not in an email from a customer.',
-
-    'n.users':'Users','n.dns':'Internet · DNS','n.cdn':'CDN · Edge','n.lb':'Load balancers',
-    'n.frontend':'Frontend','n.backend':'Backend','n.cache':'Cache','n.db':'Database','n.mon':'monitoring',
-    'n.dbPrimary':'Primary','n.dbReplica':'Replica','n.db2':'DB',
-
-    'svc.eyebrow':'02 — Services','svc.h':'What exactly I do',
-    'svc.lead':'I take on work where the result can be measured: response time, cloud bill, deploy time, downtime.',
-    'svc.1t':'Faster site and API','svc.1d':'CDN, caching, query and backend optimisation. The goal is response times in tens of milliseconds instead of seconds of waiting.',
-    'svc.2t':'Lower cloud spend','svc.2d':'I find what you pay for and never use: idle resources, oversized instances, forgotten disks and load balancers.',
-    'svc.3t':'Reliability and failover','svc.3d':'Redundancy, database replicas, automatic recovery. One failing node should never take the whole product down.',
-    'svc.4t':'CI/CD and release speed','svc.4d':'Pipelines, build caches, parallel steps. From commit to production in minutes instead of hours of manual work.',
-    'svc.5t':'Monitoring and alerting','svc.5d':'Metrics, logs and alerts that actually mean something — so you hear about problems before your customers do.',
-    'svc.6t':'Production for AI prototypes','svc.6d':'Projects built with Lovable, Bolt, Cursor or Claude Code, taken to a state you can safely open to real users.',
-
-    'prc.eyebrow':'03 — How I work','prc.h':'Four steps, and the first one is free',
-    'prc.lead':'No upfront payment and no long discovery phase on your budget.','prc.free':'free',
-    'prc.1t':'Diagnosis','prc.1d':'I go through your infrastructure, metrics and cloud bill, and find the bottlenecks and the overspend.',
-    'prc.2t':'Report and estimate','prc.2d':'I show you exactly what’s slow and where the money goes — with a work plan, timeline and expected impact.',
-    'prc.3t':'The work','prc.3d':'I ship the changes to the agreed plan — no production downtime and no surprises for your team.',
-    'prc.4t':'Pay for the result','prc.4d':'You pay once the result is delivered and measured. If I couldn’t help, you pay nothing.',
-
-    'exp.eyebrow':'04 — Experience','exp.h':'Why you can trust me with production',
-    'exp.lead':'Eight years in IT, five of them in DevOps and production engineering. I work with both cloud and bare metal: from small SaaS products to systems where downtime is counted in money.',
-    'exp.n1':'years in IT','exp.n2':'years in DevOps','exp.n3':'for the diagnosis',
-    'exp.s1k':'Cloud and hardware','exp.s1v':'AWS · Bare metal · VPS',
-    'exp.s2k':'Orchestration','exp.s2v':'Kubernetes · Docker',
-    'exp.s3k':'Delivery','exp.s3v':'CI/CD · GitHub Actions · GitLab CI',
-    'exp.s4k':'Observability','exp.s4v':'Prometheus · Grafana · logs · alerts',
-    'exp.s5k':'Infrastructure as code','exp.s5v':'Terraform · Ansible',
-
-    'faq.eyebrow':'05 — FAQ','faq.h':'Frequently asked',
-    'faq.q1':'What does it cost?','faq.a1':'The diagnosis is free. I quote the work after it, once the real scope is clear. Payment is tied to the result, not to the hours spent.',
-    'faq.q2':'How long does the diagnosis take?','faq.a2':'Usually one to three days. Most of that is waiting on access and data from your side, not the analysis itself.',
-    'faq.q3':'Do you need production access?','faq.a3':'For the diagnosis, read-only access is usually enough: metrics, configuration, the cloud bill. Full access only during the work itself, and on your security terms.',
-    'faq.q4':'We built on Lovable / Bolt / Cursor. Will you take it on?','faq.a4':'Yes — it’s one of the most common requests. The prototype works, but it isn’t ready for real load, isn’t observable, and won’t survive the first traffic spike. That’s fixable.',
-    'faq.q5':'We have no DevOps engineer. Is that a problem?','faq.a5':'No, it’s the usual situation and exactly why people call. I cover that role for the duration of the work and leave the system in a state your team can run without me.',
-    'faq.q6':'What if you can’t help?','faq.a6':'I’ll tell you straight after the diagnosis, and you pay nothing. If it isn’t my kind of problem, I’ll point you to someone where I can.',
-
-    'cta.eyebrow':'Next step','cta.h':'Let’s start with the free diagnosis',
-    'cta.p':'Leave one contact — email, Telegram, LinkedIn or phone. I’ll look at your system and reply personally.','cta.btn':'Leave one contact',
-
-    'form.title':'Leave one contact','form.desc':'Email, Telegram, LinkedIn or phone — I’ll contact you personally.',
-    'form.label':'Your contact','form.ph':'name@example.com or @username',
-    'form.send':'Send','form.sending':'Sending…',
-    'form.ok':'Thanks — I received your request and will contact you.',
-    'form.err':'Couldn’t send the request. Please try again or contact me directly.',
-    'form.valErr':'Please enter a contact — at least 5 characters.',
-    'form.privacy':'Your contact is used only to reply to this request.',
-    'form.done':'Done','form.closeAria':'Close dialog',
-    'foot.rights':'© 2026 VibeOps · DevOps & FinOps consulting'
-  }
-};
-
-/* ================= helpers ================= */
-function $all(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
-function byId(id){ return document.getElementById(id); }
-function clamp(v,a,b){ return Math.min(b, Math.max(a, v)); }
-var store = {
-  get:function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
-  set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-};
-var lang = store.get('vibeops-lang') === 'en' ? 'en' : 'ru';
-function t(k){ return (I18N[lang] && I18N[lang][k]) || I18N.ru[k] || k; }
-
-/* ================= language ================= */
-function applyLang(l){
-  lang = (l === 'en') ? 'en' : 'ru';
-  store.set('vibeops-lang', lang);
-  document.documentElement.lang = lang;
-  $all('[data-i18n]').forEach(function(el){ el.textContent = t(el.getAttribute('data-i18n')); });
-  $all('[data-i18n-html]').forEach(function(el){ el.innerHTML = t(el.getAttribute('data-i18n-html')); });
-  $all('[data-i18n-ph]').forEach(function(el){ el.placeholder = t(el.getAttribute('data-i18n-ph')); });
-  $all('[data-i18n-aria]').forEach(function(el){ el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
-  document.title = t('meta.title');
-  var md = document.querySelector('meta[name="description"]');
-  if(md) md.setAttribute('content', t('meta.desc'));
-  $all('.lang button').forEach(function(b){
-    b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
-  });
-}
-$all('.lang button').forEach(function(b){
-  b.addEventListener('click', function(){ applyLang(b.getAttribute('data-lang')); });
-});
-
-/* ================= before/after comparison ================= */
-var cmpTop = byId('cmpTop'), cmpDiv = byId('cmpDiv'), cmpSlider = byId('cmpSlider');
-function syncCmp(){
-  var raw = parseInt(cmpSlider.value, 10);
-  var v = clamp(isNaN(raw) ? 50 : raw, 0, 100);
-  cmpTop.style.clipPath = 'inset(0 ' + (100 - v) + '% 0 0)';
-  cmpDiv.style.left = v + '%';
-  cmpSlider.style.setProperty('--p', v + '%');
-}
-cmpSlider.addEventListener('input', syncCmp);
-
-/* ================= packet animation =================
-   Pooled dots travelling along the SVG route paths. */
-var SVGNS = 'http://www.w3.org/2000/svg';
-var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-var tabHidden = document.hidden;
-document.addEventListener('visibilitychange', function(){ tabHidden = document.hidden; });
-
-function makePool(host, paths, speed, gap, cap){
-  var pool = [], live = [], acc = 0;
-  function make(){
-    var g = document.createElementNS(SVGNS,'g');
-    var halo = document.createElementNS(SVGNS,'circle');
-    halo.setAttribute('class','pkt-halo');
-    var core = document.createElementNS(SVGNS,'circle');
-    core.setAttribute('class','pkt-core');
-    g.appendChild(halo); g.appendChild(core);
-    host.appendChild(g);
-    return { g:g, halo:halo, core:core, t:0, len:1, path:paths[0], spd:speed };
-  }
-  function kill(p){
-    p.g.setAttribute('display','none');
-    var i = live.indexOf(p);
-    if(i > -1) live.splice(i,1);
-    pool.push(p);
-  }
-  function spawn(){
-    var p = pool.pop() || make();
-    p.path = paths[Math.floor(Math.random() * paths.length)];
-    p.len = p.path.getTotalLength();
-    p.t = 0;
-    p.spd = speed * (0.75 + Math.random() * 0.5);
-    /* varied radii give the stream visual texture instead of a uniform dotted line */
-    var r = 2.2 + Math.random() * 2.4;
-    p.core.setAttribute('r', r.toFixed(1));
-    p.halo.setAttribute('r', (r * 2).toFixed(1));
-    p.g.removeAttribute('display');
-    live.push(p);
-  }
-  /* Fill the lane immediately with packets at random positions. Without this the
-     whole batch spawns at t=0 within the first seconds and travels as one clump. */
-  function seed(){
-    for(var i = 0; i < cap; i++){ spawn(); live[live.length - 1].t = Math.random(); }
-  }
-  return {
-    seed: seed,
-    step: function(dt){
-      if(reduced || tabHidden) return;
-      acc += dt * 1000;
-      while(acc > gap && live.length < cap){ acc = 0; spawn(); }
-      for(var i = live.length - 1; i >= 0; i--){
-        var p = live[i];
-        p.t += (p.spd * dt) / p.len;
-        if(p.t >= 1){ kill(p); }
-        else {
-          var pt = p.path.getPointAtLength(p.t * p.len);
-          p.g.setAttribute('transform','translate(' + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1) + ')');
-        }
-      }
-    },
-    hide: function(){ while(live.length) kill(live[0]); host.setAttribute('display','none'); }
-  };
-}
-
-/* Dense streams, matching the reference art: many small dots rather than a few
-   large ones. Counts are the ceiling, not the steady state. */
-var pools = [
-  makePool(byId('pktBefore'), [byId('pBefore')], 95, 380, 22),
-  makePool(byId('pktAfter'),  [byId('pA1'),byId('pA2'),byId('pA3')], 150, 260, 28)
-];
-if(reduced) pools.forEach(function(p){ p.hide(); });
-else pools.forEach(function(p){ p.seed(); });
-
-var lastT = performance.now();
-function frame(now){
-  var dt = Math.min(0.05, (now - lastT) / 1000);
-  lastT = now;
-  for(var i = 0; i < pools.length; i++) pools[i].step(dt);
-  requestAnimationFrame(frame);
-}
-
-/* ================= lead modal ================= */
-var ovl = byId('ovl'), modal = byId('modal'), page = byId('page');
-var leadForm = byId('leadForm'), contactInput = byId('contact');
-var fErr = byId('fErr'), mSubmit = byId('mSubmit'), mSubmitTxt = byId('mSubmitTxt');
-var mForm = byId('mForm'), mOk = byId('mOk');
-var lastFocus = null, sending = false, wasOk = false;
-
-function modalKey(e){
-  if(e.key === 'Escape'){ e.preventDefault(); closeModal(); return; }
-  if(e.key !== 'Tab') return;
-  var f = Array.prototype.filter.call(
-    modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'),
-    function(el){ return !el.disabled && el.offsetParent !== null && !el.classList.contains('hp'); }
-  );
-  if(!f.length) return;
-  var first = f[0], last = f[f.length - 1];
-  if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-  else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-}
-function openModal(){
-  lastFocus = document.activeElement;
-  ovl.hidden = false;
-  requestAnimationFrame(function(){ ovl.classList.add('show'); });
-  page.setAttribute('inert','');
-  document.body.style.overflow = 'hidden';
-  document.addEventListener('keydown', modalKey);
-  setTimeout(function(){ contactInput.focus(); }, 60);
-}
-function closeModal(){
-  ovl.classList.remove('show');
-  document.removeEventListener('keydown', modalKey);
-  page.removeAttribute('inert');
-  document.body.style.overflow = '';
-  setTimeout(function(){
-    ovl.hidden = true;
-    if(wasOk){ wasOk = false; mOk.hidden = true; mForm.hidden = false; leadForm.reset(); fErr.hidden = true; }
-  }, 230);
-  if(lastFocus) lastFocus.focus();
-}
-$all('.js-open').forEach(function(b){ b.addEventListener('click', openModal); });
-byId('mClose').addEventListener('click', closeModal);
-byId('okClose').addEventListener('click', closeModal);
-ovl.addEventListener('mousedown', function(e){ if(e.target === ovl) closeModal(); });
-
-function sendLead(payload){
-  /* PRODUCTION: POST payload to /api/lead (Turnstile validated server-side, Resend sends the email). */
-  void payload;
-  return new Promise(function(resolve){ setTimeout(resolve, 800); });
-}
-leadForm.addEventListener('submit', function(e){
-  e.preventDefault();
-  if(sending) return;
-  var honeypot = leadForm.querySelector('[name="company"]');
-  var contact = contactInput.value.trim();
-  if(honeypot && honeypot.value){ mForm.hidden = true; mOk.hidden = false; wasOk = true; byId('okClose').focus(); return; }
-  if(contact.length < 5 || contact.length > 200){
-    fErr.textContent = t('form.valErr'); fErr.hidden = false; contactInput.focus(); return;
-  }
-  fErr.hidden = true; sending = true; mSubmit.disabled = true;
-  mSubmitTxt.textContent = t('form.sending');
-  sendLead({ contact:contact, language:lang, url:location.href, referrer:document.referrer || '', timestamp:new Date().toISOString() })
-    .then(function(){ mForm.hidden = true; mOk.hidden = false; wasOk = true; byId('okClose').focus(); })
-    .catch(function(){ fErr.textContent = t('form.err'); fErr.hidden = false; contactInput.focus(); })
-    .then(function(){ sending = false; mSubmit.disabled = false; mSubmitTxt.textContent = t('form.send'); });
-});
-
-/* ================= init ================= */
-applyLang(lang);
-syncCmp();
-lastT = performance.now();
-requestAnimationFrame(frame);
-})();
-</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+<script src="js/main.js"></script>
+<script src="js/animations.js"></script>
 </body>
 </html>
