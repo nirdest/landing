@@ -10,7 +10,7 @@ A bilingual (RU default / EN toggle) one-page landing site for an independent De
 
 External dependencies, all loaded from CDN via plain `<script>`/`<link>` tags:
 - Fonts from jsDelivr (`@fontsource-variable/inter`, `@fontsource/jetbrains-mono`)
-- GSAP + ScrollTrigger from jsDelivr (`gsap@3/dist/gsap.min.js`, `gsap@3/dist/ScrollTrigger.min.js`) — used only for `js/animations.js`'s scroll-reveal; everything else (i18n, modal, slider, packet animation) has zero dependencies and would keep working if GSAP failed to load, since `animations.js` guards on `typeof gsap === 'undefined'` and no element ships a baked-in `opacity:0`.
+- GSAP + ScrollTrigger are **vendored** in `js/vendor/` (pinned 3.13.0), not loaded from a CDN: they were the only third-party executable code on a page that has a contact field, and they came off jsDelivr by the floating `gsap@3` tag with no `integrity`. Used only for `js/animations.js`'s scroll-reveal; everything else (i18n, modal, slider, packet animation) has zero dependencies and would keep working if GSAP failed to load, since `animations.js` guards on `typeof gsap === 'undefined'` and no element ships a baked-in `opacity:0`.
 
 ## Commands
 
@@ -36,7 +36,7 @@ done
 
 Live URL: **https://devops.toys/** (`nirdest.github.io/landing/` 301-redirects there).
 
-Publishing is filtered by `_config.yml`. Internal working documents (`competitive-analysis.html`, `research/`, `CLAUDE.md`) are listed under `exclude:` so Jekyll does not copy them into the built site — they live in git but are **not** reachable over the web. `robots.txt` repeats the same two paths as `Disallow:` for defence in depth. If you add another internal document, add it to both, then verify it 404s after deploy rather than assuming.
+Publishing is filtered by `_config.yml`. Internal working documents (`competitive-analysis.html`, `research/`, `CLAUDE.md`) are listed under `exclude:` so Jekyll does not copy them into the built site — they live in git but are **not** reachable over the web. `robots.txt` repeats those paths as `Disallow:` for defence in depth. Note this only protects the *site*: the repository is public, so every excluded file is still readable at `raw.githubusercontent.com/nirdest/landing/main/…`. If you add another internal document, add it to both, then verify it 404s after deploy rather than assuming.
 
 `CNAME` pins the custom domain to `devops.toys`; do not delete it.
 
@@ -45,7 +45,7 @@ Publishing is filtered by `_config.yml`. Internal working documents (`competitiv
 Nothing here is type-checked or unit-tested, and the CSS/SVG bugs this site has hit were all invisible in code review. **Measure in a browser instead of eyeballing screenshots.** Install Playwright in the scratchpad (not in the repo — keep it dependency-free):
 
 ```bash
-cd "$SCRATCHPAD" && npm init -y && npm install playwright --no-save && npx playwright install chromium
+cd <your scratchpad dir> && npm init -y && npm install playwright --no-save && npx playwright install chromium
 ```
 
 Checks worth running after any visual change, at viewports 1440 / 1100 / 800 / 620 / 390:
@@ -59,15 +59,11 @@ Checks worth running after any visual change, at viewports 1440 / 1100 / 800 / 6
 
 ## Architecture
 
-Markup in `index.html`, styles in `css/styles.css`, behavior in `js/main.js` + `js/animations.js` — all sectioned by banner comments (`/* ===== tokens ===== */`, `<!-- ===== hero ===== -->`, etc.). Grep those to navigate; the banner names are consistent across all three files.
+Markup in `index.html`, styles in `css/styles.css`, behavior in `js/main.js` + `js/animations.js` — all sectioned by banner comments (`/* ============ tokens ============ */`, `<!-- ============ hero ============ -->`, twelve `=` on each side). Grep those to navigate; the banner names are consistent across all three files.
 
-Page order: header → hero (with a reserved, empty 3D-asset zone, see below) → services → before/after comparison → **what I won't do** → process → experience → **alternatives comparison** → FAQ → final CTA → footer → lead modal. The two bold sections were added in the 2026-08 rebuild; see `research/03-build-brief.md` for why. Services leads the page at the owner's request (it used to sit third, behind the comparison).
+Page order: header → hero → services → before/after comparison → **what I won't do** → process → experience → **alternatives comparison** → FAQ → final CTA → footer → lead modal. The two bold sections were added in the 2026-08 rebuild; see `research/03-build-brief.md` for why. Services leads the page at the owner's request (it used to sit third, behind the comparison).
 
 Single-page is a **deliberate** choice, re-confirmed by competitor research in `research/02-competitor-analysis.md`: the top-scoring competitors win search visibility through 45+-page programmatic architecture that doesn't fit a solo consultant's actual sales motion. Don't split this into multiple pages without re-reading that file first.
-
-### Hero 3D placeholder
-
-`.hero-3d` in `index.html` is an empty, reserved 640×640 zone, absolutely positioned to the right of the hero text, hidden below 1150px (`css/styles.css`). Nothing renders there today — it's a slot for a future scroll-driven asset (see the HTML comment right above it for the exact contract). If you fill it, wire its scroll progress through `js/animations.js`, not a new file.
 
 ### i18n
 
@@ -82,22 +78,22 @@ Client-side only; no localized routes. RU is the default, EN is a toggle persist
 | `data-i18n-ph` | `placeholder` |
 | `data-i18n-aria` | `aria-label` |
 
-Static markup ships the **Russian** strings so there is no flash of the wrong language before JS runs. `I18N` itself now lives in `js/main.js`, not inline in `index.html`.
+Static markup ships the **Russian** strings so there is no flash of the wrong language before JS runs — and since the 2026-08 audit those strings are also the single source of truth. At startup `main.js` walks the same four attributes and captures the markup text into `BASE`; `t()` resolves `I18N.en[k] → BASE[k] → I18N.ru[k] → k`. This deleted ~96 lines of duplicated dictionary and structurally removed the stale-cache bug described in the footguns.
 
 Section eyebrows are numbered (`01 — …` through `07 — …`) and the numbers are baked into the translated strings, not generated — inserting or removing a section means renumbering every `*.eyebrow` key by hand in both `ru` and `en`.
 
-**Invariant:** every key referenced in markup must exist in both `I18N.ru` and `I18N.en`, and the two dictionaries must stay the same size (170 keys each as of the 2026-08 rebuild). A missing key silently renders the raw key string. Verify after editing content:
+**Invariant:** every key referenced in markup must exist in `I18N.en`. `I18N.ru` holds only the five strings that are *not* in the markup (`meta.title`, `meta.desc`, `form.sending`, `form.err`, `form.valErr`) — the rest of the Russian baseline is read off the markup itself into `BASE` at startup, so it cannot drift out of sync with the page. A key missing from `I18N.en` falls back to the Russian text, never to a raw key string. Verify after editing content:
 
 ```bash
 grep -oE 'data-i18n(-ph|-aria|-html)?="[^"]+"' index.html | sed -E 's/.*="(.*)"/\1/' | sort -u
 ```
-…then check each against both dictionaries and diff `Object.keys(I18N.ru)` against `Object.keys(I18N.en)`.
+…then check each key exists in `I18N.en`. The Russian side needs no check — it *is* the markup.
 
 ### Before/after comparison widget
 
 The centrepiece. Two full inline SVGs sharing `viewBox="0 0 1400 470"`, stacked absolutely:
 
-- `.cmp-base` (`z-index:1`) holds `#topoAfter` — the healthy architecture, **always fully painted**
+- `.cmp-base` (`z-index:1`) holds the healthy architecture, **always fully painted** (the `id="topoAfter"` on that `<svg>` is unreferenced — CSS targets the classes)
 - `.cmp-top` (`z-index:2`, `#cmpTop`) holds `#topoBefore` — the degraded one, revealed from the left by `clip-path: inset(0 N% 0 0)`
 - a native `<input type=range>` (`#cmpSlider`) overlays the box and drives both the clip-path and the divider's `left`
 
@@ -117,7 +113,11 @@ Below 760px the widget changes mode: `.cmp-wrap` scrolls horizontally with `min-
 
 `seed()` must be called once at startup: it fills each lane with packets at random `t`. Without it the whole batch spawns at `t=0` and travels as a single visible clump, because transit time far exceeds `cap × gap`.
 
-A single `requestAnimationFrame` loop drives all pools. Motion is suppressed when `prefers-reduced-motion: reduce` or the tab is hidden.
+A single `requestAnimationFrame` loop drives all pools, and it only runs while the widget is on screen: an `IntersectionObserver` on `.cmp` and a `visibilitychange` listener stop the loop (`running = false`) and restart it via `startFrames()`. Under `prefers-reduced-motion: reduce` nothing is seeded and the loop never starts at all.
+
+`getPointAtLength()` is **not** called per frame — that cost ~0.07 ms per packet and burned ~3.9 ms of every 16.6 ms frame. Each path is sampled once into a lookup table (`lut()`, ~1px steps, cached by path element) and the frame just indexes it. Measured over 4 s with the widget on screen: **497 ms → 5 ms** of script time; off screen **605 ms → 3 ms**. If you change a route's `d`, the LUT is keyed by element and rebuilt only on reload — a live path edit needs `lutCache.clear()`.
+
+Guard rails worth keeping: `p.len` falls back to `1` (a not-yet-laid-out SVG returns 0, and `0/0` makes `p.t` NaN), and the kill test is `!(p.t < 1)` rather than `p.t >= 1` so a NaN packet is retired instead of living forever.
 
 Both SVGs paint an opaque `<rect fill="var(--card)">` to stop the layers bleeding through, which also covers `.cmp`'s CSS dot grid — so the grid is re-drawn *inside* each SVG as an `<pattern>` (`#dotsA` / `#dotsB`). Pattern ids must stay unique across the two inline SVGs; they share one document.
 
@@ -161,7 +161,7 @@ A bare `Authentication error [code: 10000]` on upload means the credential lacks
 
 ### Scroll animations (`js/animations.js`)
 
-GSAP ScrollTrigger fades/translates each `.sec` up on scroll-in (`once: true`, so it doesn't replay), plus a one-time staggered reveal of the hero's direct children on load. This is **pure progressive enhancement by construction**: no element carries a baked-in `opacity:0` in CSS, and the script bails out immediately (`return`) if `gsap`/`ScrollTrigger` are undefined or the visitor has `prefers-reduced-motion: reduce` — so a CDN failure or reduced-motion preference both leave every section simply visible, never stuck invisible. Keep that invariant if you touch this file: don't move the initial-state opacity into CSS, or a blocked CDN script turns into a blank page.
+GSAP ScrollTrigger fades/translates each `.sec` up on scroll-in (`once: true`, so it doesn't replay), plus a one-time staggered reveal of the hero's text elements on load (the selector matches descendants, not direct children). This is **pure progressive enhancement by construction**: no element carries a baked-in `opacity:0` in CSS, and the script bails out immediately (`return`) if `gsap`/`ScrollTrigger` are undefined or the visitor has `prefers-reduced-motion: reduce` — so a missing script or reduced-motion preference both leave every section simply visible, never stuck invisible. Keep that invariant if you touch this file: don't move the initial-state opacity into CSS, or a blocked CDN script turns into a blank page.
 
 ## Footguns hit in this codebase
 
@@ -179,13 +179,12 @@ Breakpoints are `980 / 900 / 760 / 620` and are **not** written in descending or
 
 ## Unfinished / needs the owner's input
 
-- **HTTPS is not yet working on the custom domain.** DNS resolves and the site serves over `http://devops.toys/`, but GitHub has not provisioned a TLS certificate for it — `https://devops.toys/` fails with a `*.github.io` certificate name mismatch. The `CNAME` file now exists (it did not before, which is the usual cause). Finishing this needs a UI action nobody but the repo owner can take: Settings → Pages → wait for "Certificate provisioned", then tick **Enforce HTTPS**.
-- DNS currently has only **two** of GitHub's four apex A records (`185.199.108.153`, `185.199.109.153`). Adding `110.153` and `111.153` costs nothing and buys redundancy.
+- **`http://devops.toys/` still answers 200 instead of redirecting, and there is no HSTS.** A visitor who types the bare domain submits their contact over plaintext, because `fetch('/api/lead')` follows the page scheme. Fix is two toggles the owner has to flip: Cloudflare → SSL/TLS → Edge Certificates → **Always Use HTTPS**, then **Enable HSTS**. (HTTPS itself works — the zone is proxied by Cloudflare and TLS terminates there. DNS no longer points at GitHub's apex A records.)
+- **`/api/lead` has no rate limit.** The Worker checks `Origin`, body size and contact length, but nothing stops a scripted loop from burning the 100k/day Workers quota and flooding the inbox. One WAF rate-limiting rule (5 requests / 10 min per IP on that path) is free and closes it; Turnstile only if spam actually starts.
 - Consultant is **Денис Кузьмин** — `linkedin.com/in/nirdest`, `github.com/nirdest`. Both are wired into the JSON-LD `Person` (`sameAs`) and the footer. No placeholders remain in any published file.
 - The name appears **only** in structured data and the footer links; nothing on the visible page names the consultant. For a site whose whole pitch is personal trust ("я свяжусь с вами лично"), a visible byline in the Experience section is an obvious gap — not done because it's a content decision the owner hasn't asked for.
 - The lead form now mails leads to the owner's inbox (see "Backend"). It has **no spam protection beyond the honeypot and a length check** — no Turnstile, no rate limit. Workers Free allows 100k requests/day, so a bot could burn that; add Turnstile if spam actually shows up. Leads are not stored anywhere, the mailbox is the only archive.
 - The tech stack and the "10+ years in IT / 6+ in DevOps" figures in the Experience section (and the matching pair in the hero) come from the owner's own CV, supplied 2026-08-01. The nine stack rows are his CV's skill categories; the year counts are what he asked for, and are *higher* than the CV's own "8+ / 5+" — he set them deliberately, so don't "correct" them back.
 - Don't invent metrics, case studies or client names — an earlier interactive "tuner" showing fabricated latency/cost numbers was removed for exactly this reason.
-- The `.hero-3d` zone is an empty placeholder — no asset exists yet. See "Hero 3D placeholder" above.
 - The **"what I won't do"** (`#avoid`) and **alternatives comparison** (`#alt`) sections were drafted by Claude from `research/03-build-brief.md`, following the existing site's tone and already-stated positioning (free diagnosis, pay-for-result, no lock-in) — not fabricated metrics, but still the owner should read them once before this goes live, since they're first-person claims about how the consultant actually works.
-- Full competitive research behind this rebuild: `research/01-client-brand.md`, `research/02-competitor-analysis.md`, `research/03-build-brief.md`, and `competitive-analysis.html` in the repo root. **These are internal.** `competitive-analysis.html` scores ten named competitors; it and `research/` were briefly served publicly on the live domain before `_config.yml` excluded them. Keep them excluded.
+- Full competitive research behind this rebuild: `research/01-client-brand.md`, `research/02-competitor-analysis.md`, `research/03-build-brief.md`, `research/04-quality-audit.md`, and `competitive-analysis.html` in the repo root. **These are internal.** `competitive-analysis.html` scores ten named competitors; it and `research/` were briefly served publicly on the live domain before `_config.yml` excluded them. Keep them excluded.

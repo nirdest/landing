@@ -23,6 +23,16 @@ export default {
   async fetch(request, env) {
     if (request.method !== 'POST') return new Response('method not allowed', { status: 405 });
 
+    /* Форма — единственный легитимный источник. Пустой Origin допускаем: same-origin
+       POST его может не прислать. Это не замена rate-limit на краю, а отсечение
+       браузерного кросс-сайт вектора: чужая страница не сможет слать письма руками
+       своих посетителей. */
+    const origin = request.headers.get('origin');
+    if (origin && origin !== 'https://devops.toys') return new Response('forbidden', { status: 403 });
+
+    /* Тело разбирается до всякой валидации, поэтому ограничиваем его заранее. */
+    if (Number(request.headers.get('content-length')) > 2048) return new Response('too large', { status: 413 });
+
     let d;
     try { d = await request.json(); } catch { return new Response('bad json', { status: 400 }); }
 
@@ -40,11 +50,12 @@ export default {
       `Реферер:   ${String(d.referrer || '').slice(0, 300)}`,
       `Время:     ${new Date().toISOString()}`,
       `Откуда:    ${cf.country || '?'} / ${cf.city || '?'}`,
-      `UA:        ${request.headers.get('user-agent') || '?'}`,
+      `UA:        ${(request.headers.get('user-agent') || '?').slice(0, 200)}`,
     ].join('\n');
 
-    /* Видно в `wrangler tail`: без этого успешный send() неотличим от несконфигурированного. */
-    console.log('lead from', contact, '→', String(env.LEAD_TO || 'LEAD_TO NOT SET').replace(/(.{2}).*(@.*)/, '$1***$2'));
+    /* Видно в `wrangler tail`: без этого успешный send() неотличим от несконфигурированного.
+       Сам контакт не логируем — это персональные данные живого человека, и они уже есть в письме. */
+    console.log('lead', contact.length, 'chars →', String(env.LEAD_TO || 'LEAD_TO NOT SET').replace(/(.{2}).*(@.*)/, '$1***$2'));
 
     try {
       await env.EMAIL.send(new EmailMessage(

@@ -43,7 +43,7 @@
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
 <!-- ?v= обязателен: HTML и ассеты кэшируются раздельно (600s), и без версии
      новая разметка успевает встретиться со старым CSS/JS. Меняешь файл — меняй дату. -->
-<link href="css/styles.css?v=2026-08-01b" rel="stylesheet">
+<link href="css/styles.css?v=2026-08-01c" rel="stylesheet">
 <!-- The Person is the provider of the service and is linked both ways by @id, so
      search engines tie the practice to a named human rather than treating them as
      two unrelated entities. Name kept in Cyrillic on both locales: a personal name
@@ -83,13 +83,6 @@
 
   <!-- ============ hero ============ -->
   <section class="wrap hero">
-    <!-- 3D SCROLL ASSET HERE — reserved 640×640 zone, right-aligned, vertically
-         centered on the hero. Hidden below 1150px (see .hero-3d in styles.css).
-         Drop a <canvas>/<model-viewer>/Spline embed in here and wire its scroll
-         progress to ScrollTrigger in js/animations.js; nothing currently renders
-         in this box. -->
-    <div class="hero-3d" aria-hidden="true"></div>
-    <div class="wrap-in">
     <p class="eyebrow" data-i18n="hero.eyebrow">DEVOPS · FINOPS · PRODUCTION ENGINEERING</p>
     <h1 class="h1" data-i18n-html="hero.h1">Быстрые сайты, меньший счёт за облако и <em>продакшен, который не падает</em>.</h1>
     <p class="lead" data-i18n="hero.lead">Диагностику проведу бесплатно. Если не смогу помочь — вы не платите. Оплата только за результат: ускорение сайта, оптимизацию бюджета или повышение отказоустойчивости.</p>
@@ -101,7 +94,6 @@
       <span><b>10+</b> <span data-i18n="hero.t1">лет в IT</span></span>
       <span><b>6+</b> <span data-i18n="hero.t2">лет в DevOps</span></span>
       <span data-i18n="hero.t3">AWS · Kubernetes · Bare Metal · CI/CD · Observability</span>
-    </div>
     </div>
   </section>
 
@@ -382,7 +374,9 @@
         <div class="nums" style="margin-top:clamp(28px,3.4vw,42px)">
           <div class="num"><b>10+</b><span data-i18n="exp.n1">лет в IT</span></div>
           <div class="num"><b>6+</b><span data-i18n="exp.n2">лет в DevOps</span></div>
-          <div class="num"><b>0 ₽</b><span data-i18n="exp.n3">за диагностику</span></div>
+          <!-- ₽ (U+20BD) — единственный символ страницы из сабсета latin-ext, и ради него
+               грузился отдельный woff2 на 85 КБ. Рисуем его системным шрифтом. -->
+          <div class="num"><b>0 <span style="font-family:system-ui,sans-serif">₽</span></b><span data-i18n="exp.n3">за диагностику</span></div>
         </div>
       </div>
       <dl class="stack">
@@ -491,7 +485,7 @@
 <!-- ============ lead modal ============ -->
 <div class="ovl" id="ovl" hidden>
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-    <button class="m-close" id="mClose" type="button" aria-label="Закрыть" data-i18n-aria="form.closeAria">✕</button>
+    <button class="m-close" id="mClose" type="button" aria-label="Закрыть окно" data-i18n-aria="form.closeAria">✕</button>
     <div id="mForm">
       <h3 id="mTitle" data-i18n="form.title">Оставьте один контакт</h3>
       <p class="m-desc" data-i18n="form.desc">Email, Telegram, LinkedIn или телефон — я свяжусь с вами лично.</p>
@@ -512,9 +506,12 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-<script src="js/main.js?v=2026-08-01b"></script>
-<script src="js/animations.js?v=2026-08-01b"></script>
+<!-- GSAP отдаём со своего домена: это единственный сторонний исполняемый код на
+     странице, и с jsDelivr он тянулся по плавающему тегу gsap@3 без integrity —
+     то есть компрометация CDN означала бы доступ к полю ввода контакта. Версия 3.13.0. -->
+<script src="js/vendor/gsap.min.js?v=3.13.0"></script>
+<script src="js/vendor/ScrollTrigger.min.js?v=3.13.0"></script>
+<script src="js/main.js?v=2026-08-01c"></script>
+<script src="js/animations.js?v=2026-08-01c"></script>
 </body>
 </html>

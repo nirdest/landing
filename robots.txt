@@ -7,5 +7,6 @@ Allow: /
 Disallow: /competitive-analysis.html
 Disallow: /research/
 Disallow: /worker/
+Disallow: /CLAUDE.md
 
 Sitemap: https://devops.toys/sitemap.xml
