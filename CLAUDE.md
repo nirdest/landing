@@ -173,6 +173,7 @@ These are real bugs that shipped here. Re-check them when touching related code.
 - **`parseInt(el.value, 10) || fallback`.** A valid slider value of `0` is falsy and gets replaced by the fallback. Use an `isNaN` check.
 - **`[hidden]` losing to an author `display` rule.** `.overlay{display:flex}` beat the UA `[hidden]{display:none}` at equal specificity, leaving an invisible full-page layer that swallowed every click and drag on the site. `.ovl[hidden]{display:none}` is the guard.
 - **SVG text has no layout engine.** Labels are hand-placed and will silently overlap when strings change length — especially when switching RU↔EN. Check intersections programmatically, in both languages.
+- **Markup and dictionary shipping out of step.** `index.html` and `js/main.js` are separate files with separate 600s caches, so adding i18n keys to both at once still leaves a window where a visitor holds new markup and the old dictionary — and the page renders raw `exp.s6k` strings. Two guards now exist and both must stay: local `css/js` are linked with `?v=<date>` (**bump it whenever you change those files**), and `applyLang` skips keys the dictionary lacks, leaving the Russian text baked into the markup. Verifying over `file://` cannot see this class of bug — load the deployed URL, or stub an older `main.js` with Playwright's `page.route`.
 
 Breakpoints are `980 / 900 / 760 / 620` and are **not** written in descending order; they currently touch disjoint properties, so verify cascade order if you add rules that overlap.
 
