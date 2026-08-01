@@ -121,7 +121,41 @@ Both SVGs paint an opaque `<rect fill="var(--card)">` to stop the layers bleedin
 
 ### Lead modal
 
-Focus trap, Escape to close, `inert` on `#page`, focus returned to opener, honeypot field. `sendLead()` is **simulated** — it resolves after a timeout. There is no backend; wiring `POST /api/lead` is unfinished work.
+Focus trap, Escape to close, `inert` on `#page`, focus returned to opener, honeypot field. `sendLead()` POSTs to `/api/lead`.
+
+### Backend (`worker/`)
+
+`worker/lead.js` is a Cloudflare Worker on route `devops.toys/api/lead`, deployed separately from the site (`npx wrangler deploy` from `worker/`, credentials below). It validates the contact string, drops honeypot hits silently, and mails the lead via the `send_email` binding from `lead@devops.toys` to the owner's verified Email Routing destination (`env.LEAD_TO`, stored as a Worker secret — not in this repo, which is public) — free on the Workers Free plan, since sending to your *own verified destination* costs nothing and doesn't touch the paid quota. Sending to an arbitrary address would need Workers Paid.
+
+The route lives on the same zone as the site, so the browser call is same-origin and there is no CORS handling. Cloudflare proxies `devops.toys` in front of GitHub Pages; `/api/lead` is intercepted at the edge, everything else falls through to Pages.
+
+- `worker/` is in both `_config.yml` `exclude:` and `robots.txt`, like the other non-published paths.
+- **Route propagation takes 1–2 minutes after `wrangler deploy`.** Before it lands, requests reach GitHub Pages instead and POST returns Fastly's `405 Not Allowed` (`via: 1.1 varnish` in the response headers) — that is not a Worker bug, just wait and re-curl.
+- The account holding `devops.toys` may not be the one `CLOUDFLARE_API_TOKEN` points at. See "Cloudflare credentials" below.
+- `env.EMAIL.send()` uses the stable `cloudflare:email` `EmailMessage` API with a hand-built MIME string (base64 body + RFC 2047 subject, so Cyrillic survives). Cloudflare's newer Email Service offers a one-line `env.EMAIL.send({to, from, subject, text})` object form, in public beta since 2026-04; if the legacy call ever breaks, that swap deletes the MIME helper.
+
+Check after any change to it:
+
+```bash
+curl -s -X POST https://devops.toys/api/lead -H 'content-type: application/json' \
+  -d '{"contact":"test@example.com","language":"ru"}'          # → {"ok":true} + mail
+curl -s -X POST https://devops.toys/api/lead -H 'content-type: application/json' \
+  -d '{"contact":"ab"}'                                        # → 400 bad contact
+curl -s -X POST https://devops.toys/api/lead -H 'content-type: application/json' \
+  -d '{"contact":"x@y.zz","company":"spam"}'                   # → 200, no mail (honeypot)
+```
+
+### Cloudflare credentials
+
+`CLOUDFLARE_API_TOKEN` may be exported in the shell environment pointing at a **different Cloudflare account** — one that cannot see `devops.toys` at all, so deploying with it would push the Worker to the wrong place. Wrangler has OAuth credentials for the right account, but that environment variable wins over them, so blank it explicitly:
+
+```bash
+cd worker && CLOUDFLARE_API_TOKEN= npx wrangler deploy
+```
+
+Confirm the target first — `CLOUDFLARE_API_TOKEN= npx wrangler whoami` lists the accounts the OAuth login can reach; the correct one is the personal account that owns the `devops.toys` zone. Pass its id via `CLOUDFLARE_ACCOUNT_ID` if wrangler asks which to use. Account ids are deliberately not written down here — this file is in a public repository.
+
+A bare `Authentication error [code: 10000]` on upload means the credential lacks `Workers Scripts: Edit` (read-only tokens still list scripts fine, which makes this look like an account mix-up when it isn't).
 
 ### Scroll animations (`js/animations.js`)
 
@@ -146,7 +180,7 @@ Breakpoints are `980 / 900 / 760 / 620` and are **not** written in descending or
 - DNS currently has only **two** of GitHub's four apex A records (`185.199.108.153`, `185.199.109.153`). Adding `110.153` and `111.153` costs nothing and buys redundancy.
 - Consultant is **Денис Кузьмин** — `linkedin.com/in/nirdest`, `github.com/nirdest`. Both are wired into the JSON-LD `Person` (`sameAs`) and the footer. No placeholders remain in any published file.
 - The name appears **only** in structured data and the footer links; nothing on the visible page names the consultant. For a site whose whole pitch is personal trust ("я свяжусь с вами лично"), a visible byline in the Experience section is an obvious gap — not done because it's a content decision the owner hasn't asked for.
-- The lead form does not submit anywhere.
+- The lead form now mails leads to the owner's inbox (see "Backend"). It has **no spam protection beyond the honeypot and a length check** — no Turnstile, no rate limit. Workers Free allows 100k requests/day, so a bot could burn that; add Turnstile if spam actually shows up. Leads are not stored anywhere, the mailbox is the only archive.
 - The tech stack listed in the Experience section was partly inferred and has not been confirmed by the owner. Don't present it as verified.
 - Don't invent metrics, case studies or client names — an earlier interactive "tuner" showing fabricated latency/cost numbers was removed for exactly this reason.
 - The `.hero-3d` zone is an empty placeholder — no asset exists yet. See "Hero 3D placeholder" above.

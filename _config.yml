@@ -12,3 +12,4 @@ exclude:
   - research/
   - CLAUDE.md
   - README.md
+  - worker/

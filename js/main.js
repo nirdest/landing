@@ -364,9 +364,12 @@ byId('okClose').addEventListener('click', closeModal);
 ovl.addEventListener('mousedown', function(e){ if(e.target === ovl) closeModal(); });
 
 function sendLead(payload){
-  /* PRODUCTION: POST payload to /api/lead (Turnstile validated server-side, Resend sends the email). */
-  void payload;
-  return new Promise(function(resolve){ setTimeout(resolve, 800); });
+  /* Cloudflare Worker на devops.toys/api/lead (см. worker/lead.js) шлёт письмо владельцу. */
+  return fetch('/api/lead', {
+    method:'POST',
+    headers:{'content-type':'application/json'},
+    body:JSON.stringify(payload)
+  }).then(function(r){ if(!r.ok) throw new Error(r.status); });
 }
 leadForm.addEventListener('submit', function(e){
   e.preventDefault();

@@ -1,0 +1,17 @@
+name = "devopstoys-lead"
+main = "lead.js"
+compatibility_date = "2026-08-01"
+
+routes = [{ pattern = "devops.toys/api/lead", zone_name = "devops.toys" }]
+
+[[send_email]]
+name = "EMAIL"
+
+[vars]
+# LEAD_FROM: любой адрес на зоне devops.toys, ящик заводить не нужно.
+LEAD_FROM = "lead@devops.toys"
+
+# LEAD_TO — адрес получателя заявок. Это secret, а не var: репозиторий публичный.
+# Задаётся один раз, деплой его не трогает:
+#   CLOUDFLARE_API_TOKEN= npx wrangler secret put LEAD_TO
+# Значение должно быть подтверждено в Email Routing → Destination addresses.

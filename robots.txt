@@ -6,5 +6,6 @@ Allow: /
 # is ever removed by accident, crawlers still leave them alone.
 Disallow: /competitive-analysis.html
 Disallow: /research/
+Disallow: /worker/
 
 Sitemap: https://devops.toys/sitemap.xml
