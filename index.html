@@ -8,7 +8,7 @@
   Consultant: Денис Кузьмин (linkedin.com/in/nirdest, github.com/nirdest).
   The name currently appears only in the JSON-LD and the footer links — no
   visible byline on the page itself yet.
-  The lead form is simulated here; in production it POSTs to /api/lead.
+  The lead form POSTs to /api/lead — a Cloudflare Worker on this zone (see worker/).
   Language: single page, client-side RU/EN toggle (RU is the default).
   Markup/CSS/JS live in separate files (css/styles.css, js/main.js, js/animations.js) —
   index.html stays at the repo root so GitHub Pages keeps serving it unchanged.
@@ -96,17 +96,34 @@
       <a class="btn-ghost" href="#services" data-i18n="hero.cta2">Что именно я делаю</a>
     </div>
     <div class="hero-trust">
-      <span><b>8+</b> <span data-i18n="hero.t1">лет в IT</span></span>
-      <span><b>5+</b> <span data-i18n="hero.t2">лет в DevOps</span></span>
+      <span><b>10+</b> <span data-i18n="hero.t1">лет в IT</span></span>
+      <span><b>6+</b> <span data-i18n="hero.t2">лет в DevOps</span></span>
       <span data-i18n="hero.t3">AWS · Kubernetes · Bare Metal · CI/CD · Observability</span>
     </div>
+    </div>
+  </section>
+
+  <!-- ============ services ============ -->
+  <section class="wrap sec" id="services" aria-labelledby="svcH">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="svc.eyebrow">01 — Услуги</p>
+      <h2 class="h2" id="svcH" data-i18n="svc.h">Что именно я делаю</h2>
+      <p class="lead" data-i18n="svc.lead">Беру задачи, где результат можно измерить: время ответа, счёт за облако, время выкатки, время простоя.</p>
+    </div>
+    <div class="cards">
+      <article class="card"><p class="card-i">01</p><h3 data-i18n="svc.1t">Ускорение сайта и API</h3><p data-i18n="svc.1d">CDN, кэширование, оптимизация запросов и бэкенда. Цель — время ответа в десятки миллисекунд вместо секунд ожидания.</p></article>
+      <article class="card"><p class="card-i">02</p><h3 data-i18n="svc.2t">Снижение расходов на облако</h3><p data-i18n="svc.2d">Нахожу то, за что вы платите зря: простаивающие ресурсы, переразмеренные инстансы, забытые диски и балансировщики.</p></article>
+      <article class="card"><p class="card-i">03</p><h3 data-i18n="svc.3t">Отказоустойчивость</h3><p data-i18n="svc.3d">Резервирование, реплики базы, автоматическое восстановление. Падение одного узла не должно ронять весь продукт.</p></article>
+      <article class="card"><p class="card-i">04</p><h3 data-i18n="svc.4t">CI/CD и скорость релизов</h3><p data-i18n="svc.4d">Пайплайны, кэш сборок, параллельные шаги. От коммита до продакшена — минуты вместо часов и ручных действий.</p></article>
+      <article class="card"><p class="card-i">05</p><h3 data-i18n="svc.5t">Мониторинг и алерты</h3><p data-i18n="svc.5d">Метрики, логи и осмысленные оповещения. Чтобы о проблеме вы узнавали раньше, чем о ней напишут клиенты.</p></article>
+      <article class="card"><p class="card-i">06</p><h3 data-i18n="svc.6t">Продакшен для AI-прототипов</h3><p data-i18n="svc.6d">Проекты на Lovable, Bolt, Cursor или Claude Code довожу до состояния, в котором их не страшно открыть пользователям.</p></article>
     </div>
   </section>
 
   <!-- ============ before / after ============ -->
   <section class="wrap sec" id="compare" aria-labelledby="cmpH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="cmp.eyebrow">01 — Что меняется</p>
+      <p class="eyebrow" data-i18n="cmp.eyebrow">02 — Что меняется</p>
       <h2 class="h2" id="cmpH" data-i18n="cmp.h">Было и стало</h2>
       <p class="lead" data-i18n="cmp.lead">Слева — инфраструктура, которая не справляется с нагрузкой. Справа — та же система после работы. Потяните ползунок, чтобы сравнить.</p>
     </div>
@@ -303,7 +320,7 @@
   <!-- ============ what I won't do ============ -->
   <section class="wrap sec" id="avoid" aria-labelledby="avoidH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="avoid.eyebrow">02 — Границы</p>
+      <p class="eyebrow" data-i18n="avoid.eyebrow">03 — Границы</p>
       <h2 class="h2" id="avoidH" data-i18n="avoid.h">Чего я не делаю</h2>
       <p class="lead" data-i18n="avoid.lead">Четыре вещи, на которые я не соглашусь, даже если попросите.</p>
     </div>
@@ -324,23 +341,6 @@
         <svg class="avoid-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5 L15 15 M15 5 L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <p data-i18n="avoid.4">Не подсаживаю на постоянный ретейнер, если задача разовая.</p>
       </div>
-    </div>
-  </section>
-
-  <!-- ============ services ============ -->
-  <section class="wrap sec" id="services" aria-labelledby="svcH">
-    <div class="sec-head">
-      <p class="eyebrow" data-i18n="svc.eyebrow">03 — Услуги</p>
-      <h2 class="h2" id="svcH" data-i18n="svc.h">Что именно я делаю</h2>
-      <p class="lead" data-i18n="svc.lead">Беру задачи, где результат можно измерить: время ответа, счёт за облако, время выкатки, время простоя.</p>
-    </div>
-    <div class="cards">
-      <article class="card"><p class="card-i">01</p><h3 data-i18n="svc.1t">Ускорение сайта и API</h3><p data-i18n="svc.1d">CDN, кэширование, оптимизация запросов и бэкенда. Цель — время ответа в десятки миллисекунд вместо секунд ожидания.</p></article>
-      <article class="card"><p class="card-i">02</p><h3 data-i18n="svc.2t">Снижение расходов на облако</h3><p data-i18n="svc.2d">Нахожу то, за что вы платите зря: простаивающие ресурсы, переразмеренные инстансы, забытые диски и балансировщики.</p></article>
-      <article class="card"><p class="card-i">03</p><h3 data-i18n="svc.3t">Отказоустойчивость</h3><p data-i18n="svc.3d">Резервирование, реплики базы, автоматическое восстановление. Падение одного узла не должно ронять весь продукт.</p></article>
-      <article class="card"><p class="card-i">04</p><h3 data-i18n="svc.4t">CI/CD и скорость релизов</h3><p data-i18n="svc.4d">Пайплайны, кэш сборок, параллельные шаги. От коммита до продакшена — минуты вместо часов и ручных действий.</p></article>
-      <article class="card"><p class="card-i">05</p><h3 data-i18n="svc.5t">Мониторинг и алерты</h3><p data-i18n="svc.5d">Метрики, логи и осмысленные оповещения. Чтобы о проблеме вы узнавали раньше, чем о ней напишут клиенты.</p></article>
-      <article class="card"><p class="card-i">06</p><h3 data-i18n="svc.6t">Продакшен для AI-прототипов</h3><p data-i18n="svc.6d">Проекты на Lovable, Bolt, Cursor или Claude Code довожу до состояния, в котором их не страшно открыть пользователям.</p></article>
     </div>
   </section>
 
@@ -376,19 +376,23 @@
     </div>
     <div class="exp-grid">
       <div>
-        <p class="lead" data-i18n="exp.lead">Восемь лет в IT, пять из них — в DevOps и production engineering. Работаю и с облаком, и с железом: от небольших SaaS до систем, где простой считают в деньгах.</p>
+        <p class="lead" data-i18n="exp.lead">Десять лет в IT, шесть из них — в DevOps и production engineering. Работаю и с облаком, и с железом: от небольших SaaS до систем, где простой считают в деньгах.</p>
         <div class="nums" style="margin-top:clamp(28px,3.4vw,42px)">
-          <div class="num"><b>8+</b><span data-i18n="exp.n1">лет в IT</span></div>
-          <div class="num"><b>5+</b><span data-i18n="exp.n2">лет в DevOps</span></div>
+          <div class="num"><b>10+</b><span data-i18n="exp.n1">лет в IT</span></div>
+          <div class="num"><b>6+</b><span data-i18n="exp.n2">лет в DevOps</span></div>
           <div class="num"><b>0 ₽</b><span data-i18n="exp.n3">за диагностику</span></div>
         </div>
       </div>
       <dl class="stack">
-        <div><dt data-i18n="exp.s1k">Облако и железо</dt><dd data-i18n="exp.s1v">AWS · Bare metal · VPS</dd></div>
-        <div><dt data-i18n="exp.s2k">Оркестрация</dt><dd data-i18n="exp.s2v">Kubernetes · Docker</dd></div>
-        <div><dt data-i18n="exp.s3k">Доставка</dt><dd data-i18n="exp.s3v">CI/CD · GitHub Actions · GitLab CI</dd></div>
-        <div><dt data-i18n="exp.s4k">Наблюдаемость</dt><dd data-i18n="exp.s4v">Prometheus · Grafana · логи · алерты</dd></div>
-        <div><dt data-i18n="exp.s5k">Инфраструктура как код</dt><dd data-i18n="exp.s5v">Terraform · Ansible</dd></div>
+        <div><dt data-i18n="exp.s1k">Оркестрация</dt><dd data-i18n="exp.s1v">Kubernetes · Amazon EKS · Docker · Helm</dd></div>
+        <div><dt data-i18n="exp.s2k">Облако и железо</dt><dd data-i18n="exp.s2v">AWS · GCP · OpenStack · bare metal</dd></div>
+        <div><dt data-i18n="exp.s3k">Инфраструктура как код</dt><dd data-i18n="exp.s3v">Terraform · Ansible</dd></div>
+        <div><dt data-i18n="exp.s4k">GitOps и CI/CD</dt><dd data-i18n="exp.s4v">ArgoCD · GitLab CI · GitHub Actions · Jenkins</dd></div>
+        <div><dt data-i18n="exp.s5k">Наблюдаемость</dt><dd data-i18n="exp.s5v">Prometheus · Grafana · Loki · OpenTelemetry</dd></div>
+        <div><dt data-i18n="exp.s6k">Секреты и доступы</dt><dd data-i18n="exp.s6v">Vault · External Secrets · Keycloak · SSO</dd></div>
+        <div><dt data-i18n="exp.s7k">Данные и очереди</dt><dd data-i18n="exp.s7v">PostgreSQL · Redis · Dragonfly · Kafka</dd></div>
+        <div><dt data-i18n="exp.s8k">Сеть и доставка</dt><dd data-i18n="exp.s8v">Cloudflare · NGINX · HAProxy · CDN</dd></div>
+        <div><dt data-i18n="exp.s9k">Хранилища</dt><dd data-i18n="exp.s9v">Ceph · MinIO · Amazon S3</dd></div>
       </dl>
     </div>
   </section>

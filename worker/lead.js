@@ -43,12 +43,21 @@ export default {
       `UA:        ${request.headers.get('user-agent') || '?'}`,
     ].join('\n');
 
-    await env.EMAIL.send(new EmailMessage(
-      env.LEAD_FROM,
-      env.LEAD_TO,
-      mime({ from: env.LEAD_FROM, to: env.LEAD_TO, subject: `Заявка devops.toys: ${contact}`, text: body }),
-    ));
+    /* Видно в `wrangler tail`: без этого успешный send() неотличим от несконфигурированного. */
+    console.log('lead from', contact, '→', String(env.LEAD_TO || 'LEAD_TO NOT SET').replace(/(.{2}).*(@.*)/, '$1***$2'));
 
+    try {
+      await env.EMAIL.send(new EmailMessage(
+        env.LEAD_FROM,
+        env.LEAD_TO,
+        mime({ from: env.LEAD_FROM, to: env.LEAD_TO, subject: `Заявка devops.toys: ${contact}`, text: body }),
+      ));
+    } catch (e) {
+      console.log('send failed:', e && e.message);
+      return new Response('send failed', { status: 502 });
+    }
+
+    console.log('sent ok');
     return Response.json({ ok: true });
   },
 };
