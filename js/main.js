@@ -215,16 +215,21 @@ var store = {
 };
 var lang = store.get('devopstoys-lang') === 'en' ? 'en' : 'ru';
 function t(k){ return (I18N[lang] && I18N[lang][k]) || I18N.ru[k] || k; }
+/* Разметка может оказаться новее закэшированного main.js (HTML и JS кэшируются
+   раздельно). Тогда ключа в словаре нет, и без этой проверки applyLang вписал бы
+   в страницу сырое "exp.s6k". Статическая разметка всегда содержит русский текст,
+   так что просто не трогаем элемент. */
+function has(k){ return !!((I18N[lang] && k in I18N[lang]) || (k in I18N.ru)); }
 
 /* ================= language ================= */
 function applyLang(l){
   lang = (l === 'en') ? 'en' : 'ru';
   store.set('devopstoys-lang', lang);
   document.documentElement.lang = lang;
-  $all('[data-i18n]').forEach(function(el){ el.textContent = t(el.getAttribute('data-i18n')); });
-  $all('[data-i18n-html]').forEach(function(el){ el.innerHTML = t(el.getAttribute('data-i18n-html')); });
-  $all('[data-i18n-ph]').forEach(function(el){ el.placeholder = t(el.getAttribute('data-i18n-ph')); });
-  $all('[data-i18n-aria]').forEach(function(el){ el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
+  $all('[data-i18n]').forEach(function(el){ var k = el.getAttribute('data-i18n'); if(has(k)) el.textContent = t(k); });
+  $all('[data-i18n-html]').forEach(function(el){ var k = el.getAttribute('data-i18n-html'); if(has(k)) el.innerHTML = t(k); });
+  $all('[data-i18n-ph]').forEach(function(el){ var k = el.getAttribute('data-i18n-ph'); if(has(k)) el.placeholder = t(k); });
+  $all('[data-i18n-aria]').forEach(function(el){ var k = el.getAttribute('data-i18n-aria'); if(has(k)) el.setAttribute('aria-label', t(k)); });
   document.title = t('meta.title');
   var md = document.querySelector('meta[name="description"]');
   if(md) md.setAttribute('content', t('meta.desc'));

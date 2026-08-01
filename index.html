@@ -41,7 +41,9 @@
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-400.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/latin-500.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
-<link href="css/styles.css" rel="stylesheet">
+<!-- ?v= обязателен: HTML и ассеты кэшируются раздельно (600s), и без версии
+     новая разметка успевает встретиться со старым CSS/JS. Меняешь файл — меняй дату. -->
+<link href="css/styles.css?v=2026-08-01b" rel="stylesheet">
 <!-- The Person is the provider of the service and is linked both ways by @id, so
      search engines tie the practice to a named human rather than treating them as
      two unrelated entities. Name kept in Cyrillic on both locales: a personal name
@@ -512,7 +514,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-<script src="js/main.js"></script>
-<script src="js/animations.js"></script>
+<script src="js/main.js?v=2026-08-01b"></script>
+<script src="js/animations.js?v=2026-08-01b"></script>
 </body>
 </html>
