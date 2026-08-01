@@ -24,10 +24,12 @@ open index.html
 git push origin main
 
 # confirm the deploy actually landed (Pages lags ~30-60s; compare checksums)
+# NB: checksum only the assets, never index.html — Cloudflare's Email Obfuscation
+# rewrites the mailto: link and injects email-decode.min.js on the fly, so the
+# live HTML never matches the file on disk. Diff it instead if you need to look.
 for i in $(seq 1 20); do
-  live=$(curl -s http://devops.toys/ | md5)
-  local=$(md5 -q index.html)
-  [ "$live" = "$local" ] && echo "deployed" && break
+  live=$(curl -s "https://devops.toys/js/main.js?x=$RANDOM" | md5)
+  [ "$live" = "$(md5 -q js/main.js)" ] && echo "deployed" && break
   sleep 8
 done
 ```
