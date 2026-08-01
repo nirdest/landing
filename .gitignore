@@ -1,0 +1,4 @@
+# состояние wrangler появляется при деплое воркера — в публичный репозиторий ему не надо
+worker/.wrangler/
+node_modules/
+.DS_Store
