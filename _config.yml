@@ -12,3 +12,6 @@ exclude:
   - research/
   - CLAUDE.md
   - worker/
+  - docs/
+  - PRODUCT.md
+  - .superpowers/

@@ -8,5 +8,7 @@ Disallow: /competitive-analysis.html
 Disallow: /research/
 Disallow: /worker/
 Disallow: /CLAUDE.md
+Disallow: /docs/
+Disallow: /PRODUCT.md
 
 Sitemap: https://devops.toys/sitemap.xml
