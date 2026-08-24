@@ -44,7 +44,7 @@
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
 <!-- ?v= обязателен: HTML и ассеты кэшируются раздельно (600s), и без версии
      новая разметка успевает встретиться со старым CSS/JS. Меняешь файл — меняй дату. -->
-<link href="css/styles.css?v=2026-08-25d" rel="stylesheet">
+<link href="css/styles.css?v=2026-08-25e" rel="stylesheet">
 <!-- The Person is the provider of the service and is linked both ways by @id, so
      search engines tie the practice to a named human rather than treating them as
      two unrelated entities. Name kept in Cyrillic on both locales: a personal name
@@ -102,7 +102,12 @@
           <a class="btn-ghost" href="#services" data-i18n="hero.cta2">Что именно я забираю на себя</a>
         </div>
       </div>
+      <!-- «0 ₽» первым, а не последним: единственное число, на которое может
+           опереться нетехнический фаундер, лежало на y=4468 — в 4500px от hero,
+           в плитке, конкурирующей с 36 названиями инструментов. Стек остался,
+           но ушёл в конец: он подтверждает, а не открывает. -->
       <div class="hero-trust">
+        <span><b data-i18n-html="exp.n3v">0 <span style="font-family:system-ui,sans-serif">₽</span></b> <span data-i18n="exp.n3">за диагностику</span></span>
         <span><b>10+</b> <span data-i18n="hero.t1">лет в IT</span></span>
         <span><b>6+</b> <span data-i18n="hero.t2">лет в DevOps</span></span>
         <span data-i18n="hero.t3">AWS · Kubernetes · Bare Metal · CI/CD · Observability</span>
@@ -117,12 +122,17 @@
       <p class="lead" data-i18n="svc.lead">Всё, из-за чего инфраструктура становится вашей проблемой. Результат при этом измерим: время ответа, счёт за облако, время выкатки, время простоя.</p>
     </div>
     <div class="cards">
+      <!-- Первой и с акцентной границей: из десяти изученных конкурентов в это
+           целится один, и у того страница под noindex (research/02). Раньше эта
+           карточка была шестой из шести и визуально ничем не отличалась —
+           единственный сегмент без конкурентов раскладка ставила последним.
+           Граница говорит «этот случай особый», а не «этим всё и ограничивается». -->
+      <article class="card card-lead"><h3 data-i18n="svc.6t">Продакшен для AI-прототипов</h3><p data-i18n="svc.6d">Проекты на Lovable, Bolt, Cursor или Claude Code довожу до состояния, в котором их не страшно открыть пользователям.</p></article>
       <article class="card"><h3 data-i18n="svc.1t">Ускорение сайта и API</h3><p data-i18n="svc.1d">CDN, кэширование, оптимизация запросов и бэкенда. Цель — время ответа в десятки миллисекунд вместо секунд ожидания.</p></article>
       <article class="card"><h3 data-i18n="svc.2t">Снижение расходов на облако</h3><p data-i18n="svc.2d">Нахожу то, за что вы платите зря: простаивающие ресурсы, переразмеренные инстансы, забытые диски и балансировщики.</p></article>
       <article class="card"><h3 data-i18n="svc.3t">Бэкапы и восстановление</h3><p data-i18n="svc.3d">Регулярные бэкапы, реплики базы и резерв на каждом уровне. Восстановление я не просто настраиваю, а проверяю — чтобы клиентская база пережила любой сбой.</p></article>
       <article class="card"><h3 data-i18n="svc.4t">CI/CD и скорость релизов</h3><p data-i18n="svc.4d">Пайплайны, кэш сборок, параллельные шаги. От коммита до продакшена — минуты вместо часов и ручных действий.</p></article>
       <article class="card"><h3 data-i18n="svc.5t">Мониторинг и алерты</h3><p data-i18n="svc.5d">Метрики, логи и осмысленные оповещения. О проблеме первым узнаю я, а не ваши клиенты и не вы.</p></article>
-      <article class="card"><h3 data-i18n="svc.6t">Продакшен для AI-прототипов</h3><p data-i18n="svc.6d">Проекты на Lovable, Bolt, Cursor или Claude Code довожу до состояния, в котором их не страшно открыть пользователям.</p></article>
     </div>
   </section>
 
@@ -182,6 +192,14 @@
       <div class="change"><dt data-i18n-html="cmp.c3t"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 6.5"/></svg>Клиентская база в безопасности</dt><dd data-i18n="cmp.c3d">Данные и заявки не теряются даже при отказе основного сервера: реплика и бэкапы лежат отдельно от него.</dd></div>
       <div class="change"><dt data-i18n-html="cmp.c4t"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 6.5"/></svg>Разбираюсь я, а не вы</dt><dd data-i18n="cmp.c4d">Метрики и алерты по всей цепочке настроены так, что первым о проблеме узнаю я. К вам вопрос приходит уже с готовым решением — или не приходит вовсе.</dd></div>
     </dl>
+
+    <!-- Пик страницы был тупиком: между hero и футером не было ни одной кнопки,
+         6247px на десктопе. Тихая строка вместо блока — она не должна спорить
+         с финальным CTA, только дать выход там, где намерение уже возникло. -->
+    <div class="cta-inline">
+      <p data-i18n="cmp.cta">Посмотрю вашу инфраструктуру и скажу, к какой из этих ночей она ближе. Бесплатно и ни к чему не обязывает.</p>
+      <button class="btn js-open" type="button"><span data-i18n="cta.btn">Получить бесплатный аудит</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
+    </div>
   </section>
 
   <!-- ============ what I won't do ============ -->
@@ -233,6 +251,11 @@
       <!-- Подводка hero обещает «администрирование на постоянной основе»;
            без этого блока обещание нигде на странице не подтверждается. -->
       <div class="step ongoing"><p class="step-n" data-i18n="prc.5n">потом</p><h3 data-i18n="prc.5t">Дальше — как удобно вам</h3><p data-i18n="prc.5d">Можно закрыть задачу и разойтись: система остаётся вашей, ей управляет ваша команда. А можно оставить инфраструктуру на мне помесячно — тогда администрированием вы не занимаетесь вообще.</p></div>
+    </div>
+
+    <div class="cta-inline">
+      <p data-i18n="prc.cta">Первый шаг ничего не стоит и ни к чему не обязывает.</p>
+      <button class="btn js-open" type="button"><span data-i18n="cta.btn">Получить бесплатный аудит</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
     </div>
   </section>
 
@@ -400,7 +423,7 @@
      странице, и с jsDelivr он тянулся по плавающему тегу gsap@3 без integrity —
      то есть компрометация CDN означала бы доступ к полю ввода контакта. Версия 3.13.0. -->
 <script src="js/vendor/gsap.min.js?v=3.13.0"></script>
-<script src="js/main.js?v=2026-08-25d"></script>
+<script src="js/main.js?v=2026-08-25e"></script>
 <script src="js/animations.js?v=2026-08-25b"></script>
 </body>
 </html>

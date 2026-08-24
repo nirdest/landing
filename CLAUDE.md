@@ -62,6 +62,27 @@ Checks worth running after any visual change, at viewports 1440 / 1100 / 800 / 6
 
 Markup in `index.html`, styles in `css/styles.css`, behavior in `js/main.js` + `js/animations.js` — all sectioned by banner comments (`/* ============ tokens ============ */`, `<!-- ============ hero ============ -->`, twelve `=` on each side). Grep those to navigate; the banner names are consistent across all three files.
 
+Two `.cta-inline` rows sit in the flow — after `.changes` in `#compare` and
+after `.steps` in `#process`. They exist because those are the page's two peaks
+of intent (the log scene, and the process ending on "не платите ничего") and
+there used to be **6247px between the hero and the footer without a single
+button**. They are deliberately a row and not a card: a boxed CTA would compete
+with `.final`, and the two have different jobs — these catch someone already
+convinced, `.final` closes the page. Keep them quiet.
+
+`.card-lead` puts "Продакшен для AI-прототипов" first in `.cards` with an accent
+border. Of ten competitors studied in `research/02`, one targets this and their
+page is `noindex`; the card used to be sixth of six and visually identical to
+the rest, so the layout ranked the only uncontested segment last. The border
+says "this case is special", not "this is all I do" — don't escalate it to a
+filled card or a badge.
+
+`.hero-trust` opens with `0 ₽ за диагностику`, then the year counts, then the
+tech list. Risk removal leads (PRODUCT.md principle 1); the stack confirms
+rather than opens. The `0 ₽` markup is duplicated from `#experience` — same
+`exp.n3v` / `exp.n3` keys, and `applyLang` walks all matching nodes, so both
+stay in sync automatically.
+
 Page order: header → hero → services → before/after comparison → **what I won't do** → process → experience → **alternatives comparison** → FAQ → final CTA → footer → lead modal. The two bold sections were added in the 2026-08 rebuild; see `research/03-build-brief.md` for why. Services leads the page at the owner's request (it used to sit third, behind the comparison).
 
 Single-page is a **deliberate** choice, re-confirmed by competitor research in `research/02-competitor-analysis.md`: the top-scoring competitors win search visibility through 45+-page programmatic architecture that doesn't fit a solo consultant's actual sales motion. Don't split this into multiple pages without re-reading that file first.

@@ -26,6 +26,7 @@ var I18N = {
     'hero.t1':'years in IT','hero.t2':'years in DevOps','hero.t3':'AWS · Kubernetes · Bare Metal · CI/CD · Observability','cmp.h':'The same night. Two infrastructures.',
     'cmp.lead':'At two in the morning the database failed. One log is that night with nobody watching the infrastructure. The other is the same night with me watching.',
     'cmp.sysOk':'system nominal','cmp.sysBad':'degraded',
+    'cmp.cta':'I’ll look at your infrastructure and tell you which of those nights it’s closer to. Free, and it commits you to nothing.',
     'log.you':'you',
     'log.b1':'connection pool exhausted',
     'log.b2':'502 Bad Gateway ×214',
@@ -65,6 +66,7 @@ var I18N = {
     'prc.4t':'Pay for the result','prc.4d':'You pay once the result is delivered and measured. If I couldn’t help, you pay nothing.',
     /* Не шаг, а развилка после работы: заголовок секции обещает четыре шага,
        поэтому пятая карточка нумерации не получает. */
+    'prc.cta':'The first step costs nothing and commits you to nothing.',
     'prc.5n':'after','prc.5t':'Then — whatever suits you','prc.5d':'We can close the job and part ways: the system stays yours and your team runs it. Or you leave the infrastructure with me on a monthly basis — and stop dealing with administration entirely.','exp.h':'Why you can trust me with production',
     'exp.lead':'Ten years in IT, six of them in DevOps and production engineering. I work with both cloud and bare metal: from small SaaS products to systems where downtime is counted in money.',
     'exp.n1':'years in IT','exp.n2':'years in DevOps','exp.n3':'for the diagnosis',

@@ -562,6 +562,29 @@ h1, h2, h3 {
   line-height: 1.6;
 }
 
+/* ============ INLINE CTA ============ */
+/* Выход на пике намерения: после доказательной секции и после процесса.
+   Намеренно не карточка и не блок — это строка в потоке, отбитая той же
+   волосяной линией, что и остальной ритм страницы. Иначе она спорила бы с
+   финальным CTA, а их задача разная: этот ловит того, кто уже готов, а не
+   закрывает страницу. */
+.cta-inline {
+  margin-top: clamp(32px, 4vw, 48px);
+  padding-top: clamp(24px, 3vw, 32px);
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 40px;
+}
+.cta-inline p {
+  color: var(--ink-2);
+  font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
 /* ============ SERVICES ============ */
 .cards {
   display: grid;
@@ -576,6 +599,10 @@ h1, h2, h3 {
   transition: border-color 0.2s ease;
 }
 .card:hover { border-color: var(--card-border-hover); }
+/* Ведущая карточка — не «важнее остальных», а «особый случай»: акцентная
+   граница вместо заливки или бейджа, чтобы услуга не начала выглядеть
+   единственной, которой консультант занимается. */
+.card-lead { border-color: var(--acc-deep); }
 .card h3 {
   font-size: 1.22rem;
   margin-bottom: 10px;
