@@ -44,7 +44,7 @@
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
 <!-- ?v= обязателен: HTML и ассеты кэшируются раздельно (600s), и без версии
      новая разметка успевает встретиться со старым CSS/JS. Меняешь файл — меняй дату. -->
-<link href="css/styles.css?v=2026-08-25e" rel="stylesheet">
+<link href="css/styles.css?v=2026-08-25g" rel="stylesheet">
 <!-- The Person is the provider of the service and is linked both ways by @id, so
      search engines tie the practice to a named human rather than treating them as
      two unrelated entities. Name kept in Cyrillic on both locales: a personal name
@@ -65,7 +65,7 @@
   <div class="wrap hdr-in">
     <a class="brand" href="#" aria-label="DevOps.toys">
       <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 22 L16 8 L25 22 M16 8 V22" stroke="#F2A65A" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="22" r="2.6" fill="#F4EDE3"/><circle cx="25" cy="22" r="2.6" fill="#F4EDE3"/><circle cx="16" cy="8" r="2.6" fill="#F2A65A"/></svg>
-      DevOps.toys
+      <span class="brand-name">DevOps.toys</span>
     </a>
     <nav aria-label="Main">
       <a class="nav-a" href="#services" data-i18n="nav.services">Услуги</a>
@@ -237,7 +237,7 @@
     <div class="steps">
       <div class="step free">
         <p class="step-n">01</p>
-        <h3><span data-i18n="prc.1t">Инфраструктурный аудит</span><span class="badge" data-i18n="prc.free">бесплатно</span></h3>
+        <h3><span data-i18n="prc.1t">Инфраструктурный аудит</span> <span class="badge" data-i18n="prc.free">бесплатно</span></h3>
         <p data-i18n="prc.1d">Смотрю инфраструктуру, метрики и счёт за облако. На выходе — конкретный список узких мест и переплат, а не общие слова.</p>
         <ul class="step-deliv">
           <li data-i18n="prc.1x1">Отчёт с находками</li>
@@ -423,7 +423,7 @@
      странице, и с jsDelivr он тянулся по плавающему тегу gsap@3 без integrity —
      то есть компрометация CDN означала бы доступ к полю ввода контакта. Версия 3.13.0. -->
 <script src="js/vendor/gsap.min.js?v=3.13.0"></script>
-<script src="js/main.js?v=2026-08-25e"></script>
+<script src="js/main.js?v=2026-08-25f"></script>
 <script src="js/animations.js?v=2026-08-25b"></script>
 </body>
 </html>

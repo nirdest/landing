@@ -19,7 +19,7 @@ var I18N = {
     'meta.title':'Infrastructure you never have to think about | DevOps.toys',
     'meta.desc':'I take your IT infrastructure off your hands: backups, failover, fast recovery. One-off or ongoing. The diagnosis is free.',
     'nav.services':'Services','nav.process':'How I work','nav.exp':'Experience','nav.faq':'FAQ','nav.contact':'Contact',
-    'hero.h1':'Infrastructure you’ll <em>never have to think about</em> again.',
+    'hero.h1':'Infrastructure you’ll <em>never have to think about again</em>.',
     'hero.lead':'Backups, failover, fast recovery after an outage — your data and your customers are protected, whatever happens. A targeted fix, a rebuild, or ongoing management: I pick the form, you pay for the outcome.',
     'hero.ai':'AI prototypes in production:',
     'hero.cta1':'Get the free audit','hero.cta2':'What exactly I take on',

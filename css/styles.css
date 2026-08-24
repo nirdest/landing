@@ -110,7 +110,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   z-index: 200;
   background: var(--acc);
   color: #1c1b19;
-  padding: 10px 18px;
+  padding: 14px 18px;
   border-radius: 6px;
   font: 600 0.85rem var(--sans);
   transition: top 0.2s ease;
@@ -237,8 +237,8 @@ h1, h2, h3 {
 .lang button::after {
   content: "";
   position: absolute;
-  left: -5px;
-  right: -5px;
+  left: -9px;
+  right: -9px;
   top: 50%;
   height: 44px;
   transform: translateY(-50%);
@@ -255,12 +255,22 @@ h1, h2, h3 {
 @media (max-width: 760px) {
   .nav-a { display: none; }
 }
+/* Ниже 430px в шапке помещались только два элемента из трёх. Раньше уходил
+   CTA — то есть единственная постоянная поверхность страницы отдавалась
+   контролу, которым пользуются максимум один раз, при том что RU и так язык
+   по умолчанию. Теперь сжимается логотип: глиф остаётся ссылкой наверх,
+   вордмарк уходит, и помещается всё. */
 @media (max-width: 430px) {
-  .hdr-cta { display: none; }  /* CTA дублируется в hero сразу под шапкой */
+  .brand-name { display: none; }
+  .hdr-in { gap: 12px; }
+  .hdr-cta { padding: 8px 14px; }
 }
 
 /* ============ SECTIONS ============ */
 .sec {
+  /* Шапка липкая и высотой 73px. Сейчас якоря проходят только потому, что
+     padding секции случайно больше; уменьшишь отступы — сломается молча. */
+  scroll-margin-top: 88px;
   padding-block: clamp(64px, 9vw, 116px);
   border-top: 1px solid var(--line);
   position: relative;
@@ -308,7 +318,7 @@ h1, h2, h3 {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font: 500 0.68rem var(--mono);
+  font: 500 0.72rem var(--mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -425,6 +435,17 @@ h1, h2, h3 {
   background: var(--acc-soft);
 }
 
+/* На вьюпорте 844px кнопка hero стояла на 762px — с хромом Safari это уже за
+   сгибом. Поджимаем внутренние отступы окна и интервалы, чтобы главное
+   действие попадало на первый экран. */
+@media (max-width: 430px) {
+  .hero { padding-block: 28px 32px; }
+  .hero-term .term-body { padding: 24px 18px 26px; }
+  .hero .lead { margin-top: 16px; }
+  .ai-badge-row { margin-top: 18px; }
+  .cta-row { margin-top: 22px; }
+}
+
 /* ============ BEFORE / AFTER TERMINAL LOG ============ */
 /* Пришло на смену двум инлайновым SVG-топологиям со шторкой и анимацией
    пакетов. Ползунка нет намеренно: вертикальная шторка режет строки лога
@@ -462,7 +483,11 @@ h1, h2, h3 {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--card-border);
-  font-weight: 500;
+  /* «7 ч 48 мин» против «0 мин» — самый убедительный контраст на странице, и
+     он был набран тем же кеглем, что и «пул соединений исчерпан». Ничто в
+     типографике не подсказывало, куда смотреть. */
+  font-size: 1.05em;
+  font-weight: 600;
 }
 .log-sum.bad { color: var(--danger); }
 .log-sum.ok { color: var(--ok); }
@@ -645,6 +670,10 @@ h1, h2, h3 {
 .steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  /* Без этого сетка равняла все карточки по первой — той, что несёт список
+     артефактов, — и шаги 02–04 держали по 250px пустоты под 150px текста:
+     законченная последовательность выглядела недоделанной. */
+  align-items: start;
   gap: 20px;
 }
 .step {
@@ -679,7 +708,7 @@ h1, h2, h3 {
   gap: 8px;
 }
 .badge {
-  font: 600 0.68rem var(--sans);
+  font: 600 0.72rem var(--sans);
   text-transform: uppercase;
   background: var(--acc);
   color: #1c1b19;
@@ -771,7 +800,9 @@ h1, h2, h3 {
 }
 .stack dd {
   font: 400 0.86rem var(--sans);
-  color: var(--acc);
+  /* Было var(--acc): крупнейшее скопление цвета CTA на всей странице сидело на
+     содержимом, по которому никто не кликает, и ослабляло каждую кнопку. */
+  color: var(--ink-2);
 }
 
 /* ============ COMPARISON TABLE ============ */
@@ -806,6 +837,42 @@ h1, h2, h3 {
   background: var(--acc-soft);
 }
 .alt-table tr:last-child td { border-bottom: 0; }
+
+/* На телефоне таблица шире вьюпорта вдвое, и на первом же свайпе уезжала метка
+   строки — сравнивать становилось не с чем. Первая колонка липкая, у правого
+   края маска, которая гаснет в конце прокрутки. */
+@media (max-width: 760px) {
+  .alt-wrap {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+  }
+  .alt-table th:first-child,
+  .alt-table td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--card);
+    /* Ширина фиксирована, а не минимальна: scroll-padding ниже обязан совпасть
+       с ней ровно, иначе колонка прилипает под саму метку. */
+    width: 10rem;
+    min-width: 10rem;
+    max-width: 10rem;
+    padding-right: 12px;
+  }
+  /* Прокрутка липнет к границам колонок: без этого палец останавливается
+     посреди колонки, и рядом с меткой строки стоят обрывки слов из наполовину
+     уехавшей — читается как мусор, а не как таблица. Границу на ячейке рисовать
+     бесполезно: при border-collapse она схлопывается. */
+  .alt-wrap {
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 10rem;
+  }
+  .alt-table th,
+  .alt-table td { scroll-snap-align: start; }
+  .alt-table th:first-child,
+  .alt-table td:first-child { scroll-snap-align: none; }
+  .alt-table thead th:first-child { background: var(--bg-subtle); }
+}
 
 /* ============ FAQ ACCORDION ============ */
 .faq {
@@ -853,6 +920,10 @@ h1, h2, h3 {
 }
 
 .faq-a {
+  /* Единственный текстовый блок на странице без ограничения меры: строки шли
+     по 144 символа при читаемых 65–75. FAQ — место, где ищут ответ на
+     возражение перед конверсией, и читать его должно быть легче всего. */
+  max-width: 68ch;
   margin-top: 14px;
   font-size: 0.95rem;
   color: var(--ink-2);
