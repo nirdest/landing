@@ -13,7 +13,7 @@
 
   --ink: #f4ede3;
   --ink-2: #a89e8f;
-  --muted: #8a8378;
+  --muted: #9b9285;
 
   --line: rgba(244, 237, 227, 0.09);
   --line-2: rgba(244, 237, 227, 0.17);
@@ -49,6 +49,9 @@
 html {
   -webkit-text-size-adjust: 100%;
   color-scheme: dark;
+  /* Скроллбар, каретка и выделение — тоже часть страницы; по умолчанию они
+     принадлежат браузеру, а не этой палитре. */
+  scrollbar-color: #46413a var(--bg);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -80,6 +83,20 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: var(--ink);
 }
 
+/* Иконки рисованные и однослойные: одна толщина штриха, одни скругления.
+   Юникодные стрелки и галочки, стоявшие тут раньше, приходят из шрифта —
+   у них своя метрика и свой вес, и рядом друг с другом они не система. */
+.ico {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .wrap {
   max-width: 1240px;
   margin: 0 auto;
@@ -95,7 +112,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: #1c1b19;
   padding: 10px 18px;
   border-radius: 6px;
-  font: 600 0.85rem var(--mono);
+  font: 600 0.85rem var(--sans);
   transition: top 0.2s ease;
 }
 .skip:focus { top: 14px; }
@@ -103,6 +120,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* ============ TYPOGRAPHY & HEADINGS ============ */
 h1, h2, h3 {
   font-family: var(--serif);
+  text-wrap: balance;
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.14;
@@ -134,26 +152,6 @@ h1, h2, h3 {
   font-weight: 400;
 }
 
-/* Эйбрау секций — приглашение командной строки. Нумерации 01…07 больше нет,
-   поэтому вставка секции не требует ручной перенумерации ключей. */
-.eyebrow {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-  font: 400 0.78rem var(--mono);
-  letter-spacing: 0.02em;
-  color: var(--muted);
-  margin-bottom: 14px;
-}
-.eyebrow::before {
-  content: "$";
-  color: var(--acc);
-  font-weight: 500;
-}
-/* Строки, которые командой не являются: ключевые слова в hero и подсказка
-   про горизонтальную прокрутку таблицы. Приглашение им ни к чему. */
-.eyebrow--plain::before { content: none; }
-
 /* ============ HEADER ============ */
 .hdr {
   position: sticky;
@@ -181,6 +179,7 @@ h1, h2, h3 {
   font-size: 1.18rem;
   letter-spacing: -0.01em;
   color: var(--ink);
+  min-height: 44px;
   transition: opacity 0.2s;
 }
 .brand:hover { opacity: 0.85; }
@@ -219,24 +218,30 @@ h1, h2, h3 {
   display: flex;
   align-items: center;
   gap: 4px;
-  font: 500 0.76rem var(--mono);
+  font: 600 0.78rem var(--sans);
   color: var(--muted);
-  padding: 4px 8px;
+  padding: 2px 6px;
   border-radius: 6px;
   border: 1px solid var(--line);
 }
 .lang button {
   position: relative;
-  font: 500 0.76rem var(--mono);
+  font: 600 0.78rem var(--sans);
   color: var(--muted);
-  padding: 2px 4px;
+  padding: 4px 6px;
   border-radius: 4px;
   transition: color 0.18s, background 0.18s;
 }
+/* Кнопка 23×20 — промах пальцем на телефоне; расширяем зону нажатия
+   до 44px по высоте, не раздувая саму плашку переключателя. */
 .lang button::after {
   content: "";
   position: absolute;
-  inset: -6px -4px;
+  left: -5px;
+  right: -5px;
+  top: 50%;
+  height: 44px;
+  transform: translateY(-50%);
 }
 .lang button[aria-pressed="true"] {
   color: var(--acc);
@@ -385,10 +390,10 @@ h1, h2, h3 {
   background: var(--term-bar);
 }
 .hero-trust span {
-  font: 400 0.78rem var(--mono);
+  font: 400 0.84rem var(--sans);
   color: var(--ink-2);
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 8px;
 }
 .hero-trust b {
@@ -409,6 +414,7 @@ h1, h2, h3 {
   font-size: 0.88rem;
   color: var(--ink-2);
 }
+.ai-badge-row .ico { color: var(--acc); font-size: 1.05rem; align-self: center; }
 .ai-badge-row b { color: var(--ink); font-weight: 600; }
 .ai-badge-row code {
   font-family: var(--mono);
@@ -435,6 +441,8 @@ h1, h2, h3 {
    и объявление на нём утащило бы в моноширинный весь заголовочный блок. */
 .logs .term-body {
   font: 400 0.8rem/1.95 var(--mono);
+  /* Столбец времени — таблица чисел: пропорциональные цифры в нём пляшут */
+  font-variant-numeric: tabular-nums;
   overflow-x: auto;
 }
 
@@ -500,13 +508,15 @@ h1, h2, h3 {
   margin-bottom: 8px;
   display: flex;
   align-items: baseline;
-  gap: 9px;
+  gap: 10px;
 }
-.change dt::before {
-  content: "✓";
+.change dt .ico {
   color: var(--acc);
-  font-family: var(--mono);
-  font-size: 0.85em;
+  font-size: 0.78em;
+  /* align-self:center уводило галочку в промежуток между строками, как только
+     заголовок переносился на две строки — держим её на первой. */
+  align-self: flex-start;
+  margin-top: 0.34em;
 }
 .change dd {
   font-size: 0.92rem;
@@ -528,12 +538,6 @@ h1, h2, h3 {
   transition: border-color 0.2s ease;
 }
 .card:hover { border-color: var(--card-border-hover); }
-.card-i {
-  font: 500 0.78rem var(--mono);
-  color: var(--muted);
-  display: block;
-  margin-bottom: 14px;
-}
 .card h3 {
   font-size: 1.22rem;
   margin-bottom: 10px;
@@ -564,7 +568,7 @@ h1, h2, h3 {
   height: 20px;
   color: var(--danger);
   flex: none;
-  margin-top: 2px;
+  margin-top: 3px;
 }
 .avoid-list p {
   font-size: 0.95rem;
@@ -593,7 +597,9 @@ h1, h2, h3 {
 .step.ongoing { grid-column: 1 / -1; }
 .step.ongoing p { max-width: 78ch; }
 .step-n {
-  font: 500 0.8rem var(--mono);
+  font: 600 0.72rem var(--sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 12px;
 }
@@ -608,7 +614,7 @@ h1, h2, h3 {
   gap: 8px;
 }
 .badge {
-  font: 600 0.68rem var(--mono);
+  font: 600 0.68rem var(--sans);
   text-transform: uppercase;
   background: var(--acc);
   color: #1c1b19;
@@ -631,10 +637,10 @@ h1, h2, h3 {
   gap: 8px;
 }
 .step-deliv li {
-  font: 400 0.74rem var(--mono);
+  font: 500 0.78rem var(--sans);
   color: var(--acc);
   background: var(--acc-soft);
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 4px;
 }
 
@@ -672,7 +678,7 @@ h1, h2, h3 {
   margin-bottom: 6px;
 }
 .num span {
-  font: 400 0.76rem var(--mono);
+  font: 400 0.82rem var(--sans);
   color: var(--ink-2);
 }
 
@@ -699,7 +705,7 @@ h1, h2, h3 {
   color: var(--ink);
 }
 .stack dd {
-  font: 400 0.8rem var(--mono);
+  font: 400 0.86rem var(--sans);
   color: var(--acc);
 }
 
@@ -761,14 +767,19 @@ h1, h2, h3 {
   align-items: center;
   gap: 16px;
 }
-.faq summary::-webkit-details-marker { display: none; }
-.faq summary::after {
-  content: "+";
-  font: 400 1.3rem var(--mono);
-  color: var(--acc);
-  flex: none;
+/* Строка вопроса — основное касание на телефоне; на десктопе тот же минимум
+   просто раздувал бы карточки. */
+@media (max-width: 760px) {
+  .faq summary { min-height: 44px; }
 }
-.faq details[open] summary::after { content: "−"; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary > span { flex: 1; }
+.faq summary .ico {
+  color: var(--acc);
+  font-size: 1.15rem;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.faq details[open] summary .ico { transform: rotate(180deg); }
 .faq-a {
   margin-top: 14px;
   font-size: 0.95rem;
@@ -776,6 +787,14 @@ h1, h2, h3 {
   line-height: 1.65;
   padding-top: 14px;
   border-top: 1px solid var(--line);
+}
+
+/* Подсказка о том, что таблица прокручивается вбок: без неё на узком экране
+   она обрезается без единого признака, что там что-то есть. */
+.hint {
+  margin-top: 14px;
+  font: 400 0.8rem var(--sans);
+  color: var(--muted);
 }
 
 /* ============ FINAL CTA ============ */
@@ -787,7 +806,6 @@ h1, h2, h3 {
   padding-block: clamp(48px, 7vw, 80px);
   margin-block: 40px 80px;
 }
-.final .eyebrow { margin-inline: auto; }
 .final .h2 { margin-inline: auto; }
 .final .lead { margin-inline: auto; margin-top: 18px; }
 .final .btn { margin-top: 30px; }
@@ -806,7 +824,15 @@ h1, h2, h3 {
   align-items: center;
   gap: 16px;
 }
-.ftr a { color: var(--ink-2); transition: color 0.18s; }
+.ftr a {
+  color: var(--ink-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  transition: color 0.18s;
+}
+.ftr a .ico { font-size: 0.8em; }
 .ftr a:hover { color: var(--acc); }
 .ftr .right { display: flex; gap: 20px; }
 
@@ -864,11 +890,11 @@ h1, h2, h3 {
 
 #leadForm label {
   display: block;
-  font: 500 0.76rem var(--mono);
+  font: 600 0.74rem var(--sans);
   color: var(--ink-2);
   margin-bottom: 8px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 #leadForm input[type="text"] {
   width: 100%;
@@ -877,7 +903,8 @@ h1, h2, h3 {
   border-radius: 8px;
   padding: 14px 16px;
   color: var(--ink);
-  font: 400 1rem var(--mono);
+  font: 400 1rem var(--sans);
+  caret-color: var(--acc);
   transition: border-color 0.2s ease;
 }
 #leadForm input[type="text"]:focus {

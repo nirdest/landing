@@ -44,7 +44,7 @@
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
 <!-- ?v= обязателен: HTML и ассеты кэшируются раздельно (600s), и без версии
      новая разметка успевает встретиться со старым CSS/JS. Меняешь файл — меняй дату. -->
-<link href="css/styles.css?v=2026-08-24a" rel="stylesheet">
+<link href="css/styles.css?v=2026-08-25a" rel="stylesheet">
 <!-- The Person is the provider of the service and is linked both ways by @id, so
      search engines tie the practice to a named human rather than treating them as
      two unrelated entities. Name kept in Cyrillic on both locales: a personal name
@@ -92,14 +92,13 @@
         <span class="term-title">~/devops.toys — zsh</span>
       </div>
       <div class="term-body">
-        <p class="eyebrow eyebrow--plain" data-i18n="hero.eyebrow">devops · finops · production engineering</p>
         <h1 class="h1" data-i18n-html="hero.h1">Инфраструктура, о которой вам <em>больше не придётся думать</em>.</h1>
         <p class="lead" data-i18n="hero.lead">Бэкапы, отказоустойчивость, быстрое восстановление после сбоя — ваши данные и клиенты под защитой, что бы ни случилось. Точечный фикс, пересборка или администрирование на постоянной основе: форму работы подбираю я, вы платите за результат.</p>
         <div class="ai-badge-row" aria-label="AI Prototypes specialization">
-          <span>⚡ <b data-i18n="hero.ai">AI-прототипы → Production:</b> <code>Lovable</code> · <code>Bolt</code> · <code>Cursor</code> · <code>Claude Code</code></span>
+          <span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2.5L5 13.5h5.5L10 21.5l8-11h-5.5z"/></svg> <b data-i18n="hero.ai">AI-прототипы в продакшене:</b> <code>Lovable</code> · <code>Bolt</code> · <code>Cursor</code> · <code>Claude Code</code></span>
         </div>
         <div class="cta-row">
-          <button class="btn js-open" type="button"><span data-i18n="hero.cta1">Оставить контакт</span><span class="arr" aria-hidden="true">→</span></button>
+          <button class="btn js-open" type="button"><span data-i18n="hero.cta1">Оставить контакт</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
           <a class="btn-ghost" href="#services" data-i18n="hero.cta2">Что именно я забираю на себя</a>
         </div>
       </div>
@@ -114,17 +113,16 @@
   <!-- ============ services ============ -->
   <section class="wrap sec" id="services" aria-labelledby="svcH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="svc.eyebrow">services --list</p>
       <h2 class="h2" id="svcH" data-i18n="svc.h">Что именно я забираю на себя</h2>
       <p class="lead" data-i18n="svc.lead">Всё, из-за чего инфраструктура становится вашей проблемой. Результат при этом измерим: время ответа, счёт за облако, время выкатки, время простоя.</p>
     </div>
     <div class="cards">
-      <article class="card"><p class="card-i">01</p><h3 data-i18n="svc.1t">Ускорение сайта и API</h3><p data-i18n="svc.1d">CDN, кэширование, оптимизация запросов и бэкенда. Цель — время ответа в десятки миллисекунд вместо секунд ожидания.</p></article>
-      <article class="card"><p class="card-i">02</p><h3 data-i18n="svc.2t">Снижение расходов на облако</h3><p data-i18n="svc.2d">Нахожу то, за что вы платите зря: простаивающие ресурсы, переразмеренные инстансы, забытые диски и балансировщики.</p></article>
-      <article class="card"><p class="card-i">03</p><h3 data-i18n="svc.3t">Бэкапы и восстановление</h3><p data-i18n="svc.3d">Регулярные бэкапы, реплики базы и резерв на каждом уровне. Восстановление я не просто настраиваю, а проверяю — чтобы клиентская база пережила любой сбой.</p></article>
-      <article class="card"><p class="card-i">04</p><h3 data-i18n="svc.4t">CI/CD и скорость релизов</h3><p data-i18n="svc.4d">Пайплайны, кэш сборок, параллельные шаги. От коммита до продакшена — минуты вместо часов и ручных действий.</p></article>
-      <article class="card"><p class="card-i">05</p><h3 data-i18n="svc.5t">Мониторинг и алерты</h3><p data-i18n="svc.5d">Метрики, логи и осмысленные оповещения. О проблеме первым узнаю я, а не ваши клиенты и не вы.</p></article>
-      <article class="card"><p class="card-i">06</p><h3 data-i18n="svc.6t">Продакшен для AI-прототипов</h3><p data-i18n="svc.6d">Проекты на Lovable, Bolt, Cursor или Claude Code довожу до состояния, в котором их не страшно открыть пользователям.</p></article>
+      <article class="card"><h3 data-i18n="svc.1t">Ускорение сайта и API</h3><p data-i18n="svc.1d">CDN, кэширование, оптимизация запросов и бэкенда. Цель — время ответа в десятки миллисекунд вместо секунд ожидания.</p></article>
+      <article class="card"><h3 data-i18n="svc.2t">Снижение расходов на облако</h3><p data-i18n="svc.2d">Нахожу то, за что вы платите зря: простаивающие ресурсы, переразмеренные инстансы, забытые диски и балансировщики.</p></article>
+      <article class="card"><h3 data-i18n="svc.3t">Бэкапы и восстановление</h3><p data-i18n="svc.3d">Регулярные бэкапы, реплики базы и резерв на каждом уровне. Восстановление я не просто настраиваю, а проверяю — чтобы клиентская база пережила любой сбой.</p></article>
+      <article class="card"><h3 data-i18n="svc.4t">CI/CD и скорость релизов</h3><p data-i18n="svc.4d">Пайплайны, кэш сборок, параллельные шаги. От коммита до продакшена — минуты вместо часов и ручных действий.</p></article>
+      <article class="card"><h3 data-i18n="svc.5t">Мониторинг и алерты</h3><p data-i18n="svc.5d">Метрики, логи и осмысленные оповещения. О проблеме первым узнаю я, а не ваши клиенты и не вы.</p></article>
+      <article class="card"><h3 data-i18n="svc.6t">Продакшен для AI-прототипов</h3><p data-i18n="svc.6d">Проекты на Lovable, Bolt, Cursor или Claude Code довожу до состояния, в котором их не страшно открыть пользователям.</p></article>
     </div>
   </section>
 
@@ -134,7 +132,6 @@
        Сценарий иллюстративный — это не результат работы с конкретным клиентом. -->
   <section class="wrap sec" id="compare" aria-labelledby="cmpH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="cmp.eyebrow">diff before after</p>
       <h2 class="h2" id="cmpH" data-i18n="cmp.h">Одна и та же ночь. Две инфраструктуры.</h2>
       <p class="lead" data-i18n="cmp.lead">В два часа ночи отказала база данных. Слева — как это проходит, когда за инфраструктурой никто не смотрит. Справа — как это проходит, когда смотрю я.</p>
     </div>
@@ -176,35 +173,34 @@
     </div>
 
     <dl class="changes">
-      <div class="change"><dt data-i18n="cmp.c1t">Бэкапы, которые проверены</dt><dd data-i18n="cmp.c1d">Бэкап без проверенного восстановления — это надежда, а не бэкап. Восстановление я прогоняю регулярно, чтобы в день сбоя оно точно сработало.</dd></div>
-      <div class="change"><dt data-i18n="cmp.c2t">Резерв на каждом уровне</dt><dd data-i18n="cmp.c2d">Балансировщики, несколько инстансов приложения и реплика базы. Отказ одного узла больше не роняет продукт.</dd></div>
-      <div class="change"><dt data-i18n="cmp.c3t">Клиентская база в безопасности</dt><dd data-i18n="cmp.c3d">Данные и заявки не теряются даже при отказе основного сервера: реплика и бэкапы лежат отдельно от него.</dd></div>
-      <div class="change"><dt data-i18n="cmp.c4t">Разбираюсь я, а не вы</dt><dd data-i18n="cmp.c4d">Метрики и алерты по всей цепочке настроены так, что первым о проблеме узнаю я. К вам вопрос приходит уже с готовым решением — или не приходит вовсе.</dd></div>
+      <div class="change"><dt data-i18n-html="cmp.c1t"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 6.5"/></svg>Бэкапы, которые проверены</dt><dd data-i18n="cmp.c1d">Бэкап без проверенного восстановления — это надежда, а не бэкап. Восстановление я прогоняю регулярно, чтобы в день сбоя оно точно сработало.</dd></div>
+      <div class="change"><dt data-i18n-html="cmp.c2t"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 6.5"/></svg>Резерв на каждом уровне</dt><dd data-i18n="cmp.c2d">Балансировщики, несколько инстансов приложения и реплика базы. Отказ одного узла больше не роняет продукт.</dd></div>
+      <div class="change"><dt data-i18n-html="cmp.c3t"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 6.5"/></svg>Клиентская база в безопасности</dt><dd data-i18n="cmp.c3d">Данные и заявки не теряются даже при отказе основного сервера: реплика и бэкапы лежат отдельно от него.</dd></div>
+      <div class="change"><dt data-i18n-html="cmp.c4t"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 6.5"/></svg>Разбираюсь я, а не вы</dt><dd data-i18n="cmp.c4d">Метрики и алерты по всей цепочке настроены так, что первым о проблеме узнаю я. К вам вопрос приходит уже с готовым решением — или не приходит вовсе.</dd></div>
     </dl>
   </section>
 
   <!-- ============ what I won't do ============ -->
   <section class="wrap sec" id="avoid" aria-labelledby="avoidH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="avoid.eyebrow">cat boundaries.txt</p>
       <h2 class="h2" id="avoidH" data-i18n="avoid.h">Чего я не делаю</h2>
       <p class="lead" data-i18n="avoid.lead">Четыре вещи, на которые я не соглашусь, даже если попросите.</p>
     </div>
     <div class="avoid-list">
       <div>
-        <svg class="avoid-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5 L15 15 M15 5 L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="avoid-mark ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
         <p data-i18n="avoid.1">Не продаю переписывание с нуля, если хватит точечного фикса.</p>
       </div>
       <div>
-        <svg class="avoid-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5 L15 15 M15 5 L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="avoid-mark ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
         <p data-i18n="avoid.2">Не тащу Kubernetes туда, где хватит одного сервера.</p>
       </div>
       <div>
-        <svg class="avoid-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5 L15 15 M15 5 L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="avoid-mark ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
         <p data-i18n="avoid.3">Не беру предоплату и не выставляю счёт за диагностику.</p>
       </div>
       <div>
-        <svg class="avoid-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5 L15 15 M15 5 L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="avoid-mark ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
         <p data-i18n="avoid.4">Не подсаживаю на постоянный ретейнер, если задача разовая.</p>
       </div>
     </div>
@@ -213,7 +209,6 @@
   <!-- ============ process ============ -->
   <section class="wrap sec" id="process" aria-labelledby="prcH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="prc.eyebrow">how-i-work --steps</p>
       <h2 class="h2" id="prcH" data-i18n="prc.h">Четыре шага, первый — бесплатный</h2>
       <p class="lead" data-i18n="prc.lead">Никакой предоплаты и долгих обследований за ваш счёт.</p>
     </div>
@@ -240,7 +235,6 @@
   <!-- ============ experience ============ -->
   <section class="wrap sec" id="experience" aria-labelledby="expH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="exp.eyebrow">whoami</p>
       <h2 class="h2" id="expH" data-i18n="exp.h">Почему мне можно доверить продакшен</h2>
     </div>
     <div class="exp-grid">
@@ -271,7 +265,6 @@
   <!-- ============ alternatives ============ -->
   <section class="wrap sec" id="alt" aria-labelledby="altH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="alt.eyebrow">compare --alternatives</p>
       <h2 class="h2" id="altH" data-i18n="alt.h">С чем вы на самом деле сравниваете</h2>
       <p class="lead" data-i18n="alt.lead">Если не я — то что? Честное сравнение с тем, что обычно пробуют вместо этого.</p>
     </div>
@@ -320,32 +313,30 @@
     </div>
     <!-- На узком экране таблица шире вьюпорта и обрезается без единого признака,
          что её можно прокрутить. -->
-    <p class="eyebrow eyebrow--plain" style="margin-top:14px" data-i18n="alt.hint">Таблицу можно прокрутить вбок</p>
+    <p class="hint" data-i18n="alt.hint">Таблицу можно прокрутить вбок</p>
   </section>
 
   <!-- ============ faq ============ -->
   <section class="wrap sec" id="faq" aria-labelledby="faqH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="faq.eyebrow">man faq</p>
       <h2 class="h2" id="faqH" data-i18n="faq.h">Частые вопросы</h2>
     </div>
     <div class="faq">
-      <details><summary data-i18n="faq.q1">Сколько это стоит?</summary><p class="faq-a" data-i18n="faq.a1">Диагностика бесплатна. Стоимость работ называю после неё — когда понятен реальный объём. Оплата привязана к результату, а не к количеству потраченных часов.</p></details>
-      <details><summary data-i18n="faq.q2">Сколько занимает диагностика?</summary><p class="faq-a" data-i18n="faq.a2">Обычно один-три дня. Основное время уходит не на анализ, а на получение доступов и данных с вашей стороны.</p></details>
-      <details><summary data-i18n="faq.q3">Нужен ли вам доступ к продакшену?</summary><p class="faq-a" data-i18n="faq.a3">Для диагностики, как правило, хватает доступа на чтение: метрики, конфигурация, счёт за облако. Полный доступ — только на этапе работ и по вашим правилам безопасности.</p></details>
-      <details><summary data-i18n="faq.q7">Можно отдать инфраструктуру вам насовсем?</summary><p class="faq-a" data-i18n="faq.a7">Да. После первых работ можно перейти на помесячное сопровождение: я слежу за системой, обновляю, чиню и отвечаю за бэкапы, а вы про администрирование просто не думаете. Это не обязательное условие — разовая работа тоже нормальный сценарий.</p></details>
-      <details><summary data-i18n="faq.q4">У нас проект на Lovable / Bolt / Cursor. Возьмётесь?</summary><p class="faq-a" data-i18n="faq.a4">Да, это один из самых частых запросов. Прототип собран и работает, но не готов к реальной нагрузке, не наблюдаем и не переживёт первый всплеск трафика. Это решаемо.</p></details>
-      <details><summary data-i18n="faq.q5">У нас нет DevOps-инженера. Это проблема?</summary><p class="faq-a" data-i18n="faq.a5">Нет, это обычная ситуация и как раз повод обратиться. Я закрываю эту роль на время работ и оставляю систему в состоянии, которым сможет управлять ваша команда без меня.</p></details>
-      <details><summary data-i18n="faq.q6">А если вы не сможете помочь?</summary><p class="faq-a" data-i18n="faq.a6">Скажу об этом прямо по итогам диагностики, и вы ничего не заплатите. Если задача не моя — по возможности подскажу, к кому с ней идти.</p></details>
+      <details><summary><span data-i18n="faq.q1">Сколько это стоит?</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></summary><p class="faq-a" data-i18n="faq.a1">Диагностика бесплатна. Стоимость работ называю после неё — когда понятен реальный объём. Оплата привязана к результату, а не к количеству потраченных часов.</p></details>
+      <details><summary><span data-i18n="faq.q2">Сколько занимает диагностика?</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></summary><p class="faq-a" data-i18n="faq.a2">Обычно один-три дня. Основное время уходит не на анализ, а на получение доступов и данных с вашей стороны.</p></details>
+      <details><summary><span data-i18n="faq.q3">Нужен ли вам доступ к продакшену?</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></summary><p class="faq-a" data-i18n="faq.a3">Для диагностики, как правило, хватает доступа на чтение: метрики, конфигурация, счёт за облако. Полный доступ — только на этапе работ и по вашим правилам безопасности.</p></details>
+      <details><summary><span data-i18n="faq.q7">Можно отдать инфраструктуру вам насовсем?</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></summary><p class="faq-a" data-i18n="faq.a7">Да. После первых работ можно перейти на помесячное сопровождение: я слежу за системой, обновляю, чиню и отвечаю за бэкапы, а вы про администрирование просто не думаете. Это не обязательное условие — разовая работа тоже нормальный сценарий.</p></details>
+      <details><summary><span data-i18n="faq.q4">У нас проект на Lovable / Bolt / Cursor. Возьмётесь?</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></summary><p class="faq-a" data-i18n="faq.a4">Да, это один из самых частых запросов. Прототип собран и работает, но не готов к реальной нагрузке, не наблюдаем и не переживёт первый всплеск трафика. Это решаемо.</p></details>
+      <details><summary><span data-i18n="faq.q5">У нас нет DevOps-инженера. Это проблема?</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></summary><p class="faq-a" data-i18n="faq.a5">Нет, это обычная ситуация и как раз повод обратиться. Я закрываю эту роль на время работ и оставляю систему в состоянии, которым сможет управлять ваша команда без меня.</p></details>
+      <details><summary><span data-i18n="faq.q6">А если вы не сможете помочь?</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></summary><p class="faq-a" data-i18n="faq.a6">Скажу об этом прямо по итогам диагностики, и вы ничего не заплатите. Если задача не моя — по возможности подскажу, к кому с ней идти.</p></details>
     </div>
   </section>
 
   <!-- ============ final cta ============ -->
   <section class="wrap sec final" aria-labelledby="ctaH">
-    <p class="eyebrow" data-i18n="cta.eyebrow">./start.sh</p>
     <h2 class="h2" id="ctaH" data-i18n="cta.h">Начнём с бесплатной диагностики</h2>
     <p class="lead" data-i18n="cta.p">Оставьте один контакт — email, Telegram, LinkedIn или телефон. Посмотрю вашу систему и отвечу лично.</p>
-    <button class="btn js-open" type="button"><span data-i18n="cta.btn">Оставить контакт</span><span class="arr" aria-hidden="true">→</span></button>
+    <button class="btn js-open" type="button"><span data-i18n="cta.btn">Оставить контакт</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
   </section>
 </main>
 
@@ -353,8 +344,8 @@
   <div class="wrap ftr-in">
     <span data-i18n="foot.rights">© 2026 DevOps.toys · Консалтинг DevOps и FinOps</span>
     <span class="right">
-      <a href="https://www.linkedin.com/in/nirdest" target="_blank" rel="noopener">LinkedIn ↗</a>
-      <a href="https://github.com/nirdest" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="https://www.linkedin.com/in/nirdest" target="_blank" rel="noopener">LinkedIn<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16L16.5 7.5M9 7h8v8"/></svg></a>
+      <a href="https://github.com/nirdest" target="_blank" rel="noopener">GitHub<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16L16.5 7.5M9 7h8v8"/></svg></a>
       <a href="mailto:hello@devops.toys">hello@devops.toys</a>
     </span>
   </div>
@@ -364,7 +355,7 @@
 <!-- ============ lead modal ============ -->
 <div class="ovl" id="ovl" hidden>
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
-    <button class="m-close" id="mClose" type="button" aria-label="Закрыть окно" data-i18n-aria="form.closeAria">✕</button>
+    <button class="m-close" id="mClose" type="button" aria-label="Закрыть окно" data-i18n-aria="form.closeAria"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
     <div id="mForm">
       <h3 id="mTitle" data-i18n="form.title">Оставьте один контакт</h3>
       <p class="m-desc" data-i18n="form.desc">Email, Telegram, LinkedIn или телефон — я свяжусь с вами лично.</p>
@@ -389,8 +380,7 @@
      странице, и с jsDelivr он тянулся по плавающему тегу gsap@3 без integrity —
      то есть компрометация CDN означала бы доступ к полю ввода контакта. Версия 3.13.0. -->
 <script src="js/vendor/gsap.min.js?v=3.13.0"></script>
-<script src="js/vendor/ScrollTrigger.min.js?v=3.13.0"></script>
-<script src="js/main.js?v=2026-08-24a"></script>
-<script src="js/animations.js?v=2026-08-24a"></script>
+<script src="js/main.js?v=2026-08-25a"></script>
+<script src="js/animations.js?v=2026-08-25a"></script>
 </body>
 </html>

@@ -6,11 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A bilingual (RU default / EN toggle) one-page landing site for an independent DevOps / FinOps / Production Engineering consultant.
 
-**As of the website-intelligence rebuild (2026-08), this is no longer a single file.** `index.html` still lives at the repo root (GitHub Pages needs it there), but markup-only now — CSS lives in `css/styles.css`, JS in `js/main.js` (i18n, lead modal) and `js/animations.js` (GSAP ScrollTrigger reveals, new). There is still **no build step and no package.json** — every file is hand-written and served as-is; splitting into files did not add a bundler.
+**As of the website-intelligence rebuild (2026-08), this is no longer a single file.** `index.html` still lives at the repo root (GitHub Pages needs it there), but markup-only now — CSS lives in `css/styles.css`, JS in `js/main.js` (i18n, lead modal) and `js/animations.js` (a single GSAP hero reveal). There is still **no build step and no package.json** — every file is hand-written and served as-is; splitting into files did not add a bundler.
 
 External dependencies, all loaded from CDN via plain `<script>`/`<link>` tags:
 - Fonts from jsDelivr (`@fontsource-variable/inter`, `@fontsource-variable/source-serif-4`, `@fontsource/jetbrains-mono`)
-- GSAP + ScrollTrigger are **vendored** in `js/vendor/` (pinned 3.13.0), not loaded from a CDN: they were the only third-party executable code on a page that has a contact field, and they came off jsDelivr by the floating `gsap@3` tag with no `integrity`. Used only for `js/animations.js`'s scroll-reveal; everything else (i18n, lead modal) has zero dependencies and would keep working if GSAP failed to load, since `animations.js` guards on `typeof gsap === 'undefined'` and no element ships a baked-in `opacity:0`.
+- GSAP is **vendored** in `js/vendor/gsap.min.js` (pinned 3.13.0), not loaded from a CDN: it is the only third-party executable code on a page that has a contact field, and it came off jsDelivr by the floating `gsap@3` tag with no `integrity`. ScrollTrigger was dropped in the 2026-08-25 polish pass along with the per-section scroll reveal. Everything else (i18n, lead modal) has zero dependencies, and the page is fully visible if GSAP fails to load: `animations.js` returns early on `typeof gsap === 'undefined'` and no element ships a baked-in `opacity:0`.
 
 ## Commands
 
@@ -56,7 +56,6 @@ Checks worth running after any visual change, at viewports 1440 / 1100 / 800 / 6
 - every check run **in both languages** — EN and RU string widths differ, and that difference is what has broken layout here before
 - `document.fonts.check('600 40px "Source Serif 4 Variable"', 'Настройте')` before trusting any font change
 - no raw i18n keys rendered: scan `body.innerText` for `/\b(svc|cmp|exp|log|…)\.[a-z0-9]+\b/i`
-- GSAP reveals sections on scroll, so a `fullPage` screenshot taken without scrolling shows everything below the hero blank. Scroll the page through before capturing, or you will chase a bug that isn't there.
 - `pageerror` / `console.error` / `requestfailed` listeners attached throughout
 
 ## Architecture
@@ -82,7 +81,7 @@ Client-side only; no localized routes. RU is the default, EN is a toggle persist
 
 Static markup ships the **Russian** strings so there is no flash of the wrong language before JS runs — and since the 2026-08 audit those strings are also the single source of truth. At startup `main.js` walks the same four attributes and captures the markup text into `BASE`; `t()` resolves `I18N.en[k] → BASE[k] → I18N.ru[k] → k`. This deleted ~96 lines of duplicated dictionary and structurally removed the stale-cache bug described in the footguns.
 
-Section eyebrows are shell commands (`services --list`, `diff before after`, `whoami`, …) rendered with a `$` from `.eyebrow::before`. They used to be numbered `01 — …` through `07 — …`, which meant renumbering every `*.eyebrow` key by hand whenever a section moved; commands carry no order, so that chore is gone. `.eyebrow--plain` drops the `$` for the two strings that aren't commands.
+Sections have **no eyebrow or kicker** above the heading, and the services cards carry no `01`–`06` numbers. Both were removed in the 2026-08-25 polish pass: a small label above a heading is decoration that dilutes the heading, and the service numbers implied a sequence that does not exist. The process steps keep `01`–`04` because there the order is the content. Don't reintroduce either.
 
 **Invariant:** every key referenced in markup must exist in `I18N.en`. `I18N.ru` holds only the five strings that are *not* in the markup (`meta.title`, `meta.desc`, `form.sending`, `form.err`, `form.valErr`) — the rest of the Russian baseline is read off the markup itself into `BASE` at startup, so it cannot drift out of sync with the page. A key missing from `I18N.en` falls back to the Russian text, never to a raw key string. Verify after editing content:
 
@@ -155,9 +154,18 @@ Confirm the target first — `CLOUDFLARE_API_TOKEN= npx wrangler whoami` lists t
 
 A bare `Authentication error [code: 10000]` on upload means the credential lacks `Workers Scripts: Edit` (read-only tokens still list scripts fine, which makes this look like an account mix-up when it isn't).
 
+### Icons
+
+Every icon is drawn inline SVG on the shared `.ico` class: one stroke width
+(1.6), round caps and joins, `currentColor`, sized in `em` so it tracks the
+text it sits beside. The page previously mixed Unicode arrows, a `✓`, a `✕`
+and a `⚡` emoji — each arriving from a different font with its own weight and
+metrics, which is not an icon system. If you add an icon, draw it on the same
+grid rather than reaching for a glyph.
+
 ### Scroll animations (`js/animations.js`)
 
-GSAP ScrollTrigger fades/translates each `.sec` up on scroll-in (`once: true`, so it doesn't replay), plus a one-time staggered reveal of the hero's text elements on load (the selector matches descendants, not direct children). This is **pure progressive enhancement by construction**: no element carries a baked-in `opacity:0` in CSS, and the script bails out immediately (`return`) if `gsap`/`ScrollTrigger` are undefined or the visitor has `prefers-reduced-motion: reduce` — so a missing script or reduced-motion preference both leave every section simply visible, never stuck invisible. Keep that invariant if you touch this file: don't move the initial-state opacity into CSS, or a blocked CDN script turns into a blank page.
+One authored moment: a staggered blur/opacity/y reveal of the hero's text elements on load (the selector matches descendants, not direct children). The identical fade-and-rise that used to run on every `.sec` via ScrollTrigger is gone — nine repetitions of one entrance read as a template, and they hid everything below the fold until the visitor scrolled, which also made `fullPage` screenshots look blank. This is **pure progressive enhancement by construction**: no element carries a baked-in `opacity:0` in CSS, and the script bails out immediately (`return`) if `gsap` is undefined or the visitor has `prefers-reduced-motion: reduce` — so a missing script or reduced-motion preference both leave every section simply visible, never stuck invisible. Keep that invariant if you touch this file: don't move the initial-state opacity into CSS, or a blocked CDN script turns into a blank page.
 
 ## Footguns hit in this codebase
 
