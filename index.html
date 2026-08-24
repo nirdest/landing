@@ -44,7 +44,7 @@
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
 <!-- ?v= обязателен: HTML и ассеты кэшируются раздельно (600s), и без версии
      новая разметка успевает встретиться со старым CSS/JS. Меняешь файл — меняй дату. -->
-<link href="css/styles.css?v=2026-08-25c" rel="stylesheet">
+<link href="css/styles.css?v=2026-08-25d" rel="stylesheet">
 <!-- The Person is the provider of the service and is linked both ways by @id, so
      search engines tie the practice to a named human rather than treating them as
      two unrelated entities. Name kept in Cyrillic on both locales: a personal name
@@ -368,7 +368,15 @@
       <p class="m-desc" data-i18n="form.desc">Бесплатная диагностика, 1–3 дня. Обычно достаточно доступа на чтение. Не смогу помочь — не платите ничего.</p>
       <form id="leadForm" novalidate>
         <label for="contact" data-i18n="form.label">Ваш контакт</label>
-        <input id="contact" name="contact" type="text" maxlength="200" autocomplete="email" placeholder="name@example.com или @username" data-i18n-ph="form.ph" aria-describedby="fHint">
+        <!-- autocomplete="email" оставлен намеренно: поле принимает четыре вида
+             контакта, но подавляющее большинство вводит почту, и автозаполнение
+             в один тап на телефоне дороже формальной точности токена. Телефон
+             или @телеграм просто печатаются поверх подсказки.
+             autocapitalize/spellcheck/autocorrect — это уже исправление реального
+             вреда: iOS капитализировала первую букву адреса и подчёркивала его. -->
+        <input id="contact" name="contact" type="text" maxlength="200"
+               autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false"
+               placeholder="name@example.com или @username" data-i18n-ph="form.ph" aria-describedby="fHint">
         <p class="f-hint" id="fHint" data-i18n="form.hint">Email, Telegram, LinkedIn или телефон — отвечу лично.</p>
         <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
         <!-- Адрес — отдельный элемент, а не кусок строки: сообщение остаётся
@@ -392,7 +400,7 @@
      странице, и с jsDelivr он тянулся по плавающему тегу gsap@3 без integrity —
      то есть компрометация CDN означала бы доступ к полю ввода контакта. Версия 3.13.0. -->
 <script src="js/vendor/gsap.min.js?v=3.13.0"></script>
-<script src="js/main.js?v=2026-08-25c"></script>
+<script src="js/main.js?v=2026-08-25d"></script>
 <script src="js/animations.js?v=2026-08-25b"></script>
 </body>
 </html>

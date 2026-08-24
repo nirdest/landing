@@ -970,6 +970,15 @@ h1, h2, h3 {
   border-color: var(--acc);
   outline: none;
 }
+/* Ошибочное поле остаётся ошибочным и в фокусе: раньше оно получало ту же
+   оранжевую рамку, что и корректное, и единственным признаком ошибки был
+   текст под ним. Цвет тут не единственный носитель смысла — рядом стоит
+   сообщение, а поле помечено aria-invalid. */
+#leadForm input[aria-invalid="true"],
+#leadForm input[aria-invalid="true"]:focus {
+  border-color: var(--danger);
+}
+#leadForm input[aria-invalid="true"]:focus-visible { outline-color: var(--danger); }
 .hp { display: none !important; }
 
 .f-hint {

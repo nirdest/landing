@@ -130,6 +130,25 @@ after. The submit button names the outcome (`Получить бесплатны
 `Get the free audit`), and so do the two buttons that open the modal, so the
 whole flow makes one promise instead of asking for a favour.
 
+`looksLikeContact()` is the validation, and it exists **twice on purpose** — in
+`js/main.js` and in `worker/lead.js`. There is no shared module between them
+(the site and the Worker deploy separately, and the repo has no build step), and
+a browser-only check is worth nothing here because `/api/lead` is POSTed
+directly. Change one, change both. Before it existed, both sides checked only
+length, so `аааааа` arrived as a lead nobody could answer.
+
+The rules are deliberately loose: they look for an email, an `@handle`, a link
+or a phone **anywhere in the string**, so «мой телеграм @nirdest» passes.
+Letting a little junk through costs one ignored email; rejecting a real contact
+costs the lead the whole page exists to capture.
+
+`showErr(key, opts)` separates `opts.field` from `opts.mail`, and that split
+matters: a network failure must **not** set `aria-invalid` or the red border,
+because the contact in the field is fine — the network is what broke. Marking
+the field there would tell a screen-reader user they typed something wrong when
+they did not. `clearErr()` runs on `input`, so the field stops being marked
+wrong the moment the visitor starts fixing it.
+
 `#fErr` holds two children and `showErr(key, withMail)` drives them: a
 `<span id="fErrMsg">` for the message and a permanent `<a id="fErrMail">` that
 unhides only on a network failure. Keep that split. A validation error is fixed

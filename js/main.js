@@ -11,7 +11,8 @@ var I18N = {
     'meta.desc':'Забираю IT-инфраструктуру на себя: бэкапы, отказоустойчивость, быстрое восстановление после сбоя. Разово или на постоянной основе. Диагностика бесплатно.',
     'form.sending':'Отправляем…',
     'form.err':'Не удалось отправить заявку. Попробуйте ещё раз или напишите мне напрямую.',
-    'form.valErr':'Укажите контакт — не короче 5 символов.',
+    'form.valEmpty':'Укажите контакт, иначе я не смогу ответить.',
+    'form.valErr':'Это не похоже на контакт. Подойдёт email, @телеграм, ссылка на LinkedIn или телефон.',
   },
   en: {
     'skip':'Skip to content',
@@ -106,7 +107,8 @@ var I18N = {
     'form.send':'Get the free audit','form.sending':'Sending…',
     'form.ok':'Thanks — I received your request and will contact you.',
     'form.err':'Couldn’t send the request. Please try again, or email me directly.',
-    'form.valErr':'Please enter a contact — at least 5 characters.',
+    'form.valEmpty':'Enter a contact, otherwise I can’t reply.',
+    'form.valErr':'That doesn’t look like a contact. An email, @telegram handle, LinkedIn link or phone number all work.',
     'form.privacy':'Your contact is used only to reply to this request.',
     'form.done':'Done','form.closeAria':'Close dialog',
     'foot.rights':'© 2026 DevOps.toys · DevOps & FinOps consulting'
@@ -132,6 +134,25 @@ $all('[data-i18n-ph]').forEach(function(el){ BASE[el.getAttribute('data-i18n-ph'
 $all('[data-i18n-aria]').forEach(function(el){ BASE[el.getAttribute('data-i18n-aria')] = el.getAttribute('aria-label'); });
 
 function t(k){ return (lang === 'en' && I18N.en[k]) || BASE[k] || I18N.ru[k] || k; }
+
+/* ================= проверка контакта ================= */
+/* Раньше проверялась только длина, и «аааааа» уходило как валидный лид: до
+   владельца доезжало письмо, на которое некому ответить. Принимаем четыре
+   формы, которые обещает подсказка под полем, и ищем их ГДЕ УГОДНО в строке —
+   человек вполне может написать «мой телеграм @nirdest», и отвергать это
+   значит терять живую заявку. Пропустить лишнее здесь дешевле, чем потерять
+   настоящего клиента, поэтому правила намеренно мягкие.
+   ВАЖНО: та же проверка продублирована в worker/lead.js — клиентская
+   валидация в одиночку не значит ничего, POST к /api/lead идёт мимо браузера. */
+function looksLikeContact(s){
+  if(s.length < 5 || s.length > 200) return false;
+  if(/[^\s@]+@[^\s@]+\.[a-z\u0400-\u04ff]{2,}/i.test(s)) return true;      /* email */
+  if(/(^|[\s(/])@[a-z0-9_]{4,31}\b/i.test(s)) return true;                  /* @телеграм */
+  if(/([a-z0-9-]+\.)+[a-z\u0400-\u04ff]{2,}(\/|\b)/i.test(s)) return true;  /* ссылка или домен */
+  var digits = s.replace(/\D/g, '');
+  if(digits.length >= 7 && digits.length <= 15 && /(^|\s)\+?\d[\d\s()\-.]{5,}$/.test(s)) return true;
+  return false;
+}
 
 /* ================= language ================= */
 function applyLang(l){
@@ -163,11 +184,31 @@ var fErrMsg = byId('fErrMsg'), fErrMail = byId('fErrMail');
    поэтому адрес там ни к чему. Сетевой сбой полем не лечится, и без адреса
    человек упирался в тупик: модалка ставит inert на страницу, так что почта
    в футере в этот момент недостижима. */
-function showErr(key, withMail){
+/* opts.field — пометить само поле ошибочным, opts.mail — показать адрес.
+   Это разные вещи, и путать их нельзя: при сетевом сбое контакт в поле
+   совершенно верный, ошиблась сеть. aria-invalid там сказал бы скринридеру,
+   что человек ввёл что-то не то, а красная граница показала бы то же глазами. */
+function showErr(key, opts){
+  opts = opts || {};
   fErrMsg.textContent = t(key);
-  fErrMail.hidden = !withMail;
+  fErrMail.hidden = !opts.mail;
   fErr.hidden = false;
+  if(opts.field){
+    /* Описание накапливается: подсказка остаётся, ошибка добавляется к ней. */
+    contactInput.setAttribute('aria-invalid', 'true');
+    contactInput.setAttribute('aria-describedby', 'fHint fErr');
+  }
 }
+function clearErr(){
+  if(fErr.hidden) return;
+  fErr.hidden = true;
+  fErrMail.hidden = true;
+  contactInput.removeAttribute('aria-invalid');
+  contactInput.setAttribute('aria-describedby', 'fHint');
+}
+/* Пока человек правит контакт, поле не должно продолжать кричать, что оно
+   неверно: снимаем метку с первого же символа, перепроверяем при отправке. */
+contactInput.addEventListener('input', clearErr);
 var mForm = byId('mForm'), mOk = byId('mOk');
 var lastFocus = null, sending = false, wasOk = false;
 
@@ -199,7 +240,7 @@ function closeModal(){
   document.body.style.overflow = '';
   setTimeout(function(){
     ovl.hidden = true;
-    if(wasOk){ wasOk = false; mOk.hidden = true; mForm.hidden = false; leadForm.reset(); fErr.hidden = true; }
+    if(wasOk){ wasOk = false; mOk.hidden = true; mForm.hidden = false; leadForm.reset(); clearErr(); }
   }, 230);
   if(lastFocus) lastFocus.focus();
 }
@@ -222,14 +263,17 @@ leadForm.addEventListener('submit', function(e){
   var honeypot = leadForm.querySelector('[name="company"]');
   var contact = contactInput.value.trim();
   if(honeypot && honeypot.value){ mForm.hidden = true; mOk.hidden = false; wasOk = true; byId('okClose').focus(); return; }
-  if(contact.length < 5 || contact.length > 200){
-    showErr('form.valErr', false); contactInput.focus(); return;
+  if(!contact){
+    showErr('form.valEmpty', { field: true }); contactInput.focus(); return;
   }
-  fErr.hidden = true; sending = true; mSubmit.disabled = true;
+  if(!looksLikeContact(contact)){
+    showErr('form.valErr', { field: true }); contactInput.focus(); return;
+  }
+  clearErr(); sending = true; mSubmit.disabled = true;
   mSubmitTxt.textContent = t('form.sending');
   sendLead({ contact:contact, language:lang, url:location.href, referrer:document.referrer || '', timestamp:new Date().toISOString() })
     .then(function(){ mForm.hidden = true; mOk.hidden = false; wasOk = true; byId('okClose').focus(); })
-    .catch(function(){ showErr('form.err', true); contactInput.focus(); })
+    .catch(function(){ showErr('form.err', { mail: true }); contactInput.focus(); })
     .then(function(){ sending = false; mSubmit.disabled = false; mSubmitTxt.textContent = t('form.send'); });
 });
 
