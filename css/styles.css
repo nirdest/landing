@@ -404,7 +404,6 @@ h1, h2, h3 {
   align-items: center;
   gap: 12px;
   border: 1px solid var(--line-2);
-  border-left: 2px solid var(--acc);
   padding: 10px 16px;
   border-radius: 6px;
   font-size: 0.88rem;
@@ -556,7 +555,6 @@ h1, h2, h3 {
   align-items: flex-start;
   gap: 14px;
   border: 1px solid var(--card-border);
-  border-left: 2px solid var(--danger);
   border-radius: 8px;
   padding: 20px;
   background: var(--card);
@@ -592,10 +590,7 @@ h1, h2, h3 {
 /* Пятый шаг — не шаг, а развилка «разово или помесячно», и в сетке из четырёх
    колонок он оставался один при трёх пустых. На всю ширину он и читается
    правильнее: это то, чем оффер отличается от разовой услуги. */
-.step.ongoing {
-  grid-column: 1 / -1;
-  border-left: 2px solid var(--acc-deep);
-}
+.step.ongoing { grid-column: 1 / -1; }
 .step.ongoing p { max-width: 78ch; }
 .step-n {
   font: 500 0.8rem var(--mono);
