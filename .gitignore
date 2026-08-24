@@ -3,3 +3,14 @@ worker/.wrangler/
 node_modules/
 .DS_Store
 .superpowers/
+
+# локальные конфиги агентских инструментов — репозиторий публичный,
+# и содержимому этих каталогов в нём делать нечего
+.agents/
+.claude/
+.codex/
+.cursor/
+.gemini/
+.grok/
+.opencode/
+.pi/

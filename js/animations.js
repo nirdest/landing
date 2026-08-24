@@ -10,7 +10,7 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
 gsap.registerPlugin(ScrollTrigger);
 
-var heroKids = document.querySelectorAll('.hero .eyebrow, .hero .h1, .hero .lead, .hero .cta-row, .hero .hero-trust');
+var heroKids = document.querySelectorAll('.hero .eyebrow, .hero .h1, .hero .lead, .hero .ai-badge-row, .hero .cta-row, .hero .hero-trust');
 if (heroKids.length) {
   gsap.from(heroKids, {
     opacity: 0, y: 16, duration: 0.6, ease: 'power2.out', stagger: 0.08

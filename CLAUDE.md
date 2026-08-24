@@ -6,11 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A bilingual (RU default / EN toggle) one-page landing site for an independent DevOps / FinOps / Production Engineering consultant.
 
-**As of the website-intelligence rebuild (2026-08), this is no longer a single file.** `index.html` still lives at the repo root (GitHub Pages needs it there), but markup-only now — CSS lives in `css/styles.css`, JS in `js/main.js` (i18n / modal / slider / packet animation, unchanged logic) and `js/animations.js` (GSAP ScrollTrigger reveals, new). There is still **no build step and no package.json** — every file is hand-written and served as-is; splitting into files did not add a bundler.
+**As of the website-intelligence rebuild (2026-08), this is no longer a single file.** `index.html` still lives at the repo root (GitHub Pages needs it there), but markup-only now — CSS lives in `css/styles.css`, JS in `js/main.js` (i18n, lead modal) and `js/animations.js` (GSAP ScrollTrigger reveals, new). There is still **no build step and no package.json** — every file is hand-written and served as-is; splitting into files did not add a bundler.
 
 External dependencies, all loaded from CDN via plain `<script>`/`<link>` tags:
-- Fonts from jsDelivr (`@fontsource-variable/inter`, `@fontsource/jetbrains-mono`)
-- GSAP + ScrollTrigger are **vendored** in `js/vendor/` (pinned 3.13.0), not loaded from a CDN: they were the only third-party executable code on a page that has a contact field, and they came off jsDelivr by the floating `gsap@3` tag with no `integrity`. Used only for `js/animations.js`'s scroll-reveal; everything else (i18n, modal, slider, packet animation) has zero dependencies and would keep working if GSAP failed to load, since `animations.js` guards on `typeof gsap === 'undefined'` and no element ships a baked-in `opacity:0`.
+- Fonts from jsDelivr (`@fontsource-variable/inter`, `@fontsource-variable/source-serif-4`, `@fontsource/jetbrains-mono`)
+- GSAP + ScrollTrigger are **vendored** in `js/vendor/` (pinned 3.13.0), not loaded from a CDN: they were the only third-party executable code on a page that has a contact field, and they came off jsDelivr by the floating `gsap@3` tag with no `integrity`. Used only for `js/animations.js`'s scroll-reveal; everything else (i18n, lead modal) has zero dependencies and would keep working if GSAP failed to load, since `animations.js` guards on `typeof gsap === 'undefined'` and no element ships a baked-in `opacity:0`.
 
 ## Commands
 
@@ -53,8 +53,10 @@ Checks worth running after any visual change, at viewports 1440 / 1100 / 800 / 6
 - `document.documentElement.scrollWidth === clientWidth` (no horizontal overflow)
 - `.h1` bounding-rect `left > 0` (see the padding footgun below)
 - grid column count vs. child count (bordered grids reveal empty cells)
-- pairwise `getBoundingClientRect()` intersection of all `<svg> text` nodes — **in both languages**, since EN and RU string widths differ
-- `document.fonts.check('600 40px "Inter Variable"', 'Настройте')` before trusting any font change
+- every check run **in both languages** — EN and RU string widths differ, and that difference is what has broken layout here before
+- `document.fonts.check('600 40px "Source Serif 4 Variable"', 'Настройте')` before trusting any font change
+- no raw i18n keys rendered: scan `body.innerText` for `/\b(svc|cmp|exp|log|…)\.[a-z0-9]+\b/i`
+- GSAP reveals sections on scroll, so a `fullPage` screenshot taken without scrolling shows everything below the hero blank. Scroll the page through before capturing, or you will chase a bug that isn't there.
 - `pageerror` / `console.error` / `requestfailed` listeners attached throughout
 
 ## Architecture
@@ -74,13 +76,13 @@ Client-side only; no localized routes. RU is the default, EN is a toggle persist
 | attribute | applied to |
 |---|---|
 | `data-i18n` | `textContent` |
-| `data-i18n-html` | `innerHTML` (hero H1 only — it carries an `<em>` accent) |
+| `data-i18n-html` | `innerHTML` (hero H1, which carries an `<em>` accent, and the "0 ₽" stat, whose currency glyph is a nested `<span>` and must vanish in EN) |
 | `data-i18n-ph` | `placeholder` |
 | `data-i18n-aria` | `aria-label` |
 
 Static markup ships the **Russian** strings so there is no flash of the wrong language before JS runs — and since the 2026-08 audit those strings are also the single source of truth. At startup `main.js` walks the same four attributes and captures the markup text into `BASE`; `t()` resolves `I18N.en[k] → BASE[k] → I18N.ru[k] → k`. This deleted ~96 lines of duplicated dictionary and structurally removed the stale-cache bug described in the footguns.
 
-Section eyebrows are numbered (`01 — …` through `07 — …`) and the numbers are baked into the translated strings, not generated — inserting or removing a section means renumbering every `*.eyebrow` key by hand in both `ru` and `en`.
+Section eyebrows are shell commands (`services --list`, `diff before after`, `whoami`, …) rendered with a `$` from `.eyebrow::before`. They used to be numbered `01 — …` through `07 — …`, which meant renumbering every `*.eyebrow` key by hand whenever a section moved; commands carry no order, so that chore is gone. `.eyebrow--plain` drops the `$` for the two strings that aren't commands.
 
 **Invariant:** every key referenced in markup must exist in `I18N.en`. `I18N.ru` holds only the five strings that are *not* in the markup (`meta.title`, `meta.desc`, `form.sending`, `form.err`, `form.valErr`) — the rest of the Russian baseline is read off the markup itself into `BASE` at startup, so it cannot drift out of sync with the page. A key missing from `I18N.en` falls back to the Russian text, never to a raw key string. Verify after editing content:
 
@@ -89,37 +91,31 @@ grep -oE 'data-i18n(-ph|-aria|-html)?="[^"]+"' index.html | sed -E 's/.*="(.*)"/
 ```
 …then check each key exists in `I18N.en`. The Russian side needs no check — it *is* the markup.
 
-### Before/after comparison widget
+### Before/after comparison (`#compare`)
 
-The centrepiece. Two full inline SVGs sharing `viewBox="0 0 1400 470"`, stacked absolutely:
+Two terminal windows side by side, showing the log of one night: the database
+fails at 02:14 and the two columns diverge from there. The scenario is
+**illustrative** — it is not a result claimed for a real client, and the numbers
+inside it (7 s, 23 days, 7 h 48 min) are part of the story, not statistics.
 
-- `.cmp-base` (`z-index:1`) holds the healthy architecture, **always fully painted** (the `id="topoAfter"` on that `<svg>` is unreferenced — CSS targets the classes)
-- `.cmp-top` (`z-index:2`, `#cmpTop`) holds `#topoBefore` — the degraded one, revealed from the left by `clip-path: inset(0 N% 0 0)`
-- a native `<input type=range>` (`#cmpSlider`) overlays the box and drives both the clip-path and the divider's `left`
+Plain markup: `.logs` is a `1fr 1fr` grid of `.term` windows, each row a
+`.log-row` with `.log-ts` / `.log-src` / `.log-msg`. Row tone comes from
+`.log-bad` / `.log-ok` / `.log-warn` on the row, never from inline colour.
+Below 900px the grid collapses to one column and the windows stack — there is
+no horizontal scrolling anywhere on the page.
 
-Because both layers are stacked, **each SVG needs its own opaque `<rect fill="var(--card)">` as the first child** or the two diagrams show through each other at every slider position.
+There is **no slider**, deliberately: a vertical wipe cuts log lines through
+the middle of a word, and on a phone the result is unreadable. This replaced
+two inline SVG topologies, a `clip-path` wipe, an `<input type=range>` and the
+pooled packet animation — about 470 lines, removed in the 2026-08-24 redesign.
+Four footguns went with them (SVG text overlap across RU↔EN, `parseInt || fallback`
+on the slider, pattern-id collisions between two inline SVGs, and the 1040px
+horizontal-scroll mode below 760px). Don't reintroduce a diagram here without
+re-reading why it left.
 
-The "before" SVG carries `class="tone-bad"`, which restyles the shared `.shape` / `.det` / `.route` / `.led` / `.pkt-*` primitives to the red degraded palette. Both SVGs reuse the same primitive classes — style the class, not the element.
-
-Each layer also carries its own HTML `.cmp-chrome` header (caption + system status), so the clip reveals the state that matches the side you are looking at — red "система деградировала" on the before half, green "система в норме" on the after half. The `.cmp-legend` is shared and therefore sits **outside** the clipped area.
-
-Anything positioned near the horizontal centre gets sliced in half at the default 50% divider. The "after" monitoring block (x≈900) and the tag row are deliberately placed clear of it. Before moving anything into the middle, check it doesn't straddle the divider.
-
-Below 760px the widget changes mode: `.cmp-wrap` scrolls horizontally with `min-width:1040px` on `.cmp` (labels are unreadable at phone scale otherwise) and `.cmp-range` switches to `position:static`, becoming a normal visible slider below the diagram. This is why the input sits **outside** `.cmp` in the DOM — it must not scroll away with the diagram.
-
-### Packet animation
-
-`makePool(host, paths, speed, gap, cap)` returns `{seed, step, hide}`. Dots are pooled and recycled, positioned each frame with `path.getPointAtLength()` along real `<path>` elements referenced by id (`#pBefore`, `#pA1`…`#pA3`) — the visible routes *are* the animation paths, so changing a route's `d` moves the packets with it.
-
-`seed()` must be called once at startup: it fills each lane with packets at random `t`. Without it the whole batch spawns at `t=0` and travels as a single visible clump, because transit time far exceeds `cap × gap`.
-
-A single `requestAnimationFrame` loop drives all pools, and it only runs while the widget is on screen: an `IntersectionObserver` on `.cmp` and a `visibilitychange` listener stop the loop (`running = false`) and restart it via `startFrames()`. Under `prefers-reduced-motion: reduce` nothing is seeded and the loop never starts at all.
-
-`getPointAtLength()` is **not** called per frame — that cost ~0.07 ms per packet and burned ~3.9 ms of every 16.6 ms frame. Each path is sampled once into a lookup table (`lut()`, ~1px steps, cached by path element) and the frame just indexes it. Measured over 4 s with the widget on screen: **497 ms → 5 ms** of script time; off screen **605 ms → 3 ms**. If you change a route's `d`, the LUT is keyed by element and rebuilt only on reload — a live path edit needs `lutCache.clear()`.
-
-Guard rails worth keeping: `p.len` falls back to `1` (a not-yet-laid-out SVG returns 0, and `0/0` makes `p.t` NaN), and the kill test is `!(p.t < 1)` rather than `p.t >= 1` so a NaN packet is retired instead of living forever.
-
-Both SVGs paint an opaque `<rect fill="var(--card)">` to stop the layers bleeding through, which also covers `.cmp`'s CSS dot grid — so the grid is re-drawn *inside* each SVG as an `<pattern>` (`#dotsA` / `#dotsB`). Pattern ids must stay unique across the two inline SVGs; they share one document.
+`.logs .term-body` is where the monospace font is declared — **not** `.term-body`,
+which the hero shares. Putting it on the shared class drags the whole hero
+headline into monospace.
 
 ### Lead modal
 
@@ -169,13 +165,12 @@ These are real bugs that shipped here. Re-check them when touching related code.
 
 - **Fonts without Cyrillic.** Space Grotesk has no `U+04xx` range at all, so Russian text silently fell back to a per-OS system font while Latin rendered in Space Grotesk — a mixed-font page. Before adding any font: `curl -s <fontsource css> | grep -c 'U+04'`.
 - **`padding` shorthand on an element that also has `.wrap`.** `.wrap` supplies horizontal padding; a later same-specificity rule using the `padding` shorthand zeroes it, and content sits flush at `x=0` on every viewport ≤1200px. `.sec` / `.hero` / `.final` therefore use `padding-block`.
-- **`grid-template-columns: repeat(auto-fit, …)` on a bordered grid.** `.cards` uses `gap:1px` over a `--line` background to draw hairlines, so any unfilled cell renders as a stray coloured box. Column counts are pinned per breakpoint instead. Six cards must always fill whole rows.
-- **`parseInt(el.value, 10) || fallback`.** A valid slider value of `0` is falsy and gets replaced by the fallback. Use an `isNaN` check.
+- **`grid-template-columns: repeat(auto-fit, …)` and odd child counts.** Borders now sit on the cards themselves, so an unfilled cell no longer paints a stray box — but it still leaves a visible hole. `.steps` had five children in a four-column grid and the fifth card sat alone beside three empty columns; it now carries `.ongoing` and spans `1 / -1`. Check child count against the column count at every breakpoint, not just the widest.
 - **`[hidden]` losing to an author `display` rule.** `.overlay{display:flex}` beat the UA `[hidden]{display:none}` at equal specificity, leaving an invisible full-page layer that swallowed every click and drag on the site. `.ovl[hidden]{display:none}` is the guard.
-- **SVG text has no layout engine.** Labels are hand-placed and will silently overlap when strings change length — especially when switching RU↔EN. Check intersections programmatically, in both languages.
+- **A header nav that never shrinks.** `.hdr nav` held its full 473px on every viewport, so below 760px it pushed the document wider than the screen and the menu links sat off-canvas, unreachable. `.nav-a` is hidden below 760px and `.hdr-cta` below 430px; every section is still reachable by scrolling.
 - **Markup and dictionary shipping out of step.** `index.html` and `js/main.js` are separate files with separate 600s caches, so adding i18n keys to both at once still leaves a window where a visitor holds new markup and the old dictionary — and the page renders raw `exp.s6k` strings. Two guards now exist and both must stay: local `css/js` are linked with `?v=<date>` (**bump it whenever you change those files**), and `applyLang` skips keys the dictionary lacks, leaving the Russian text baked into the markup. Verifying over `file://` cannot see this class of bug — load the deployed URL, or stub an older `main.js` with Playwright's `page.route`.
 
-Breakpoints are `980 / 900 / 760 / 620` and are **not** written in descending order; they currently touch disjoint properties, so verify cascade order if you add rules that overlap.
+Breakpoints are `900 / 760 / 620 / 430` and are **not** written in descending order; they currently touch disjoint properties, so verify cascade order if you add rules that overlap.
 
 ## Unfinished / needs the owner's input
 

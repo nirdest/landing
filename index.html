@@ -11,37 +11,40 @@
   Markup/CSS/JS live in separate files (css/styles.css, js/main.js, js/animations.js) —
   index.html stays at the repo root so GitHub Pages keeps serving it unchanged.
 -->
-<title>DevOps, FinOps и Production Engineering | DevOps.toys</title>
-<meta name="description" content="Ускорение сайтов, снижение расходов на облако, надёжный production. Диагностика бесплатно — оплата только за результат.">
+<title>Инфраструктура, о которой не надо думать | DevOps.toys</title>
+<meta name="description" content="Забираю IT-инфраструктуру на себя: бэкапы, отказоустойчивость, быстрое восстановление после сбоя. Разово или на постоянной основе. Диагностика бесплатно.">
 <link rel="canonical" href="https://devops.toys/">
-<meta name="theme-color" content="#F5F2EA">
+<meta name="theme-color" content="#1c1b19">
 <meta property="og:site_name" content="DevOps.toys">
 <meta property="og:locale" content="ru_RU">
 <meta property="og:locale:alternate" content="en_US">
 <meta property="og:url" content="https://devops.toys/">
-<meta property="og:title" content="DevOps, FinOps и Production Engineering | DevOps.toys">
-<meta property="og:description" content="Ускорение сайтов, снижение расходов на облако, надёжный production. Диагностика бесплатно — оплата только за результат.">
+<meta property="og:title" content="Инфраструктура, о которой не надо думать | DevOps.toys">
+<meta property="og:description" content="Забираю IT-инфраструктуру на себя: бэкапы, отказоустойчивость, быстрое восстановление после сбоя. Разово или на постоянной основе. Диагностика бесплатно.">
 <meta property="og:type" content="website">
 <!-- absolute URL is required: crawlers do not resolve relative og:image paths -->
 <meta property="og:image" content="https://devops.toys/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="DevOps.toys — быстрые сайты, меньший счёт за облако и продакшен, который не падает">
+<meta property="og:image:alt" content="DevOps.toys — инфраструктура, о которой вам больше не придётся думать">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="DevOps, FinOps и Production Engineering | DevOps.toys">
-<meta name="twitter:description" content="Ускорение сайтов, снижение расходов на облако, надёжный production. Диагностика бесплатно — оплата только за результат.">
+<meta name="twitter:title" content="Инфраструктура, о которой не надо думать | DevOps.toys">
+<meta name="twitter:description" content="Забираю IT-инфраструктуру на себя: бэкапы, отказоустойчивость, быстрое восстановление после сбоя. Разово или на постоянной основе. Диагностика бесплатно.">
 <meta name="twitter:image" content="https://devops.toys/og-image.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23F5F2EA'/%3E%3Cpath d='M8 21 L16 9 L24 21 M16 9 V21' stroke='%2300703A' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='8' cy='21' r='2.6' fill='%2315170F'/%3E%3Ccircle cx='24' cy='21' r='2.6' fill='%2315170F'/%3E%3Ccircle cx='16' cy='9' r='2.6' fill='%2300A857'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231C1B19'/%3E%3Cpath d='M8 21 L16 9 L24 21 M16 9 V21' stroke='%23F2A65A' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='8' cy='21' r='2.6' fill='%23F4EDE3'/%3E%3Ccircle cx='24' cy='21' r='2.6' fill='%23F4EDE3'/%3E%3Ccircle cx='16' cy='9' r='2.6' fill='%23F2A65A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<!-- Inter carries full Cyrillic; the previous Space Grotesk did not and silently fell back per-OS. -->
+<!-- Inter и Source Serif 4 несут полную кириллицу; предыдущий Space Grotesk её
+     не имел вовсе, и русский текст молча падал в системный шрифт. Перед заменой
+     любого шрифта: curl <fontsource css> | grep -c 'U+04'. -->
 <link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/inter/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/source-serif-4/index.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/latin-400.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-400.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/latin-500.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
 <!-- ?v= обязателен: HTML и ассеты кэшируются раздельно (600s), и без версии
      новая разметка успевает встретиться со старым CSS/JS. Меняешь файл — меняй дату. -->
-<link href="css/styles.css?v=2026-08-01c" rel="stylesheet">
+<link href="css/styles.css?v=2026-08-24a" rel="stylesheet">
 <!-- The Person is the provider of the service and is linked both ways by @id, so
      search engines tie the practice to a named human rather than treating them as
      two unrelated entities. Name kept in Cyrillic on both locales: a personal name
@@ -49,7 +52,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"Person","@id":"https://devops.toys/#person","name":"Денис Кузьмин","jobTitle":"DevOps / FinOps Consultant","url":"https://devops.toys/","sameAs":["https://www.linkedin.com/in/nirdest","https://github.com/nirdest"]},
-{"@type":"ProfessionalService","@id":"https://devops.toys/#business","name":"DevOps.toys","url":"https://devops.toys/","image":"https://devops.toys/og-image.png","description":"Ускорение сайтов, снижение расходов на облако, надёжный production. Диагностика бесплатно — оплата только за результат.","serviceType":["DevOps consulting","FinOps consulting","Production engineering"],"areaServed":"Worldwide","availableLanguage":["ru","en"],"founder":{"@id":"https://devops.toys/#person"},"provider":{"@id":"https://devops.toys/#person"}},
+{"@type":"ProfessionalService","@id":"https://devops.toys/#business","name":"DevOps.toys","url":"https://devops.toys/","image":"https://devops.toys/og-image.png","description":"Забираю IT-инфраструктуру на себя: бэкапы, отказоустойчивость, быстрое восстановление после сбоя. Разово или на постоянной основе. Диагностика бесплатно.","serviceType":["DevOps consulting","FinOps consulting","Production engineering","Infrastructure management"],"areaServed":"Worldwide","availableLanguage":["ru","en"],"founder":{"@id":"https://devops.toys/#person"},"provider":{"@id":"https://devops.toys/#person"}},
 {"@type":"WebSite","@id":"https://devops.toys/#website","url":"https://devops.toys/","name":"DevOps.toys","inLanguage":"ru","publisher":{"@id":"https://devops.toys/#business"}}
 ]}
 </script>
@@ -61,7 +64,7 @@
 <header class="hdr">
   <div class="wrap hdr-in">
     <a class="brand" href="#" aria-label="DevOps.toys">
-      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 22 L16 8 L25 22 M16 8 V22" stroke="#00703A" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="22" r="2.6" fill="#15170F"/><circle cx="25" cy="22" r="2.6" fill="#15170F"/><circle cx="16" cy="8" r="2.6" fill="#00A857"/></svg>
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 22 L16 8 L25 22 M16 8 V22" stroke="#F2A65A" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="22" r="2.6" fill="#F4EDE3"/><circle cx="25" cy="22" r="2.6" fill="#F4EDE3"/><circle cx="16" cy="8" r="2.6" fill="#F2A65A"/></svg>
       DevOps.toys
     </a>
     <nav aria-label="Main">
@@ -80,239 +83,110 @@
 <main id="main">
 
   <!-- ============ hero ============ -->
+  <!-- Содержимое hero живёт внутри окна терминала: это основной визуальный мотив
+       страницы. Строка доверия — статус-бар этого же окна, а не отдельный блок. -->
   <section class="wrap hero">
-    <p class="eyebrow" data-i18n="hero.eyebrow">DEVOPS · FINOPS · PRODUCTION ENGINEERING</p>
-    <h1 class="h1" data-i18n-html="hero.h1">Быстрые сайты, меньший счёт за облако и <em>продакшен, который не падает</em>.</h1>
-    <p class="lead" data-i18n="hero.lead">Диагностику проведу бесплатно. Если не смогу помочь — вы не платите. Оплата только за результат: ускорение сайта, оптимизацию бюджета или повышение отказоустойчивости.</p>
-    <div class="cta-row">
-      <button class="btn js-open" type="button"><span data-i18n="hero.cta1">Оставить контакт</span><span class="arr" aria-hidden="true">→</span></button>
-      <a class="btn-ghost" href="#services" data-i18n="hero.cta2">Что именно я делаю</a>
-    </div>
-    <div class="hero-trust">
-      <span><b>10+</b> <span data-i18n="hero.t1">лет в IT</span></span>
-      <span><b>6+</b> <span data-i18n="hero.t2">лет в DevOps</span></span>
-      <span data-i18n="hero.t3">AWS · Kubernetes · Bare Metal · CI/CD · Observability</span>
+    <div class="term hero-term">
+      <div class="term-bar">
+        <i class="tl-1"></i><i class="tl-2"></i><i class="tl-3"></i>
+        <span class="term-title">~/devops.toys — zsh</span>
+      </div>
+      <div class="term-body">
+        <p class="eyebrow eyebrow--plain" data-i18n="hero.eyebrow">devops · finops · production engineering</p>
+        <h1 class="h1" data-i18n-html="hero.h1">Инфраструктура, о которой вам <em>больше не придётся думать</em>.</h1>
+        <p class="lead" data-i18n="hero.lead">Бэкапы, отказоустойчивость, быстрое восстановление после сбоя — ваши данные и клиенты под защитой, что бы ни случилось. Точечный фикс, пересборка или администрирование на постоянной основе: форму работы подбираю я, вы платите за результат.</p>
+        <div class="ai-badge-row" aria-label="AI Prototypes specialization">
+          <span>⚡ <b data-i18n="hero.ai">AI-прототипы → Production:</b> <code>Lovable</code> · <code>Bolt</code> · <code>Cursor</code> · <code>Claude Code</code></span>
+        </div>
+        <div class="cta-row">
+          <button class="btn js-open" type="button"><span data-i18n="hero.cta1">Оставить контакт</span><span class="arr" aria-hidden="true">→</span></button>
+          <a class="btn-ghost" href="#services" data-i18n="hero.cta2">Что именно я забираю на себя</a>
+        </div>
+      </div>
+      <div class="hero-trust">
+        <span><b>10+</b> <span data-i18n="hero.t1">лет в IT</span></span>
+        <span><b>6+</b> <span data-i18n="hero.t2">лет в DevOps</span></span>
+        <span data-i18n="hero.t3">AWS · Kubernetes · Bare Metal · CI/CD · Observability</span>
+      </div>
     </div>
   </section>
 
   <!-- ============ services ============ -->
   <section class="wrap sec" id="services" aria-labelledby="svcH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="svc.eyebrow">01 — Услуги</p>
-      <h2 class="h2" id="svcH" data-i18n="svc.h">Что именно я делаю</h2>
-      <p class="lead" data-i18n="svc.lead">Беру задачи, где результат можно измерить: время ответа, счёт за облако, время выкатки, время простоя.</p>
+      <p class="eyebrow" data-i18n="svc.eyebrow">services --list</p>
+      <h2 class="h2" id="svcH" data-i18n="svc.h">Что именно я забираю на себя</h2>
+      <p class="lead" data-i18n="svc.lead">Всё, из-за чего инфраструктура становится вашей проблемой. Результат при этом измерим: время ответа, счёт за облако, время выкатки, время простоя.</p>
     </div>
     <div class="cards">
       <article class="card"><p class="card-i">01</p><h3 data-i18n="svc.1t">Ускорение сайта и API</h3><p data-i18n="svc.1d">CDN, кэширование, оптимизация запросов и бэкенда. Цель — время ответа в десятки миллисекунд вместо секунд ожидания.</p></article>
       <article class="card"><p class="card-i">02</p><h3 data-i18n="svc.2t">Снижение расходов на облако</h3><p data-i18n="svc.2d">Нахожу то, за что вы платите зря: простаивающие ресурсы, переразмеренные инстансы, забытые диски и балансировщики.</p></article>
-      <article class="card"><p class="card-i">03</p><h3 data-i18n="svc.3t">Отказоустойчивость</h3><p data-i18n="svc.3d">Резервирование, реплики базы, автоматическое восстановление. Падение одного узла не должно ронять весь продукт.</p></article>
+      <article class="card"><p class="card-i">03</p><h3 data-i18n="svc.3t">Бэкапы и восстановление</h3><p data-i18n="svc.3d">Регулярные бэкапы, реплики базы и резерв на каждом уровне. Восстановление я не просто настраиваю, а проверяю — чтобы клиентская база пережила любой сбой.</p></article>
       <article class="card"><p class="card-i">04</p><h3 data-i18n="svc.4t">CI/CD и скорость релизов</h3><p data-i18n="svc.4d">Пайплайны, кэш сборок, параллельные шаги. От коммита до продакшена — минуты вместо часов и ручных действий.</p></article>
-      <article class="card"><p class="card-i">05</p><h3 data-i18n="svc.5t">Мониторинг и алерты</h3><p data-i18n="svc.5d">Метрики, логи и осмысленные оповещения. Чтобы о проблеме вы узнавали раньше, чем о ней напишут клиенты.</p></article>
+      <article class="card"><p class="card-i">05</p><h3 data-i18n="svc.5t">Мониторинг и алерты</h3><p data-i18n="svc.5d">Метрики, логи и осмысленные оповещения. О проблеме первым узнаю я, а не ваши клиенты и не вы.</p></article>
       <article class="card"><p class="card-i">06</p><h3 data-i18n="svc.6t">Продакшен для AI-прототипов</h3><p data-i18n="svc.6d">Проекты на Lovable, Bolt, Cursor или Claude Code довожу до состояния, в котором их не страшно открыть пользователям.</p></article>
     </div>
   </section>
 
   <!-- ============ before / after ============ -->
+  <!-- Пришло на смену двум инлайновым SVG-топологиям со шторкой и анимацией
+       пакетов: та схема продавала архитектуру, а оффер продаёт спокойствие.
+       Сценарий иллюстративный — это не результат работы с конкретным клиентом. -->
   <section class="wrap sec" id="compare" aria-labelledby="cmpH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="cmp.eyebrow">02 — Что меняется</p>
-      <h2 class="h2" id="cmpH" data-i18n="cmp.h">Было и стало</h2>
-      <p class="lead" data-i18n="cmp.lead">Слева — инфраструктура, которая не справляется с нагрузкой. Справа — та же система после работы. Потяните ползунок, чтобы сравнить.</p>
+      <p class="eyebrow" data-i18n="cmp.eyebrow">diff before after</p>
+      <h2 class="h2" id="cmpH" data-i18n="cmp.h">Одна и та же ночь. Две инфраструктуры.</h2>
+      <p class="lead" data-i18n="cmp.lead">В два часа ночи отказала база данных. Слева — как это проходит, когда за инфраструктурой никто не смотрит. Справа — как это проходит, когда смотрю я.</p>
     </div>
 
-    <figure class="cmp-panel">
-      <div class="cmp-shell">
-        <div class="cmp-wrap">
-          <div class="cmp" id="cmp">
-
-            <!-- AFTER: base layer, sits in flow and defines the height -->
-            <div class="cmp-base">
-              <div class="cmp-chrome ok">
-                <span class="cmp-cap"><i class="cmp-dot cap-dot"></i><b data-i18n="cmp.after">После</b><span data-i18n="cmp.live">· живая топология</span></span>
-                <span class="cmp-status"><i class="cmp-dot"></i><span data-i18n="cmp.sysOk">система в норме</span></span>
-              </div>
-              <svg id="topoAfter" class="topo cmp-layer" viewBox="0 0 1400 470" role="img" aria-labelledby="afterTitle">
-                <title id="afterTitle" data-i18n="cmp.afterTitle">Инфраструктура после работы</title>
-                <!-- opaque base stops the other layer bleeding through; the dot grid
-                     must therefore be painted inside the SVG, not behind it -->
-                <defs><pattern id="dotsA" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="var(--line)"/></pattern></defs>
-                <rect width="1400" height="470" fill="var(--card)"/>
-                <rect width="1400" height="470" fill="url(#dotsA)"/>
-
-                <!-- three request lanes; the packet animation reuses these exact paths -->
-                <path id="pA1" class="route" d="M70 240 L655 240 Q690 240 690 205 L690 185 Q690 150 725 150 L775 150 Q810 150 810 185 L810 205 Q810 240 845 240 L975 240 Q1010 240 1010 205 L1010 185 Q1010 150 1045 150 L1095 150 Q1130 150 1130 185 L1130 205 Q1130 240 1160 240"/>
-                <path id="pA2" class="route" d="M70 240 L1160 240"/>
-                <path id="pA3" class="route" d="M70 240 L655 240 Q690 240 690 275 L690 295 Q690 330 725 330 L775 330 Q810 330 810 295 L810 275 Q810 240 845 240 L975 240 Q1010 240 1010 275 L1010 295 Q1010 330 1045 330 L1095 330 Q1130 330 1130 295 L1130 275 Q1130 240 1160 240"/>
-                <path class="route route-opt" d="M1242 245 L1288 245"/>
-
-                <!-- kept clear of the 50% divider so the default view never slices it -->
-                <g class="probe" aria-hidden="true">
-                  <path d="M828 84 L392 214"/><path d="M856 84 L572 212"/><path d="M884 84 L748 126"/>
-                  <path d="M912 84 L908 214"/><path d="M940 84 L1068 126"/><path d="M968 84 L1262 192"/>
-                </g>
-                <g class="hb">
-                  <rect x="800" y="24" width="200" height="58" rx="10"/>
-                  <path class="hb-line" d="M818 53 h20 l7 -15 10 30 8 -22 7 9 h22 l7 -18 10 32 8 -22 7 9 h58"/>
-                  <text class="hb-txt" x="900" y="104" data-i18n="n.mon">мониторинг</text>
-                </g>
-
-                <g transform="translate(70,240)">
-                  <g class="glyph">
-                    <circle cx="-22" cy="-20" r="7"/><path d="M-33 4 c0-10.5 5.5-15.4 11-15.4 s11 4.9 11 15.4 z"/>
-                    <circle cx="0" cy="-26" r="7.7"/><path d="M-12 2 c0-11.2 5.9-16.5 12-16.5 s12 5.3 12 16.5 z"/>
-                    <circle cx="22" cy="-20" r="7"/><path d="M11 4 c0-10.5 5.5-15.4 11-15.4 s11 4.9 11 15.4 z"/>
-                  </g>
-                  <text class="nlabel" y="46" data-i18n="n.users">Пользователи</text>
-                </g>
-                <g transform="translate(210,240)">
-                  <circle class="shape" r="26"/>
-                  <ellipse class="det" rx="10" ry="26"/><ellipse class="det" rx="20" ry="26"/>
-                  <line class="det" x1="-26" y1="0" x2="26" y2="0"/>
-                  <text class="nlabel" y="46" data-i18n="n.dns">Интернет · DNS</text>
-                </g>
-                <g transform="translate(390,240)">
-                  <rect class="shape" x="-27" y="-27" width="54" height="54" rx="9"/>
-                  <g fill="#00703A">
-                    <rect x="-16" y="-16" width="13" height="13" rx="3"/><rect x="3" y="-16" width="13" height="13" rx="3"/>
-                    <rect x="-16" y="3" width="13" height="13" rx="3"/><rect x="3" y="3" width="13" height="13" rx="3"/>
-                  </g>
-                  <text class="nlabel" y="46" data-i18n="n.cdn">CDN · Edge</text>
-                </g>
-                <g transform="translate(570,240)">
-                  <path class="shape" d="M-52 0 L-30 -24 L30 -24 L52 0 L30 24 L-30 24 Z"/>
-                  <path class="det" d="M-32 -11 L-20 0 L-32 11 M-2 -11 L10 0 L-2 11" stroke-width="2"/>
-                  <text class="nlabel" y="46" data-i18n="n.lb">Балансировщики</text>
-                </g>
-                <g transform="translate(750,150)"><rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/></g>
-                <g transform="translate(750,240)"><rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/></g>
-                <g transform="translate(750,330)">
-                  <rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/>
-                  <text class="nlabel" y="48" data-i18n="n.frontend">Фронтенд</text>
-                </g>
-                <g transform="translate(910,240)">
-                  <rect class="shape" x="-25" y="-25" width="50" height="50" rx="10"/>
-                  <path d="M4 -14 L-10 4 L-2 4 L-4 14 L10 -4 L2 -4 Z" fill="#00703A"/>
-                  <text class="nlabel" y="46" data-i18n="n.cache">Кэш</text>
-                </g>
-                <g transform="translate(1070,150)"><rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/></g>
-                <g transform="translate(1070,240)"><rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/></g>
-                <g transform="translate(1070,330)">
-                  <rect class="shape" x="-48" y="-22" width="96" height="44" rx="8"/><circle class="led" cx="-30" cy="0" r="4.5"/><line class="det" x1="-14" y1="0" x2="32" y2="0" stroke-width="2.4"/>
-                  <text class="nlabel" y="48" data-i18n="n.backend">Бэкенд</text>
-                </g>
-
-                <rect class="group-box" x="1160" y="195" width="210" height="140" rx="12"/>
-                <g transform="translate(1212,245)">
-                  <path class="shape" d="M-26 -14 V16 A26 10 0 0 0 26 16 V-14"/>
-                  <ellipse class="shape" cx="0" cy="-14" rx="26" ry="10"/>
-                  <path class="det" d="M-26 2 A26 10 0 0 0 26 2"/>
-                  <circle class="led" cx="20" cy="14" r="4.5"/>
-                  <text class="nlabel" y="52" data-i18n="n.dbPrimary">Основная</text>
-                  <text class="nlabel" y="72" data-i18n="n.db2">БД</text>
-                </g>
-                <g transform="translate(1318,245)">
-                  <path class="shape" d="M-26 -14 V16 A26 10 0 0 0 26 16 V-14"/>
-                  <ellipse class="shape" cx="0" cy="-14" rx="26" ry="10"/>
-                  <path class="det" d="M-26 2 A26 10 0 0 0 26 2"/>
-                  <circle class="led" cx="20" cy="14" r="4.5"/>
-                  <text class="nlabel" y="52" data-i18n="n.dbReplica">Реплика</text>
-                  <text class="nlabel" y="72" data-i18n="n.db2">БД</text>
-                </g>
-
-                <g>
-                  <text class="tag" x="300" y="442" data-i18n="cmp.a1">CDN на edge</text>
-                  <text class="tag" x="750" y="442" data-i18n="cmp.a2">резерв и HA</text>
-                  <text class="tag" x="910" y="442" data-i18n="cmp.a3">кэширование</text>
-                  <text class="tag" x="1265" y="442" data-i18n="cmp.a4">бэкапы и реплика</text>
-                </g>
-                <g id="pktAfter" aria-hidden="true"></g>
-              </svg>
-            </div>
-
-            <!-- BEFORE: overlaid and clipped, revealed from the left -->
-            <div class="cmp-top" id="cmpTop">
-              <div class="cmp-chrome bad">
-                <span class="cmp-cap"><i class="cmp-dot cap-dot"></i><b data-i18n="cmp.before">До</b><span data-i18n="cmp.live">· живая топология</span></span>
-                <span class="cmp-status"><i class="cmp-dot"></i><span data-i18n="cmp.sysBad">система деградировала</span></span>
-              </div>
-              <svg id="topoBefore" class="topo cmp-layer tone-bad" viewBox="0 0 1400 470" role="img" aria-labelledby="beforeTitle">
-                <title id="beforeTitle" data-i18n="cmp.beforeTitle">Инфраструктура до работы</title>
-                <defs><pattern id="dotsB" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="var(--line)"/></pattern></defs>
-                <rect width="1400" height="470" fill="var(--card)"/>
-                <rect width="1400" height="470" fill="url(#dotsB)"/>
-                <path id="pBefore" class="route" d="M70 240 L1270 240"/>
-
-                <g transform="translate(70,240)">
-                  <g class="glyph">
-                    <circle cx="-22" cy="-20" r="7"/><path d="M-33 4 c0-10.5 5.5-15.4 11-15.4 s11 4.9 11 15.4 z"/>
-                    <circle cx="0" cy="-26" r="7.7"/><path d="M-12 2 c0-11.2 5.9-16.5 12-16.5 s12 5.3 12 16.5 z"/>
-                    <circle cx="22" cy="-20" r="7"/><path d="M11 4 c0-10.5 5.5-15.4 11-15.4 s11 4.9 11 15.4 z"/>
-                  </g>
-                  <text class="nlabel" y="52" data-i18n="n.users">Пользователи</text>
-                </g>
-                <g transform="translate(300,240)">
-                  <circle class="shape" r="30"/>
-                  <ellipse class="det" rx="11" ry="30"/><ellipse class="det" rx="22" ry="30"/>
-                  <line class="det" x1="-30" y1="0" x2="30" y2="0"/>
-                  <text class="nlabel" y="56" data-i18n="n.dns">Интернет · DNS</text>
-                </g>
-                <g transform="translate(640,240)">
-                  <rect class="shape" x="-58" y="-30" width="116" height="60" rx="11"/>
-                  <circle class="led" cx="-34" cy="0" r="6"/>
-                  <line class="det" x1="-14" y1="-8" x2="36" y2="-8" stroke-width="3.4"/>
-                  <line class="det" x1="-14" y1="8" x2="36" y2="8" stroke-width="3.4"/>
-                  <text class="nlabel" y="56" data-i18n="n.frontend">Фронтенд</text>
-                </g>
-                <g transform="translate(950,240)">
-                  <rect class="shape" x="-58" y="-30" width="116" height="60" rx="11"/>
-                  <circle class="led" cx="-34" cy="0" r="6"/>
-                  <line class="det" x1="-14" y1="-8" x2="36" y2="-8" stroke-width="3.4"/>
-                  <line class="det" x1="-14" y1="8" x2="36" y2="8" stroke-width="3.4"/>
-                  <text class="nlabel" y="56" data-i18n="n.backend">Бэкенд</text>
-                </g>
-                <g transform="translate(1270,240)">
-                  <path class="shape" d="M-34 -18 V20 A34 12 0 0 0 34 20 V-18"/>
-                  <ellipse class="shape" cx="0" cy="-18" rx="34" ry="12"/>
-                  <path class="det" d="M-34 2 A34 12 0 0 0 34 2"/>
-                  <circle class="led" cx="26" cy="18" r="6"/>
-                  <text class="nlabel" y="58" data-i18n="n.db">База данных</text>
-                </g>
-
-                <g>
-                  <text class="tag" x="300" y="442" data-i18n="cmp.b1">нет CDN</text>
-                  <text class="tag" x="640" y="442" data-i18n="cmp.b2">один инстанс</text>
-                  <text class="tag" x="950" y="442" data-i18n="cmp.b3">нет кэша</text>
-                  <text class="tag" x="1270" y="442" data-i18n="cmp.b4">нет реплики</text>
-                </g>
-                <g id="pktBefore" aria-hidden="true"></g>
-              </svg>
-            </div>
-
-            <div class="cmp-div" id="cmpDiv" aria-hidden="true"></div>
-          </div>
+    <div class="logs">
+      <div class="term">
+        <div class="term-bar">
+          <i class="tl-1"></i><i class="tl-2"></i><i class="tl-3"></i>
+          <span class="term-title">~/logs/before.log</span>
+          <span class="term-state state-bad" data-i18n="cmp.sysBad">деградация</span>
         </div>
-        <input type="range" id="cmpSlider" class="cmp-range" min="0" max="100" step="1" value="50" aria-label="Сравнение: до и после" data-i18n-aria="cmp.sliderAria">
-        <p class="cmp-hint" data-i18n="cmp.hint">Потяните ползунок · схему можно прокрутить вбок</p>
+        <div class="term-body">
+          <div class="log-row log-bad"><span class="log-ts">02:14:07</span><span class="log-src">db</span><span class="log-msg" data-i18n="log.b1">пул соединений исчерпан</span></div>
+          <div class="log-row log-bad"><span class="log-ts">02:14:09</span><span class="log-src">web</span><span class="log-msg" data-i18n="log.b2">502 Bad Gateway ×214</span></div>
+          <div class="log-row"><span class="log-ts">02:14:09</span><span class="log-src">ops</span><span class="log-msg" data-i18n="log.b3">— тишина, алертов нет</span></div>
+          <div class="log-row"><span class="log-ts">09:30:12</span><span class="log-src" data-i18n="log.you">вы</span><span class="log-msg" data-i18n="log.b4">«сайт лежит со вчера?»</span></div>
+          <div class="log-row log-bad"><span class="log-ts">09:41:55</span><span class="log-src">bkp</span><span class="log-msg" data-i18n="log.b5">последний бэкап: 23 дня назад</span></div>
+          <div class="log-row log-bad"><span class="log-ts">10:02:30</span><span class="log-src">crm</span><span class="log-msg" data-i18n="log.b6">заявки за сутки потеряны</span></div>
+          <p class="log-sum bad" data-i18n="log.bsum">простой: 7 ч 48 мин</p>
+        </div>
       </div>
-      <figcaption class="cmp-legend">
-        <span><i class="lg-dot"></i><span data-i18n="cmp.lg1">поток запросов</span></span>
-        <span><i class="lg-dash"></i><span data-i18n="cmp.lg2">дублирование и резерв</span></span>
-        <span><i class="lg-probe"></i><span data-i18n="cmp.lg3">проверки мониторинга</span></span>
-      </figcaption>
-    </figure>
+
+      <div class="term">
+        <div class="term-bar">
+          <i class="tl-1"></i><i class="tl-2"></i><i class="tl-3"></i>
+          <span class="term-title">~/logs/after.log</span>
+          <span class="term-state state-ok" data-i18n="cmp.sysOk">система в норме</span>
+        </div>
+        <div class="term-body">
+          <div class="log-row log-warn"><span class="log-ts">02:14:07</span><span class="log-src">db</span><span class="log-msg" data-i18n="log.a1">primary недоступен</span></div>
+          <div class="log-row log-ok"><span class="log-ts">02:14:09</span><span class="log-src">ha</span><span class="log-msg" data-i18n="log.a2">переключение на реплику — ok (7 с)</span></div>
+          <div class="log-row log-ok"><span class="log-ts">02:14:09</span><span class="log-src">web</span><span class="log-msg" data-i18n="log.a3">200 OK — клиенты ничего не заметили</span></div>
+          <div class="log-row log-ok"><span class="log-ts">02:14:12</span><span class="log-src">ops</span><span class="log-msg" data-i18n="log.a4">алерт ушёл мне, не вам</span></div>
+          <div class="log-row log-ok"><span class="log-ts">03:00:00</span><span class="log-src">bkp</span><span class="log-msg" data-i18n="log.a5">бэкап выполнен и проверен</span></div>
+          <div class="log-row"><span class="log-ts">09:30:12</span><span class="log-src" data-i18n="log.you">вы</span><span class="log-msg" data-i18n="log.a6">— обычное рабочее утро</span></div>
+          <p class="log-sum ok" data-i18n="log.asum">простой: 0 мин</p>
+        </div>
+      </div>
+    </div>
 
     <dl class="changes">
-      <div class="change"><dt data-i18n="cmp.c1t">CDN и кэш</dt><dd data-i18n="cmp.c1d">Статика и частые запросы отдаются с ближайшего к пользователю узла, а не тянутся каждый раз с вашего сервера.</dd></div>
+      <div class="change"><dt data-i18n="cmp.c1t">Бэкапы, которые проверены</dt><dd data-i18n="cmp.c1d">Бэкап без проверенного восстановления — это надежда, а не бэкап. Восстановление я прогоняю регулярно, чтобы в день сбоя оно точно сработало.</dd></div>
       <div class="change"><dt data-i18n="cmp.c2t">Резерв на каждом уровне</dt><dd data-i18n="cmp.c2d">Балансировщики, несколько инстансов приложения и реплика базы. Отказ одного узла больше не роняет продукт.</dd></div>
-      <div class="change"><dt data-i18n="cmp.c3t">База данных разгружена</dt><dd data-i18n="cmp.c3d">Кэш забирает большую часть чтения на себя, и база перестаёт быть узким местом при росте трафика.</dd></div>
-      <div class="change"><dt data-i18n="cmp.c4t">Мониторинг всех узлов</dt><dd data-i18n="cmp.c4d">Метрики и алерты по всей цепочке. О деградации вы узнаёте по графику, а не из письма клиента.</dd></div>
+      <div class="change"><dt data-i18n="cmp.c3t">Клиентская база в безопасности</dt><dd data-i18n="cmp.c3d">Данные и заявки не теряются даже при отказе основного сервера: реплика и бэкапы лежат отдельно от него.</dd></div>
+      <div class="change"><dt data-i18n="cmp.c4t">Разбираюсь я, а не вы</dt><dd data-i18n="cmp.c4d">Метрики и алерты по всей цепочке настроены так, что первым о проблеме узнаю я. К вам вопрос приходит уже с готовым решением — или не приходит вовсе.</dd></div>
     </dl>
   </section>
 
   <!-- ============ what I won't do ============ -->
   <section class="wrap sec" id="avoid" aria-labelledby="avoidH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="avoid.eyebrow">03 — Границы</p>
+      <p class="eyebrow" data-i18n="avoid.eyebrow">cat boundaries.txt</p>
       <h2 class="h2" id="avoidH" data-i18n="avoid.h">Чего я не делаю</h2>
       <p class="lead" data-i18n="avoid.lead">Четыре вещи, на которые я не соглашусь, даже если попросите.</p>
     </div>
@@ -339,7 +213,7 @@
   <!-- ============ process ============ -->
   <section class="wrap sec" id="process" aria-labelledby="prcH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="prc.eyebrow">04 — Как я работаю</p>
+      <p class="eyebrow" data-i18n="prc.eyebrow">how-i-work --steps</p>
       <h2 class="h2" id="prcH" data-i18n="prc.h">Четыре шага, первый — бесплатный</h2>
       <p class="lead" data-i18n="prc.lead">Никакой предоплаты и долгих обследований за ваш счёт.</p>
     </div>
@@ -354,16 +228,19 @@
           <li data-i18n="prc.1x3">Список приоритетов</li>
         </ul>
       </div>
-      <div class="step"><p class="step-n">02</p><h3 data-i18n="prc.2t">Отчёт и оценка</h3><p data-i18n="prc.2d">Показываю, что именно тормозит и куда уходят деньги. С планом работ, сроками и ожидаемым эффектом.</p></div>
+      <div class="step"><p class="step-n">02</p><h3 data-i18n="prc.2t">Отчёт и оценка</h3><p data-i18n="prc.2d">Показываю, что именно болит и куда уходят деньги. С планом работ, сроками и ожидаемым эффектом.</p></div>
       <div class="step"><p class="step-n">03</p><h3 data-i18n="prc.3t">Работа</h3><p data-i18n="prc.3d">Внедряю изменения по согласованному плану — без простоя продакшена и без сюрпризов для вашей команды.</p></div>
       <div class="step"><p class="step-n">04</p><h3 data-i18n="prc.4t">Оплата за результат</h3><p data-i18n="prc.4d">Платите, когда результат достигнут и измерен. Если помочь не смог — не платите ничего.</p></div>
+      <!-- Подводка hero обещает «администрирование на постоянной основе»;
+           без этого блока обещание нигде на странице не подтверждается. -->
+      <div class="step ongoing"><p class="step-n" data-i18n="prc.5n">потом</p><h3 data-i18n="prc.5t">Дальше — как удобно вам</h3><p data-i18n="prc.5d">Можно закрыть задачу и разойтись: система остаётся вашей, ей управляет ваша команда. А можно оставить инфраструктуру на мне помесячно — тогда администрированием вы не занимаетесь вообще.</p></div>
     </div>
   </section>
 
   <!-- ============ experience ============ -->
   <section class="wrap sec" id="experience" aria-labelledby="expH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="exp.eyebrow">05 — Опыт</p>
+      <p class="eyebrow" data-i18n="exp.eyebrow">whoami</p>
       <h2 class="h2" id="expH" data-i18n="exp.h">Почему мне можно доверить продакшен</h2>
     </div>
     <div class="exp-grid">
@@ -374,7 +251,7 @@
           <div class="num"><b>6+</b><span data-i18n="exp.n2">лет в DevOps</span></div>
           <!-- ₽ (U+20BD) — единственный символ страницы из сабсета latin-ext, и ради него
                грузился отдельный woff2 на 85 КБ. Рисуем его системным шрифтом. -->
-          <div class="num"><b>0 <span style="font-family:system-ui,sans-serif">₽</span></b><span data-i18n="exp.n3">за диагностику</span></div>
+          <div class="num"><b data-i18n-html="exp.n3v">0 <span style="font-family:system-ui,sans-serif">₽</span></b><span data-i18n="exp.n3">за диагностику</span></div>
         </div>
       </div>
       <dl class="stack">
@@ -394,7 +271,7 @@
   <!-- ============ alternatives ============ -->
   <section class="wrap sec" id="alt" aria-labelledby="altH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="alt.eyebrow">06 — Альтернативы</p>
+      <p class="eyebrow" data-i18n="alt.eyebrow">compare --alternatives</p>
       <h2 class="h2" id="altH" data-i18n="alt.h">С чем вы на самом деле сравниваете</h2>
       <p class="lead" data-i18n="alt.lead">Если не я — то что? Честное сравнение с тем, что обычно пробуют вместо этого.</p>
     </div>
@@ -441,18 +318,22 @@
         </tbody>
       </table>
     </div>
+    <!-- На узком экране таблица шире вьюпорта и обрезается без единого признака,
+         что её можно прокрутить. -->
+    <p class="eyebrow eyebrow--plain" style="margin-top:14px" data-i18n="alt.hint">Таблицу можно прокрутить вбок</p>
   </section>
 
   <!-- ============ faq ============ -->
   <section class="wrap sec" id="faq" aria-labelledby="faqH">
     <div class="sec-head">
-      <p class="eyebrow" data-i18n="faq.eyebrow">07 — Вопросы</p>
+      <p class="eyebrow" data-i18n="faq.eyebrow">man faq</p>
       <h2 class="h2" id="faqH" data-i18n="faq.h">Частые вопросы</h2>
     </div>
     <div class="faq">
       <details><summary data-i18n="faq.q1">Сколько это стоит?</summary><p class="faq-a" data-i18n="faq.a1">Диагностика бесплатна. Стоимость работ называю после неё — когда понятен реальный объём. Оплата привязана к результату, а не к количеству потраченных часов.</p></details>
       <details><summary data-i18n="faq.q2">Сколько занимает диагностика?</summary><p class="faq-a" data-i18n="faq.a2">Обычно один-три дня. Основное время уходит не на анализ, а на получение доступов и данных с вашей стороны.</p></details>
       <details><summary data-i18n="faq.q3">Нужен ли вам доступ к продакшену?</summary><p class="faq-a" data-i18n="faq.a3">Для диагностики, как правило, хватает доступа на чтение: метрики, конфигурация, счёт за облако. Полный доступ — только на этапе работ и по вашим правилам безопасности.</p></details>
+      <details><summary data-i18n="faq.q7">Можно отдать инфраструктуру вам насовсем?</summary><p class="faq-a" data-i18n="faq.a7">Да. После первых работ можно перейти на помесячное сопровождение: я слежу за системой, обновляю, чиню и отвечаю за бэкапы, а вы про администрирование просто не думаете. Это не обязательное условие — разовая работа тоже нормальный сценарий.</p></details>
       <details><summary data-i18n="faq.q4">У нас проект на Lovable / Bolt / Cursor. Возьмётесь?</summary><p class="faq-a" data-i18n="faq.a4">Да, это один из самых частых запросов. Прототип собран и работает, но не готов к реальной нагрузке, не наблюдаем и не переживёт первый всплеск трафика. Это решаемо.</p></details>
       <details><summary data-i18n="faq.q5">У нас нет DevOps-инженера. Это проблема?</summary><p class="faq-a" data-i18n="faq.a5">Нет, это обычная ситуация и как раз повод обратиться. Я закрываю эту роль на время работ и оставляю систему в состоянии, которым сможет управлять ваша команда без меня.</p></details>
       <details><summary data-i18n="faq.q6">А если вы не сможете помочь?</summary><p class="faq-a" data-i18n="faq.a6">Скажу об этом прямо по итогам диагностики, и вы ничего не заплатите. Если задача не моя — по возможности подскажу, к кому с ней идти.</p></details>
@@ -461,7 +342,7 @@
 
   <!-- ============ final cta ============ -->
   <section class="wrap sec final" aria-labelledby="ctaH">
-    <p class="eyebrow" data-i18n="cta.eyebrow">Следующий шаг</p>
+    <p class="eyebrow" data-i18n="cta.eyebrow">./start.sh</p>
     <h2 class="h2" id="ctaH" data-i18n="cta.h">Начнём с бесплатной диагностики</h2>
     <p class="lead" data-i18n="cta.p">Оставьте один контакт — email, Telegram, LinkedIn или телефон. Посмотрю вашу систему и отвечу лично.</p>
     <button class="btn js-open" type="button"><span data-i18n="cta.btn">Оставить контакт</span><span class="arr" aria-hidden="true">→</span></button>
@@ -497,7 +378,7 @@
       </form>
     </div>
     <div class="m-ok" id="mOk" hidden>
-      <svg width="54" height="54" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="rgba(0,168,87,.12)" stroke="#00703A" stroke-width="2"/><path d="M16 27 l7 7 l14 -15" fill="none" stroke="#00703A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg width="54" height="54" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="rgba(158,201,155,.12)" stroke="#9EC99B" stroke-width="2"/><path d="M16 27 l7 7 l14 -15" fill="none" stroke="#9EC99B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <p data-i18n="form.ok">Спасибо — я получил заявку и свяжусь с вами.</p>
       <button class="btn" id="okClose" type="button" data-i18n="form.done">Готово</button>
     </div>
@@ -509,7 +390,7 @@
      то есть компрометация CDN означала бы доступ к полю ввода контакта. Версия 3.13.0. -->
 <script src="js/vendor/gsap.min.js?v=3.13.0"></script>
 <script src="js/vendor/ScrollTrigger.min.js?v=3.13.0"></script>
-<script src="js/main.js?v=2026-08-01c"></script>
-<script src="js/animations.js?v=2026-08-01c"></script>
+<script src="js/main.js?v=2026-08-24a"></script>
+<script src="js/animations.js?v=2026-08-24a"></script>
 </body>
 </html>
