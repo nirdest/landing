@@ -21,9 +21,9 @@ var I18N = {
     'hero.h1':'Infrastructure you’ll <em>never have to think about</em> again.',
     'hero.lead':'Backups, failover, fast recovery after an outage — your data and your customers are protected, whatever happens. A targeted fix, a rebuild, or ongoing management: I pick the form, you pay for the outcome.',
     'hero.ai':'AI prototypes in production:',
-    'hero.cta1':'Leave one contact','hero.cta2':'What exactly I take on',
+    'hero.cta1':'Get the free audit','hero.cta2':'What exactly I take on',
     'hero.t1':'years in IT','hero.t2':'years in DevOps','hero.t3':'AWS · Kubernetes · Bare Metal · CI/CD · Observability','cmp.h':'The same night. Two infrastructures.',
-    'cmp.lead':'At two in the morning the database failed. On the left, how that night goes when nobody is watching the infrastructure. On the right, how it goes when I am.',
+    'cmp.lead':'At two in the morning the database failed. One log is that night with nobody watching the infrastructure. The other is the same night with me watching.',
     'cmp.sysOk':'system nominal','cmp.sysBad':'degraded',
     'log.you':'you',
     'log.b1':'connection pool exhausted',
@@ -97,13 +97,15 @@ var I18N = {
     'faq.q4':'We built on Lovable / Bolt / Cursor. Will you take it on?','faq.a4':'Yes — it’s one of the most common requests. The prototype works, but it isn’t ready for real load, isn’t observable, and won’t survive the first traffic spike. That’s fixable.',
     'faq.q5':'We have no DevOps engineer. Is that a problem?','faq.a5':'No, it’s the usual situation and exactly why people call. I cover that role for the duration of the work and leave the system in a state your team can run without me.',
     'faq.q6':'What if you can’t help?','faq.a6':'I’ll tell you straight after the diagnosis, and you pay nothing. If it isn’t my kind of problem, I’ll point you to someone where I can.','cta.h':'Let’s start with the free diagnosis',
-    'cta.p':'Leave one contact — email, Telegram, LinkedIn or phone. I’ll look at your system and reply personally.','cta.btn':'Leave one contact',
+    'cta.p':'Leave one contact — email, Telegram, LinkedIn or phone. I’ll look at your system and reply personally.','cta.btn':'Get the free audit',
 
-    'form.title':'Leave one contact','form.desc':'Email, Telegram, LinkedIn or phone — I’ll contact you personally.',
+    'form.title':'Leave one contact',
+    'form.desc':'The diagnosis is free and takes one to three days. Read-only access is usually enough. If I can’t help, you pay nothing.',
+    'form.hint':'Email, Telegram, LinkedIn or phone — I’ll reply personally.',
     'form.label':'Your contact','form.ph':'name@example.com or @username',
-    'form.send':'Send','form.sending':'Sending…',
+    'form.send':'Get the free audit','form.sending':'Sending…',
     'form.ok':'Thanks — I received your request and will contact you.',
-    'form.err':'Couldn’t send the request. Please try again or contact me directly.',
+    'form.err':'Couldn’t send the request. Please try again, or email me directly.',
     'form.valErr':'Please enter a contact — at least 5 characters.',
     'form.privacy':'Your contact is used only to reply to this request.',
     'form.done':'Done','form.closeAria':'Close dialog',
@@ -155,6 +157,17 @@ $all('.lang button').forEach(function(b){
 var ovl = byId('ovl'), modal = byId('modal'), page = byId('page');
 var leadForm = byId('leadForm'), contactInput = byId('contact');
 var fErr = byId('fErr'), mSubmit = byId('mSubmit'), mSubmitTxt = byId('mSubmitTxt');
+var fErrMsg = byId('fErrMsg'), fErrMail = byId('fErrMail');
+
+/* Два разных отказа — два разных выхода. Ошибка ввода лечится в самом поле,
+   поэтому адрес там ни к чему. Сетевой сбой полем не лечится, и без адреса
+   человек упирался в тупик: модалка ставит inert на страницу, так что почта
+   в футере в этот момент недостижима. */
+function showErr(key, withMail){
+  fErrMsg.textContent = t(key);
+  fErrMail.hidden = !withMail;
+  fErr.hidden = false;
+}
 var mForm = byId('mForm'), mOk = byId('mOk');
 var lastFocus = null, sending = false, wasOk = false;
 
@@ -210,13 +223,13 @@ leadForm.addEventListener('submit', function(e){
   var contact = contactInput.value.trim();
   if(honeypot && honeypot.value){ mForm.hidden = true; mOk.hidden = false; wasOk = true; byId('okClose').focus(); return; }
   if(contact.length < 5 || contact.length > 200){
-    fErr.textContent = t('form.valErr'); fErr.hidden = false; contactInput.focus(); return;
+    showErr('form.valErr', false); contactInput.focus(); return;
   }
   fErr.hidden = true; sending = true; mSubmit.disabled = true;
   mSubmitTxt.textContent = t('form.sending');
   sendLead({ contact:contact, language:lang, url:location.href, referrer:document.referrer || '', timestamp:new Date().toISOString() })
     .then(function(){ mForm.hidden = true; mOk.hidden = false; wasOk = true; byId('okClose').focus(); })
-    .catch(function(){ fErr.textContent = t('form.err'); fErr.hidden = false; contactInput.focus(); })
+    .catch(function(){ showErr('form.err', true); contactInput.focus(); })
     .then(function(){ sending = false; mSubmit.disabled = false; mSubmitTxt.textContent = t('form.send'); });
 });
 

@@ -120,6 +120,25 @@ headline into monospace.
 
 Focus trap, Escape to close, `inert` on `#page`, focus returned to opener, honeypot field. `sendLead()` POSTs to `/api/lead`.
 
+The copy carries the offer, not a restatement of the heading: `form.desc` repeats
+the three risk-reversal facts (free, 1–3 days, read-only is usually enough, no
+payment if I can't help) because this is the moment a stranger is asked for a
+contact so someone can look at their production, and every one of those facts
+lived elsewhere on the page. `.m-priv` sits **above** the button — a promise
+about what happens to the contact has to be readable before the press, not
+after. The submit button names the outcome (`Получить бесплатный аудит` /
+`Get the free audit`), and so do the two buttons that open the modal, so the
+whole flow makes one promise instead of asking for a favour.
+
+`#fErr` holds two children and `showErr(key, withMail)` drives them: a
+`<span id="fErrMsg">` for the message and a permanent `<a id="fErrMail">` that
+unhides only on a network failure. Keep that split. A validation error is fixed
+in the field, so the address would be noise; a network failure is not, and
+without a reachable address the user is trapped — the modal has `inert` on
+`#page`, so the footer's `hello@devops.toys` cannot be clicked. The address is
+a separate element rather than markup inside the string so the message stays one
+complete translatable sentence and nothing needs `innerHTML`.
+
 ### Backend (`worker/`)
 
 `worker/lead.js` is a Cloudflare Worker on route `devops.toys/api/lead`, deployed separately from the site (`npx wrangler deploy` from `worker/`, credentials below). It validates the contact string, drops honeypot hits silently, and mails the lead via the `send_email` binding from `lead@devops.toys` to the owner's verified Email Routing destination (`env.LEAD_TO`, stored as a Worker secret — not in this repo, which is public) — free on the Workers Free plan, since sending to your *own verified destination* costs nothing and doesn't touch the paid quota. Sending to an arbitrary address would need Workers Paid.

@@ -972,17 +972,38 @@ h1, h2, h3 {
 }
 .hp { display: none !important; }
 
+.f-hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
 .f-err {
   color: var(--danger);
   font-size: 0.85rem;
+  line-height: 1.5;
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
 }
+.f-err-mail {
+  color: var(--danger);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.f-err-mail:hover { color: var(--ink); }
 
-.btn-block { width: 100%; justify-content: center; margin-top: 20px; }
+.btn-block { width: 100%; justify-content: center; margin-top: 12px; }
+/* Стоит над кнопкой: обещание о том, как поступят с контактом, нужно прочитать
+   до нажатия, а не после. */
 .m-priv {
   font-size: 0.78rem;
   color: var(--muted);
-  margin-top: 14px;
+  line-height: 1.5;
+  margin-top: 20px;
   text-align: center;
 }
 
