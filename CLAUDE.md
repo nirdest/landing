@@ -163,9 +163,46 @@ and a `⚡` emoji — each arriving from a different font with its own weight an
 metrics, which is not an icon system. If you add an icon, draw it on the same
 grid rather than reaching for a glyph.
 
-### Scroll animations (`js/animations.js`)
+### Motion (`js/animations.js`)
 
-One authored moment: a staggered blur/opacity/y reveal of the hero's text elements on load (the selector matches descendants, not direct children). The identical fade-and-rise that used to run on every `.sec` via ScrollTrigger is gone — nine repetitions of one entrance read as a template, and they hid everything below the fold until the visitor scrolled, which also made `fullPage` screenshots look blank. This is **pure progressive enhancement by construction**: no element carries a baked-in `opacity:0` in CSS, and the script bails out immediately (`return`) if `gsap` is undefined or the visitor has `prefers-reduced-motion: reduce` — so a missing script or reduced-motion preference both leave every section simply visible, never stuck invisible. Keep that invariant if you touch this file: don't move the initial-state opacity into CSS, or a blocked CDN script turns into a blank page.
+**The focal sequence is the log, and it is the only authored moment on the
+page.** Both terminals print themselves on a schedule compressed from their own
+timestamps, carried in a `data-t` attribute (milliseconds) on each row and on
+the summary line. The right column closes the outage by 720 ms and goes quiet;
+the left one stops at 02:14:09 and says nothing until 2350 ms. That silence is
+the argument of the section — it is the hours nobody noticed, made felt rather
+than described. If you edit the log copy, move the `data-t` values with it and
+keep that gap; without it the section is just two lists.
+
+`.log-tail` is the live `tail -f` cursor. It sits directly under the last
+printed line, moved there by a transform driven by `--pending` (the count of
+rows not yet printed), because the rows hold their space from the start — the
+sequence changes opacity only, so there is no layout shift and no CLS.
+
+Guard rails that must survive any edit here:
+
+- `.is-timed` is the only thing that hides log rows, and **only the script adds
+  it**. No `opacity: 0` for this content lives in CSS. A failed script, a
+  blocked GSAP, or `prefers-reduced-motion: reduce` all leave the whole log
+  visible — never an empty terminal.
+- The play routine is wrapped in `try/catch`, and a 6 s fallback timer reveals
+  everything if the IntersectionObserver never fires. Decoration may fail; the
+  log content may not.
+- The caret blink runs only while `.logs` carries `.is-onscreen`. It used to
+  loop forever, including far off screen.
+
+Supporting motion is feedback only, never decoration: the modal panel arrives
+(320 ms in, 170 ms out — the exit is always faster), the success tick draws
+itself with `stroke-dashoffset` to acknowledge the page's single conversion
+action, and an opened FAQ answer fades in rather than snapping. Each has a
+`prefers-reduced-motion` path that removes movement while keeping the state
+change legible; the tick, for instance, is simply drawn already.
+
+The hero keeps a quiet staggered arrival on load (GSAP, opacity + 10px). It is
+deliberately understated so it does not compete with the log. An earlier
+version fades every `.sec` in on scroll through ScrollTrigger — nine
+repetitions of one entrance read as a template, and they hid everything below
+the fold until the visitor scrolled. Do not bring that back.
 
 ## Footguns hit in this codebase
 

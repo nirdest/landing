@@ -44,7 +44,7 @@
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
 <!-- ?v= обязателен: HTML и ассеты кэшируются раздельно (600s), и без версии
      новая разметка успевает встретиться со старым CSS/JS. Меняешь файл — меняй дату. -->
-<link href="css/styles.css?v=2026-08-25a" rel="stylesheet">
+<link href="css/styles.css?v=2026-08-25b" rel="stylesheet">
 <!-- The Person is the provider of the service and is linked both ways by @id, so
      search engines tie the practice to a named human rather than treating them as
      two unrelated entities. Name kept in Cyrillic on both locales: a personal name
@@ -137,37 +137,39 @@
     </div>
 
     <div class="logs">
-      <div class="term">
+      <div class="term term-bad">
         <div class="term-bar">
           <i class="tl-1"></i><i class="tl-2"></i><i class="tl-3"></i>
           <span class="term-title">~/logs/before.log</span>
           <span class="term-state state-bad" data-i18n="cmp.sysBad">деградация</span>
         </div>
         <div class="term-body">
-          <div class="log-row log-bad"><span class="log-ts">02:14:07</span><span class="log-src">db</span><span class="log-msg" data-i18n="log.b1">пул соединений исчерпан</span></div>
-          <div class="log-row log-bad"><span class="log-ts">02:14:09</span><span class="log-src">web</span><span class="log-msg" data-i18n="log.b2">502 Bad Gateway ×214</span></div>
-          <div class="log-row"><span class="log-ts">02:14:09</span><span class="log-src">ops</span><span class="log-msg" data-i18n="log.b3">— тишина, алертов нет</span></div>
-          <div class="log-row"><span class="log-ts">09:30:12</span><span class="log-src" data-i18n="log.you">вы</span><span class="log-msg" data-i18n="log.b4">«сайт лежит со вчера?»</span></div>
-          <div class="log-row log-bad"><span class="log-ts">09:41:55</span><span class="log-src">bkp</span><span class="log-msg" data-i18n="log.b5">последний бэкап: 23 дня назад</span></div>
-          <div class="log-row log-bad"><span class="log-ts">10:02:30</span><span class="log-src">crm</span><span class="log-msg" data-i18n="log.b6">заявки за сутки потеряны</span></div>
-          <p class="log-sum bad" data-i18n="log.bsum">простой: 7 ч 48 мин</p>
+          <div class="log-row log-bad" data-t="0"><span class="log-ts">02:14:07</span><span class="log-src">db</span><span class="log-msg" data-i18n="log.b1">пул соединений исчерпан</span></div>
+          <div class="log-row log-bad" data-t="240"><span class="log-ts">02:14:09</span><span class="log-src">web</span><span class="log-msg" data-i18n="log.b2">502 Bad Gateway ×214</span></div>
+          <div class="log-row" data-t="480"><span class="log-ts">02:14:09</span><span class="log-src">ops</span><span class="log-msg" data-i18n="log.b3">— тишина, алертов нет</span></div>
+          <div class="log-row" data-t="2350"><span class="log-ts">09:30:12</span><span class="log-src" data-i18n="log.you">вы</span><span class="log-msg" data-i18n="log.b4">«сайт лежит со вчера?»</span></div>
+          <div class="log-row log-bad" data-t="2700"><span class="log-ts">09:41:55</span><span class="log-src">bkp</span><span class="log-msg" data-i18n="log.b5">последний бэкап: 23 дня назад</span></div>
+          <div class="log-row log-bad" data-t="3050"><span class="log-ts">10:02:30</span><span class="log-src">crm</span><span class="log-msg" data-i18n="log.b6">заявки за сутки потеряны</span></div>
+          <div class="log-tail" aria-hidden="true"></div>
+          <p class="log-sum bad" data-t="3450" data-i18n="log.bsum">простой: 7 ч 48 мин</p>
         </div>
       </div>
 
-      <div class="term">
+      <div class="term term-ok">
         <div class="term-bar">
           <i class="tl-1"></i><i class="tl-2"></i><i class="tl-3"></i>
           <span class="term-title">~/logs/after.log</span>
           <span class="term-state state-ok" data-i18n="cmp.sysOk">система в норме</span>
         </div>
         <div class="term-body">
-          <div class="log-row log-warn"><span class="log-ts">02:14:07</span><span class="log-src">db</span><span class="log-msg" data-i18n="log.a1">primary недоступен</span></div>
-          <div class="log-row log-ok"><span class="log-ts">02:14:09</span><span class="log-src">ha</span><span class="log-msg" data-i18n="log.a2">переключение на реплику — ok (7 с)</span></div>
-          <div class="log-row log-ok"><span class="log-ts">02:14:09</span><span class="log-src">web</span><span class="log-msg" data-i18n="log.a3">200 OK — клиенты ничего не заметили</span></div>
-          <div class="log-row log-ok"><span class="log-ts">02:14:12</span><span class="log-src">ops</span><span class="log-msg" data-i18n="log.a4">алерт ушёл мне, не вам</span></div>
-          <div class="log-row log-ok"><span class="log-ts">03:00:00</span><span class="log-src">bkp</span><span class="log-msg" data-i18n="log.a5">бэкап выполнен и проверен</span></div>
-          <div class="log-row"><span class="log-ts">09:30:12</span><span class="log-src" data-i18n="log.you">вы</span><span class="log-msg" data-i18n="log.a6">— обычное рабочее утро</span></div>
-          <p class="log-sum ok" data-i18n="log.asum">простой: 0 мин</p>
+          <div class="log-row log-warn" data-t="0"><span class="log-ts">02:14:07</span><span class="log-src">db</span><span class="log-msg" data-i18n="log.a1">primary недоступен</span></div>
+          <div class="log-row log-ok" data-t="240"><span class="log-ts">02:14:09</span><span class="log-src">ha</span><span class="log-msg" data-i18n="log.a2">переключение на реплику — ok (7 с)</span></div>
+          <div class="log-row log-ok" data-t="480"><span class="log-ts">02:14:09</span><span class="log-src">web</span><span class="log-msg" data-i18n="log.a3">200 OK — клиенты ничего не заметили</span></div>
+          <div class="log-row log-ok" data-t="720"><span class="log-ts">02:14:12</span><span class="log-src">ops</span><span class="log-msg" data-i18n="log.a4">алерт ушёл мне, не вам</span></div>
+          <div class="log-row log-ok" data-t="1250"><span class="log-ts">03:00:00</span><span class="log-src">bkp</span><span class="log-msg" data-i18n="log.a5">бэкап выполнен и проверен</span></div>
+          <div class="log-row" data-t="2350"><span class="log-ts">09:30:12</span><span class="log-src" data-i18n="log.you">вы</span><span class="log-msg" data-i18n="log.a6">— обычное рабочее утро</span></div>
+          <div class="log-tail" aria-hidden="true"></div>
+          <p class="log-sum ok" data-t="2750" data-i18n="log.asum">простой: 0 мин</p>
         </div>
       </div>
     </div>
@@ -369,7 +371,7 @@
       </form>
     </div>
     <div class="m-ok" id="mOk" hidden>
-      <svg width="54" height="54" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="rgba(158,201,155,.12)" stroke="#9EC99B" stroke-width="2"/><path d="M16 27 l7 7 l14 -15" fill="none" stroke="#9EC99B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg width="54" height="54" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="rgba(158,201,155,.12)" stroke="#9EC99B" stroke-width="2"/><path class="tick" d="M16 27 l7 7 l14 -15" fill="none" stroke="#9EC99B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <p data-i18n="form.ok">Спасибо — я получил заявку и свяжусь с вами.</p>
       <button class="btn" id="okClose" type="button" data-i18n="form.done">Готово</button>
     </div>
@@ -381,6 +383,6 @@
      то есть компрометация CDN означала бы доступ к полю ввода контакта. Версия 3.13.0. -->
 <script src="js/vendor/gsap.min.js?v=3.13.0"></script>
 <script src="js/main.js?v=2026-08-25a"></script>
-<script src="js/animations.js?v=2026-08-25a"></script>
+<script src="js/animations.js?v=2026-08-25b"></script>
 </body>
 </html>
