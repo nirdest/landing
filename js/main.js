@@ -7,8 +7,8 @@ var I18N = {
      оттуда в BASE при старте (см. ниже). Здесь остаётся только то, чего в разметке
      нет: заголовок документа, meta-описание и тексты состояний формы. */
   ru: {
-    'meta.title':'Инфраструктура, о которой не надо думать | DevOps.toys',
-    'meta.desc':'Забираю IT-инфраструктуру на себя: бэкапы, отказоустойчивость, быстрое восстановление после сбоя. Разово или на постоянной основе. Диагностика бесплатно.',
+    'meta.title':"DevOps и FinOps: надёжный продакшен и быстрые релизы | DevOps.toys",
+    'meta.desc':"Денис Кузьмин — независимый DevOps / FinOps консультант. Бэкапы и восстановление, CI/CD, оптимизация облачных расходов. Бесплатная диагностика, оплата за результат.",
     'form.sending':'Отправляем…',
     'form.err':'Не удалось отправить заявку. Попробуйте ещё раз или напишите мне напрямую.',
     'form.valEmpty':'Укажите контакт, иначе я не смогу ответить.',
@@ -16,59 +16,34 @@ var I18N = {
   },
   en: {
     'skip':'Skip to content',
-    'meta.title':'Infrastructure you never have to think about | DevOps.toys',
-    'meta.desc':'I take your IT infrastructure off your hands: backups, failover, fast recovery. One-off or ongoing. The diagnosis is free.',
-    'nav.services':'Services','nav.process':'How I work','nav.exp':'Experience','nav.faq':'FAQ','nav.contact':'Contact',
-    'hero.h1':'Infrastructure you’ll <em>never have to think about again</em>.',
-    'hero.lead':'Backups, failover, fast recovery after an outage — your data and your customers are protected, whatever happens. A targeted fix, a rebuild, or ongoing management: I pick the form, you pay for the outcome.',
-    'hero.ai':'AI prototypes in production:',
-    'hero.cta1':'Get the free audit','hero.cta2':'What exactly I take on',
-    'hero.t1':'years in IT','hero.t2':'years in DevOps','hero.t3':'AWS · Kubernetes · Bare Metal · CI/CD · Observability','cmp.h':'The same night. Two infrastructures.',
-    'cmp.lead':'At two in the morning the database failed. One log is that night with nobody watching the infrastructure. The other is the same night with me watching.',
-    'cmp.sysOk':'system nominal','cmp.sysBad':'degraded',
-    'cmp.cta':'I’ll look at your infrastructure and tell you which of those nights it’s closer to. Free, and it commits you to nothing.',
-    'log.you':'you',
-    'log.b1':'connection pool exhausted',
-    'log.b2':'502 Bad Gateway ×214',
-    'log.b3':'— silence, no alerts',
-    'log.b4':'“is the site down since yesterday?”',
-    'log.b5':'last backup: 23 days ago',
-    'log.b6':'a day of leads lost',
-    'log.bsum':'downtime: 7 h 48 min',
-    'log.a1':'primary unreachable',
-    'log.a2':'failover to replica — ok (7 s)',
-    'log.a3':'200 OK — customers noticed nothing',
-    'log.a4':'alert went to me, not to you',
-    'log.a5':'backup done and verified',
-    'log.a6':'— an ordinary working morning',
-    'log.asum':'downtime: 0 min',
-    'cmp.c1t':'Backups that are actually tested','cmp.c1d':'A backup without a tested restore is hope, not a backup. I run the restore regularly, so that on the day it matters it actually works.',
-    'cmp.c2t':'Redundancy at every layer','cmp.c2d':'Load balancers, several application instances and a database replica. One node failing no longer takes the product down.',
-    'cmp.c3t':'Your customer data is safe','cmp.c3d':'Data and leads survive the loss of the primary server: the replica and the backups live somewhere else entirely.',
-    'cmp.c4t':'I deal with it, not you','cmp.c4d':'Metrics and alerts across the whole chain, wired so that I hear about a problem first. It reaches you with a fix attached — or it never reaches you at all.','avoid.h':'What I won’t do',
+    'meta.title':"DevOps & FinOps: reliable production and faster releases | DevOps.toys",
+    'meta.desc':"Independent DevOps / FinOps consulting: tested recovery, faster CI/CD and lower cloud costs. Free initial audit, payment for results.",
+    'nav.services':'Services','nav.process':'How I work','nav.exp':"About me",'nav.faq':'FAQ','nav.contact':'Contact',
+    'hero.h1':"Reliable production.<br><em>Faster releases.</em>",
+    'hero.lead':"I help founders and development teams improve their infrastructure: test recovery, speed up CI/CD and cut unnecessary cloud costs. Before work starts, we agree on scope, price and a measurable result.",
+    'hero.cta1':"Discuss your project",'hero.cta2':"See an audit example",
+    'hero.t1':'years in IT','hero.t2':'years in DevOps','hero.t3':"One-off projects or ongoing support",'avoid.h':'What I won’t do',
     'avoid.lead':'Four things I won’t agree to, even if you ask.',
     'avoid.1':'I won’t sell you a rewrite when a targeted fix will do.',
     'avoid.2':'I won’t push Kubernetes onto a project that doesn’t need it.',
     'avoid.3':'I don’t take payment upfront, and the diagnosis is never billed.',
-    'avoid.4':'I don’t lock you into a retainer for a one-off fix.','svc.h':'What exactly I take on',
-    'svc.lead':'Everything that turns infrastructure into your problem. The result stays measurable: response time, cloud bill, deploy time, downtime.',
-    'svc.1t':'Faster site and API','svc.1d':'CDN, caching, query and backend optimisation. The goal is response times in tens of milliseconds instead of seconds of waiting.',
-    'svc.2t':'Lower cloud spend','svc.2d':'I find what you pay for and never use: idle resources, oversized instances, forgotten disks and load balancers.',
-    'svc.3t':'Backups and recovery','svc.3d':'Regular backups, database replicas and redundancy at every layer. I don’t just configure the restore — I test it, so your customer data survives any outage.',
-    'svc.4t':'CI/CD and release speed','svc.4d':'Pipelines, build caches, parallel steps. From commit to production in minutes instead of hours of manual work.',
-    'svc.5t':'Monitoring and alerting','svc.5d':'Metrics, logs and alerts that actually mean something. I hear about a problem first — before your customers, and before you.',
-    'svc.6t':'Production for AI prototypes','svc.6d':'Projects built with Lovable, Bolt, Cursor or Claude Code, taken to a state you can safely open to real users.','prc.h':'Four steps, and the first one is free',
-    'prc.lead':'No upfront payment and no long discovery phase on your budget.','prc.free':'free',
-    'prc.1t':'The infrastructure audit','prc.1d':'I go through your infrastructure, metrics and cloud bill. You get a concrete list of bottlenecks and overspend, not vague talk.',
+    'avoid.4':'I don’t lock you into a retainer for a one-off fix.','svc.h':"What I can help you fix",
+    'svc.lead':"Start with a single problem. For each task, we agree on what will change and how we will verify the result.",
+    'svc.1t':"Faster site and API",'svc.1d':"I examine queries, caching, CDN and backend performance, then fix the bottlenecks.",
+    'svc.2t':"Lower cloud spend",'svc.2d':"I review your bill for idle resources, excess capacity and forgotten services.",
+    'svc.3t':"Backups and recovery",'svc.3d':"I configure backups and test recovery in a separate environment.",
+    'svc.4t':"CI/CD and release speed",'svc.4d':"I find what slows down your pipeline: builds, tests, caching and manual steps.",
+    'svc.5t':"Monitoring and alerting",'svc.5d':"I connect metrics and logs, configure alerts and define a clear response procedure.",
+    'svc.6t':"AI prototype → production",'svc.6d':"For Lovable, Bolt, Cursor and Claude Code projects, I review deployment, access, data and readiness for load.",'prc.h':"Plan first. Then make changes.",
+    'prc.lead':"The audit is free. We agree on scope, price and acceptance criteria before work starts.",'prc.free':'free',
+    'prc.1t':'The infrastructure audit','prc.1d':"We agree on the task and required data. I review the selected systems, metrics and costs. This usually takes 1–3 days.",
     'prc.1x1':'Findings report','prc.1x2':'Cost breakdown','prc.1x3':'Priority list',
-    'prc.2t':'Report and estimate','prc.2d':'I show you exactly what hurts and where the money goes — with a work plan, timeline and expected impact.',
-    'prc.3t':'The work','prc.3d':'I ship the changes to the agreed plan — no production downtime and no surprises for your team.',
-    'prc.4t':'Pay for the result','prc.4d':'You pay once the result is delivered and measured. If I couldn’t help, you pay nothing.',
-    /* Не шаг, а развилка после работы: заголовок секции обещает четыре шага,
-       поэтому пятая карточка нумерации не получает. */
-    'prc.cta':'The first step costs nothing and commits you to nothing.',
-    'prc.5n':'after','prc.5t':'Then — whatever suits you','prc.5d':'We can close the job and part ways: the system stays yours and your team runs it. Or you leave the infrastructure with me on a monthly basis — and stop dealing with administration entirely.','exp.h':'Why you can trust me with production',
-    'exp.lead':'Ten years in IT, six of them in DevOps and production engineering. I work with both cloud and bare metal: from small SaaS products to systems where downtime is counted in money.',
+    'prc.2t':'Report and estimate','prc.2d':"I explain the findings and propose a plan: what changes, what it costs and how we measure the result.",
+    'prc.3t':'The work','prc.3d':"I implement the agreed changes. We discuss access, risks, the work window and rollback before implementation.",
+    'prc.4t':'Pay for the result','prc.4d':"We verify the result against the agreed criteria. Payment follows acceptance. If I couldn’t help, you pay nothing.",
+
+    'prc.cta':"Start with one task. Describe it when we first speak, and we will define the audit scope.",'exp.h':"Who will work on your system",
+    'exp.lead':"I work independently, from the first audit through implementation. Over ten years in IT, six in DevOps and production engineering. Cloud, bare metal and existing infrastructure that needs improvement without an unnecessary rebuild.",
     'exp.n1':'years in IT','exp.n2':'years in DevOps','exp.n3':'for the diagnosis',
     /* Значение целиком, а не только цифра: рублёвый знак не переводится и в
        английской версии читался как «0 ₽ for the diagnosis». */
@@ -81,39 +56,70 @@ var I18N = {
     'exp.s6k':'Secrets and access','exp.s6v':'Vault · External Secrets · Keycloak · SSO',
     'exp.s7k':'Data and streaming','exp.s7v':'PostgreSQL · Redis · Dragonfly · Kafka',
     'exp.s8k':'Network and delivery','exp.s8v':'Cloudflare · NGINX · HAProxy · CDN',
-    'exp.s9k':'Storage','exp.s9v':'Ceph · MinIO · Amazon S3','alt.h':'What you’re actually comparing this to',
-    'alt.lead':'If not me, then what? An honest comparison with what people usually try instead.',
-    'alt.hint':'The table scrolls sideways',
-    'alt.colUs':'DevOps.toys','alt.colPrompts':'Fix it yourself with more prompts','alt.colFreelancer':'A cheap freelancer','alt.colNothing':'Do nothing',
-    'alt.row1':'Root cause or symptom',
-    'alt.row2':'Payment',
-    'alt.row3':'Lock-in',
-    'alt.row4':'Cost of the diagnosis',
-    'alt.v1':'Root cause, clearly identified','alt.p1':'Symptom — you keep patching the same spot','alt.f1':'Depends on who you hired','alt.n1':'The problem stays and grows',
-    'alt.v2':'Only for a measured result','alt.p2':'Your time, spent on endless prompts','alt.f2':'Hourly, regardless of outcome','alt.n2':'Technical debt accumulates',
-    'alt.v3':'None — the system stays yours','alt.p3':'Dependent on the next prompt','alt.f3':'Dependent on one specific person','alt.n3':'Dependent on luck',
-    'alt.v4':'Free','alt.p4':'—','alt.f4':'Often paid','alt.n4':'Free, until it breaks','faq.h':'Frequently asked',
-    'faq.q1':'What does it cost?','faq.a1':'The diagnosis is free. I quote the work after it, once the real scope is clear. Payment is tied to the result, not to the hours spent.',
-    'faq.q2':'How long does the diagnosis take?','faq.a2':'Usually one to three days. Most of that is waiting on access and data from your side, not the analysis itself.',
-    'faq.q3':'Do you need production access?','faq.a3':'For the diagnosis, read-only access is usually enough: metrics, configuration, the cloud bill. Full access only during the work itself, and on your security terms.',
-    'faq.q7':'Can we hand the infrastructure to you for good?','faq.a7':'Yes. After the first round of work we can move to a monthly arrangement: I watch the system, patch it, fix it and own the backups, and you simply stop thinking about administration. It isn’t a condition — a one-off job is a perfectly normal outcome too.',
-    'faq.q4':'We built on Lovable / Bolt / Cursor. Will you take it on?','faq.a4':'Yes — it’s one of the most common requests. The prototype works, but it isn’t ready for real load, isn’t observable, and won’t survive the first traffic spike. That’s fixable.',
-    'faq.q5':'We have no DevOps engineer. Is that a problem?','faq.a5':'No, it’s the usual situation and exactly why people call. I cover that role for the duration of the work and leave the system in a state your team can run without me.',
-    'faq.q6':'What if you can’t help?','faq.a6':'I’ll tell you straight after the diagnosis, and you pay nothing. If it isn’t my kind of problem, I’ll point you to someone where I can.','cta.h':'Let’s start with the free diagnosis',
-    'cta.p':'Leave one contact — email, Telegram, LinkedIn or phone. I’ll look at your system and reply personally.','cta.btn':'Get the free audit',
+    'exp.s9k':'Storage','exp.s9v':'Ceph · MinIO · Amazon S3','faq.h':'Frequently asked',
+    'faq.q1':'What does it cost?','faq.a1':"The audit is free. I then quote a specific scope based on the systems involved, access and the complexity of the changes. We fix the price and acceptance criteria before starting. Any scope change requires an updated estimate first.",
+    'faq.q2':'How long does the diagnosis take?','faq.a2':"Usually 1–3 days after receiving the agreed access and data. If the task needs a deeper review, we discuss its scope and timeline first.",
+    'faq.q3':'Do you need production access?','faq.a3':"Read-only access to metrics, configuration and the cloud bill is usually enough for the audit. Permissions to make changes are agreed separately and limited to the task. Access is granted and revoked under your rules.",
+    'faq.q7':"How do support and incident response work?",'faq.a7':"I work independently. Before support starts, we agree on systems, availability hours, response times and escalation. If you need round-the-clock on-call support, coverage and backup arrangements need a separate discussion before we begin.",
+    'faq.q4':'We built on Lovable / Bolt / Cursor. Will you take it on?','faq.a4':"Yes. I review what real users will require: deployment, access, data storage, monitoring and load handling. We identify the gaps first, then agree on a launch-readiness plan.",
+    'faq.q5':'We have no DevOps engineer. Is that a problem?','faq.a5':"No. I can own an infrastructure task and work with your developers. Before starting, we agree on who approves changes and what your team needs for ongoing operation.",
+    'faq.q6':'What if you can’t help?','faq.a6':'I’ll tell you straight after the diagnosis, and you pay nothing. If it isn’t my kind of problem, I’ll point you to someone where I can.','cta.h':"Let’s start with your task",
+    'cta.p':"Leave a contact that works for you. I will reply personally, clarify the task and suggest where to start. The initial audit is free.",'cta.btn':"Discuss your project",
 
     'form.title':'Leave one contact',
-    'form.desc':'The diagnosis is free and takes one to three days. Read-only access is usually enough. If I can’t help, you pay nothing.',
+    'form.desc':"I will reply personally, clarify the task and agree on the scope of the free audit. It usually takes 1–3 days after receiving the required data.",
     'form.hint':'Email, Telegram, LinkedIn or phone — I’ll reply personally.',
     'form.label':'Your contact','form.ph':'name@example.com or @username',
-    'form.send':'Get the free audit','form.sending':'Sending…',
+    'form.send':"Send request",'form.sending':'Sending…',
     'form.ok':'Thanks — I received your request and will contact you.',
     'form.err':'Couldn’t send the request. Please try again, or email me directly.',
     'form.valEmpty':'Enter a contact, otherwise I can’t reply.',
     'form.valErr':'That doesn’t look like a contact. An email, @telegram handle, LinkedIn link or phone number all work.',
     'form.privacy':'Your contact is used only to reply to this request.',
     'form.done':'Done','form.closeAria':'Close dialog',
-    'foot.rights':'© 2026 DevOps.toys · DevOps & FinOps consulting'
+    'foot.rights':'© 2026 DevOps.toys · DevOps & FinOps consulting',
+    'svc.3r':"You get: a test report, measured recovery time and a team runbook.",
+    'svc.4r':"Acceptance: before-and-after measurements on comparable runs and a tested rollback procedure.",
+    'svc.2r':"Acceptance: verified savings accounting for workload and reliability requirements.",
+    'svc.1r':"Acceptance: response-time and error-rate comparisons at an agreed workload.",
+    'svc.5r':"You get: dashboards, verified alert delivery and response runbooks.",
+    'svc.6r':"You get: fixes and launch verification against an agreed checklist.",
+    'audit.h':"What you get from the audit",
+    'audit.lead':"A report with findings, priorities and a work plan. This sample entry lets you see the format before getting in touch.",
+    'audit.sample':"Illustrative example · no client data",
+    'audit.title':"Backups exist. Recovery is unverified.",
+    'audit.disclosure':"A sample report entry, not a completed audit. No test results are claimed here.",
+    'audit.contextt':"Starting point",
+    'audit.contextd':"In this example, backup jobs succeed, but no recovery test report is available.",
+    'audit.riskt':"Product risk",
+    'audit.riskd':"Recovery time and recoverable data are unknown.",
+    'audit.checkt':"Proposed check",
+    'audit.checkd':"Restore a selected backup in an isolated environment. Verify data integrity and application startup.",
+    'audit.acceptt':"Acceptance criteria",
+    'audit.acceptd':"Record recovery time and data freshness. Compare them with the targets agreed before the work.",
+    'audit.scopeh':"In your report",
+    'audit.evidencet':"Evidence for each finding",
+    'audit.evidenced':"What the configuration, metrics and costs show, and what still needs checking.",
+    'audit.priorityt':"Priorities",
+    'audit.priorityd':"What to fix first, what can wait, and why.",
+    'audit.plant':"Plan and estimate",
+    'audit.pland':"Scope, price, timeline and acceptance criteria before changes begin.",
+    'audit.scope':"We agree on the audit scope for your task. Read-only access to the selected systems is usually enough.",
+    'exp.name':"Денис Кузьмин",
+    'exp.role':"Independent DevOps / FinOps consultant",
+    'formats.h':"One-off work or ongoing support",
+    'formats.lead':"The task determines the format. A one-off project does not commit you to ongoing support.",
+    'formats.fixt':"A targeted fix",
+    'formats.fixd':"One specific bottleneck: a slow build, an untested backup or unnecessary spending.",
+    'formats.fixr':"You get a fix, result verification and a description of the changes.",
+    'formats.projectt':"An improvement project",
+    'formats.projectd':"Several connected tasks: launch preparation, infrastructure improvements or release delivery.",
+    'formats.projectr':"Before starting: a plan, milestones, price and acceptance criteria for each stage.",
+    'formats.supportt':"Ongoing support",
+    'formats.supportd':"Regular work on monitoring, updates, backups and incidents.",
+    'formats.supportr':"Scope, availability hours and response times are agreed separately.",
+    'faq.q8':"What does my team keep after the work?",
+    'faq.a8':"The system remains yours. The plan includes handing over configuration, change descriptions and runbooks for the agreed scope. We decide where these materials live and how they will be handed over before starting."
   }
 };
 
@@ -213,6 +219,7 @@ function clearErr(){
 contactInput.addEventListener('input', clearErr);
 var mForm = byId('mForm'), mOk = byId('mOk');
 var lastFocus = null, sending = false, wasOk = false;
+var closeTimer = null, focusTimer = null;
 
 function modalKey(e){
   if(e.key === 'Escape'){ e.preventDefault(); closeModal(); return; }
@@ -227,20 +234,25 @@ function modalKey(e){
   else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
 }
 function openModal(){
+  clearTimeout(closeTimer);
+  clearTimeout(focusTimer);
+  if(wasOk){ wasOk = false; mOk.hidden = true; mForm.hidden = false; leadForm.reset(); clearErr(); }
   lastFocus = document.activeElement;
   ovl.hidden = false;
-  requestAnimationFrame(function(){ ovl.classList.add('show'); });
+  ovl.classList.add('show');
   page.setAttribute('inert','');
   document.body.style.overflow = 'hidden';
   document.addEventListener('keydown', modalKey);
-  setTimeout(function(){ contactInput.focus(); }, 60);
+  focusTimer = setTimeout(function(){ if(!ovl.hidden) contactInput.focus(); }, 60);
 }
 function closeModal(){
+  clearTimeout(focusTimer);
+  clearTimeout(closeTimer);
   ovl.classList.remove('show');
   document.removeEventListener('keydown', modalKey);
   page.removeAttribute('inert');
   document.body.style.overflow = '';
-  setTimeout(function(){
+  closeTimer = setTimeout(function(){
     ovl.hidden = true;
     if(wasOk){ wasOk = false; mOk.hidden = true; mForm.hidden = false; leadForm.reset(); clearErr(); }
   }, 230);
@@ -253,6 +265,8 @@ ovl.addEventListener('mousedown', function(e){ if(e.target === ovl) closeModal()
 
 function sendLead(payload){
   /* Cloudflare Worker на devops.toys/api/lead (см. worker/lead.js) шлёт письмо владельцу. */
+  // Fail closed on HTTP: contact details must never be sent in plaintext.
+  if(location.hostname === 'devops.toys' && location.protocol !== 'https:') return Promise.reject(new Error('HTTPS required'));
   return fetch('/api/lead', {
     method:'POST',
     headers:{'content-type':'application/json'},
@@ -274,8 +288,8 @@ leadForm.addEventListener('submit', function(e){
   clearErr(); sending = true; mSubmit.disabled = true;
   mSubmitTxt.textContent = t('form.sending');
   sendLead({ contact:contact, language:lang, url:location.href, referrer:document.referrer || '', timestamp:new Date().toISOString() })
-    .then(function(){ mForm.hidden = true; mOk.hidden = false; wasOk = true; byId('okClose').focus(); })
-    .catch(function(){ showErr('form.err', { mail: true }); contactInput.focus(); })
+    .then(function(){ mForm.hidden = true; mOk.hidden = false; wasOk = true; if(!ovl.hidden && ovl.classList.contains('show')) byId('okClose').focus(); })
+    .catch(function(){ showErr('form.err', { mail: true }); if(!ovl.hidden && ovl.classList.contains('show')) contactInput.focus(); })
     .then(function(){ sending = false; mSubmit.disabled = false; mSubmitTxt.textContent = t('form.send'); });
 });
 

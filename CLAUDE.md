@@ -1,5 +1,14 @@
 # CLAUDE.md
 
+## Current release — 2026-09-06
+
+The owner authorized a content and usability revision following a CTO review. Current page order: hero → six services with deliverables → explicitly illustrative audit entry (`#audit`) → boundaries → process → named consultant → engagement formats (`#formats`) → FAQ → contact. The old incident logs (`#compare`) and competitor table (`#alt`) were removed; descriptions of them below are historical, not requirements to restore them. There are no client cases or claimed demo measurements. AI prototype work remains a service without dominating the hero.
+
+The lead endpoint and Worker remain unchanged. The modal now guards close/focus timers and hidden error styling. Production HTTP visits redirect in the document and the form refuses plaintext transmission; this is a frontend safeguard, not an edge HTTPS redirect or HSTS. The Cloudflare edge still needs server-side HTTPS enforcement.
+
+Keep RU/EN parity, the existing warm terminal style, free diagnosis, payment for agreed results, and the existing GitHub Pages deployment. Never invent prices, availability, client identities or test results.
+
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## What this is
