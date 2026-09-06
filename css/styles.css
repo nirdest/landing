@@ -473,34 +473,6 @@ h1, h2, h3 {
   line-height: 1.62;
 }
 
-/* ============ BOUNDARIES / WHAT I WON'T DO ============ */
-.avoid-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-.avoid-list > div {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 20px;
-  background: var(--card);
-}
-.avoid-mark {
-  width: 20px;
-  height: 20px;
-  color: var(--danger);
-  flex: none;
-  margin-top: 3px;
-}
-.avoid-list p {
-  font-size: 0.95rem;
-  color: var(--ink-2);
-  line-height: 1.55;
-}
-
 /* ============ PROCESS ============ */
 .steps {
   display: grid;
@@ -936,7 +908,7 @@ h1, h2, h3 {
   .audit-aside { padding-top: 0; }
 }
 @media (max-width: 620px) {
-  .cards, .steps, .avoid-list { grid-template-columns: minmax(0, 1fr); }
+  .cards, .steps { grid-template-columns: minmax(0, 1fr); }
   .cta-row { align-items: stretch; flex-direction: column; }
   .cta-row .btn, .cta-row .btn-ghost { justify-content: center; text-align: center; }
   .final { margin-inline: 16px; }
