@@ -1,6 +1,16 @@
 # CLAUDE.md
 
-## Current release — 2026-09-07
+## Current release — 2026-09-09
+
+**2026-09-09 — motion and craft pass.** No content, copy, offer or page order
+changed. GSAP was deleted (see dependencies); the hero arrival is CSS keyframes
+and the page's one authored moment is now the audit report writing itself in.
+Press feedback (`scale(0.975)`), the hover arrow (which was bound to a class
+that no longer existed), hover gating on touch, the header hairline that only
+appears once the page scrolls, and animated FAQ disclosure were added. Two real
+defects were fixed: the global `:focus-visible` rule was reshaping every focused
+button, and six blocks of dead CSS were left from removed sections. Details in
+Motion and Footguns below.
 
 The owner requested removal of the “What I won’t do” section on 2026-09-07. Its markup, translations and styles are removed. Do not restore it from the historical notes below.
 
@@ -17,11 +27,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A bilingual (RU default / EN toggle) one-page landing site for an independent DevOps / FinOps / Production Engineering consultant.
 
-**As of the website-intelligence rebuild (2026-08), this is no longer a single file.** `index.html` still lives at the repo root (GitHub Pages needs it there), but markup-only now — CSS lives in `css/styles.css`, JS in `js/main.js` (i18n, lead modal) and `js/animations.js` (a single GSAP hero reveal). There is still **no build step and no package.json** — every file is hand-written and served as-is; splitting into files did not add a bundler.
+**As of the website-intelligence rebuild (2026-08), this is no longer a single file.** `index.html` still lives at the repo root (GitHub Pages needs it there), but markup-only now — CSS lives in `css/styles.css`, JS in `js/main.js` (i18n, lead modal) and `js/animations.js` (the audit-report reveal). There is still **no build step and no package.json** — every file is hand-written and served as-is; splitting into files did not add a bundler.
 
 External dependencies, all loaded from CDN via plain `<script>`/`<link>` tags:
 - Fonts from jsDelivr (`@fontsource-variable/inter`, `@fontsource-variable/source-serif-4`, `@fontsource/jetbrains-mono`)
-- GSAP is **vendored** in `js/vendor/gsap.min.js` (pinned 3.13.0), not loaded from a CDN: it is the only third-party executable code on a page that has a contact field, and it came off jsDelivr by the floating `gsap@3` tag with no `integrity`. ScrollTrigger was dropped in the 2026-08-25 polish pass along with the per-section scroll reveal. Everything else (i18n, lead modal) has zero dependencies, and the page is fully visible if GSAP fails to load: `animations.js` returns early on `typeof gsap === 'undefined'` and no element ships a baked-in `opacity:0`.
+- **No JavaScript dependencies at all.** GSAP used to be vendored in `js/vendor/gsap.min.js` for one thing — the hero's staggered arrival. It was removed on 2026-09-09: 70 KB of third-party executable code on a page with a contact field, for four elements that CSS keyframes animate better (CSS animation runs off the main thread, which on first paint is exactly the thread that is busy). Don't reintroduce an animation library; if something genuinely needs sequencing, WAAPI is already in the browser.
 
 ## Commands
 
@@ -235,44 +245,63 @@ grid rather than reaching for a glyph.
 
 ### Motion (`js/animations.js`)
 
-**The focal sequence is the log, and it is the only authored moment on the
-page.** Both terminals print themselves on a schedule compressed from their own
-timestamps, carried in a `data-t` attribute (milliseconds) on each row and on
-the summary line. The right column closes the outage by 720 ms and goes quiet;
-the left one stops at 02:14:09 and says nothing until 2350 ms. That silence is
-the argument of the section — it is the hours nobody noticed, made felt rather
-than described. If you edit the log copy, move the `data-t` values with it and
-keep that gap; without it the section is just two lists.
-
-`.log-tail` is the live `tail -f` cursor. It sits directly under the last
-printed line, moved there by a transform driven by `--pending` (the count of
-rows not yet printed), because the rows hold their space from the start — the
-sequence changes opacity only, so there is no layout shift and no CLS.
+**The focal sequence is the audit report, and it is the only authored moment on
+the page.** When `#audit` comes into frame, `.report-body` fills itself in from
+the top — label, headline, disclosure, then the four `.report-fields` rows —
+each 380 ms, 70 ms apart, with a drawn block caret blinking on the sample label
+while it runs. The section is the page's proof instead of client cases, and it
+should read as a document being written, not as one more block with a fade.
+Nothing else on the page reveals on scroll.
 
 Guard rails that must survive any edit here:
 
-- `.is-timed` is the only thing that hides log rows, and **only the script adds
-  it**. No `opacity: 0` for this content lives in CSS. A failed script, a
-  blocked GSAP, or `prefers-reduced-motion: reduce` all leave the whole log
-  visible — never an empty terminal.
-- The play routine is wrapped in `try/catch`, and a 6 s fallback timer reveals
-  everything if the IntersectionObserver never fires. Decoration may fail; the
-  log content may not.
-- The caret blink runs only while `.logs` carries `.is-onscreen`. It used to
-  loop forever, including far off screen.
+- `.is-writing` is the only thing that hides report rows, and **only the script
+  adds it**. No `opacity: 0` for this content lives in CSS outside
+  `.is-writing`/`.is-playing`. A failed script, JS switched off, a missing
+  `IntersectionObserver` or `prefers-reduced-motion: reduce` all leave the
+  report fully visible — never an empty terminal window.
+- The routine is wrapped in `try/catch`, and a 6 s fallback timer reveals
+  everything if the observer never fires. Decoration may fail; the report may
+  not.
+- `is-writing` is removed at the same moment `is-playing` is added. While it is
+  still on, the row's base `opacity` is 0, so the keyframe interpolates 0 → 0
+  and nothing moves — the rows just pop when the classes come off.
+- The observer uses `threshold: 0` with a bottom `rootMargin`, not an area
+  threshold: the window is taller than the viewport, so "15 % visible" is
+  reached only after an empty frame has stood on screen for several hundred
+  milliseconds.
+- If the report is already inside the viewport at load, the script returns
+  without hiding anything. Hiding what the visitor is already looking at is a
+  flash, not an entrance.
+- The caret is a drawn `::after` block, not a Unicode glyph, and it exists only
+  while `.is-playing` is on the report — it cannot blink off screen.
 
 Supporting motion is feedback only, never decoration: the modal panel arrives
 (320 ms in, 170 ms out — the exit is always faster), the success tick draws
 itself with `stroke-dashoffset` to acknowledge the page's single conversion
-action, and an opened FAQ answer fades in rather than snapping. Each has a
+action, an opened FAQ answer fades in and (where `::details-content` and
+`interpolate-size` exist) grows to height rather than snapping, and every
+pressable control takes `scale(0.975)` on `:active`. Each has a
 `prefers-reduced-motion` path that removes movement while keeping the state
 change legible; the tick, for instance, is simply drawn already.
 
-The hero keeps a quiet staggered arrival on load (GSAP, opacity + 10px). It is
-deliberately understated so it does not compete with the log. An earlier
-version fades every `.sec` in on scroll through ScrollTrigger — nine
-repetitions of one entrance read as a template, and they hid everything below
-the fold until the visitor scrolled. Do not bring that back.
+Hover-only affordances (the CTA lift, the arrow slide) live inside
+`@media (hover: hover) and (pointer: fine)`. On a touch screen `:hover` sticks
+after the tap and the button stays lit.
+
+The hero keeps a quiet staggered arrival on load — **plain CSS keyframes**,
+opacity + 10 px, 70 ms apart, declared only inside
+`prefers-reduced-motion: no-preference`. It used to be GSAP; see the
+dependencies note above for why 70 KB of vendored library for four elements was
+the wrong trade. It is deliberately understated so it does not compete with the
+report. An earlier version faded every `.sec` in on scroll through
+ScrollTrigger — nine repetitions of one entrance read as a template, and they
+hid everything below the fold until the visitor scrolled. Do not bring that
+back.
+
+Easing is one token, `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`, and every
+entrance and control response uses it. The built-in `ease-out` is too weak to
+read as intentional; a second curve on the same page reads as two systems.
 
 ## Footguns hit in this codebase
 
@@ -280,11 +309,13 @@ These are real bugs that shipped here. Re-check them when touching related code.
 
 - **Fonts without Cyrillic.** Space Grotesk has no `U+04xx` range at all, so Russian text silently fell back to a per-OS system font while Latin rendered in Space Grotesk — a mixed-font page. Before adding any font: `curl -s <fontsource css> | grep -c 'U+04'`.
 - **`padding` shorthand on an element that also has `.wrap`.** `.wrap` supplies horizontal padding; a later same-specificity rule using the `padding` shorthand zeroes it, and content sits flush at `x=0` on every viewport ≤1200px. `.sec` / `.hero` / `.final` therefore use `padding-block`.
-- **`grid-template-columns: repeat(auto-fit, …)` and odd child counts.** Borders now sit on the cards themselves, so an unfilled cell no longer paints a stray box — but it still leaves a visible hole. `.steps` had five children in a four-column grid and the fifth card sat alone beside three empty columns; it now carries `.ongoing` and spans `1 / -1`. Check child count against the column count at every breakpoint, not just the widest.
+- **`grid-template-columns: repeat(auto-fit, …)` and odd child counts.** Borders now sit on the cards themselves, so an unfilled cell no longer paints a stray box — but it still leaves a visible hole. `.steps` had five children in a four-column grid and the fifth card sat alone beside three empty columns; it carried `.ongoing` and spanned `1 / -1` until that step was cut. Check child count against the column count at every breakpoint, not just the widest.
 - **`[hidden]` losing to an author `display` rule.** `.overlay{display:flex}` beat the UA `[hidden]{display:none}` at equal specificity, leaving an invisible full-page layer that swallowed every click and drag on the site. `.ovl[hidden]{display:none}` is the guard.
 - **A header nav that never shrinks.** `.hdr nav` held its full 473px on every viewport, so below 760px it pushed the document wider than the screen and the menu links sat off-canvas, unreachable. `.nav-a` is hidden below 760px and `.hdr-cta` below 430px; every section is still reachable by scrolling.
 - **Markup and dictionary shipping out of step.** `index.html` and `js/main.js` are separate files with separate 600s caches, so adding i18n keys to both at once still leaves a window where a visitor holds new markup and the old dictionary — and the page renders raw `exp.s6k` strings. Two guards now exist and both must stay: local `css/js` are linked with `?v=<date>` (**bump it whenever you change those files**), and `applyLang` skips keys the dictionary lacks, leaving the Russian text baked into the markup. Verifying over `file://` cannot see this class of bug — load the deployed URL, or stub an older `main.js` with Playwright's `page.route`.
 
+- **`border-radius` inside the global `:focus-visible` rule.** `:focus-visible { outline: …; border-radius: 4px }` does not round the focus ring — it rounds *the element*, so every 8 px button snapped to 4 px the moment it took keyboard focus. Outlines already follow the element's own radius; the rule now sets outline only.
+- **A CSS animation that interpolates a value to itself.** A keyframe with only a `from` block takes its end value from the element's current computed style. With the "hidden" class still applied, `from { opacity: 0 }` animated to the base `opacity: 0` — the sequence silently did nothing and the content just appeared when the classes came off. Write both ends of the keyframe, and drop the hiding class in the same tick the animation starts.
 - **Media queries placed before the base rule they override.** A `@media (max-width: 430px){ .hero{padding-block:28px} }` written up in the header section silently lost to the plain `.hero{padding-block:clamp(...)}` further down the file — same specificity, later wins. The mobile hero CTA stayed below the fold and the rule looked correct in review. Put a breakpoint override **after** the rules it overrides, not wherever the topic feels related.
 - **`border-right` and `box-shadow` on a `<td>` under `border-collapse: collapse`.** Neither paints. The sticky first column in `.alt-table` needed `scroll-snap` on the wrapper instead, which is the better answer anyway: it stops the scroll landing mid-column, so fragments of a half-scrolled column never sit next to the row label.
 

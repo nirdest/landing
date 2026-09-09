@@ -33,6 +33,11 @@
   --tl-amber: #febc2e;
   --tl-green: #28c840;
 
+  /* Встроенные ease/ease-out слишком вялые: они тормозят ровно в тот момент,
+     когда человек смотрит на движение внимательнее всего. Одна кривая на всю
+     страницу — приход элементов и отклик контролов читаются как одна система. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
   --sans: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
   /* Source Serif 4 несёт полную кириллицу — проверено перед выбором.
      Fraunces и Newsreader, которые рассматривались рядом, её не имеют вовсе. */
@@ -72,10 +77,12 @@ body {
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 
+/* border-radius тут стоять не может: правило применяется к самому элементу, и
+   кнопка со скруглением 8px на клавиатурном фокусе меняла форму на 4px.
+   Обводка и так повторяет скругление элемента. */
 :focus-visible {
   outline: 2px solid var(--acc);
   outline-offset: 3px;
-  border-radius: 4px;
 }
 
 ::selection {
@@ -163,6 +170,19 @@ h1, h2, h3 {
   border-bottom: 1px solid var(--line);
 }
 
+/* Наверху страницы разделять нечего — линия там режет шапку от окна терминала,
+   с которым она стоит на одном фоне. Появляется она ровно тогда, когда под неё
+   начинает уезжать контент. Без поддержки scroll() остаётся как было. */
+@supports (animation-timeline: scroll()) {
+  .hdr {
+    border-bottom-color: transparent;
+    animation: hdr-line linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 64px;
+  }
+  @keyframes hdr-line { to { border-bottom-color: var(--line); } }
+}
+
 .hdr-in {
   display: flex;
   align-items: center;
@@ -207,7 +227,7 @@ h1, h2, h3 {
   color: var(--ink);
   padding: 8px 18px;
   border-radius: 6px;
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 160ms var(--ease-out);
 }
 .hdr-cta:hover {
   border-color: var(--acc);
@@ -313,26 +333,7 @@ h1, h2, h3 {
   font: 400 0.72rem var(--mono);
   color: var(--muted);
 }
-.term-state {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font: 500 0.72rem var(--mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.term-state::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: currentColor;
-  flex: none;
-}
 .term-body { padding: 18px 18px 20px; }
-.state-ok { color: var(--ok); }
-.state-bad { color: var(--danger); }
 
 /* ============ HERO SECTION ============ */
 .hero {
@@ -345,6 +346,20 @@ h1, h2, h3 {
 
 .hero .h1 { margin-top: 6px; }
 .hero .lead { margin-top: 22px; }
+
+/* Приход первого экрана. Раньше это делал GSAP — 70 КБ стороннего кода ради
+   четырёх строк; CSS-анимация идёт мимо основного потока, а он на загрузке как
+   раз занят. Ничего не прячется в состоянии по умолчанию: правило живёт только
+   внутри prefers-reduced-motion: no-preference и стартует сразу. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero .h1, .hero .lead, .hero .cta-row, .hero .hero-trust {
+    animation: hero-in 520ms var(--ease-out) both;
+  }
+  .hero .lead { animation-delay: 70ms; }
+  .hero .cta-row { animation-delay: 140ms; }
+  .hero .hero-trust { animation-delay: 210ms; }
+  @keyframes hero-in { from { opacity: 0; transform: translateY(10px); } }
+}
 
 .cta-row {
   margin-top: clamp(28px, 3.6vw, 40px);
@@ -364,16 +379,12 @@ h1, h2, h3 {
   font-size: 1rem;
   padding: 15px 30px;
   border-radius: 8px;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease, transform 160ms var(--ease-out);
 }
-.btn:hover {
-  background: #f7b874;
-  transform: translateY(-1px);
-}
-.btn:active { transform: translateY(0); }
 .btn[disabled] { opacity: 0.5; pointer-events: none; }
-.btn .arr { transition: transform 0.2s ease; }
-.btn:hover .arr { transform: translateX(4px); }
+/* Стрелка ехала по классу .arr, которого в разметке нет: иконки давно рисуются
+   на общем .ico, и наведение на главную кнопку страницы не делало ничего. */
+.btn .ico { transition: transform 0.2s var(--ease-out); }
 
 .btn-ghost {
   font-weight: 600;
@@ -382,12 +393,21 @@ h1, h2, h3 {
   padding: 14px 22px;
   border-radius: 8px;
   border: 1px solid var(--line-2);
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease, transform 160ms var(--ease-out);
 }
 .btn-ghost:hover {
   color: var(--ink);
   border-color: var(--acc);
 }
+
+/* Нажатие подтверждается сразу, без ожидания ответа сети: контрол уходит под
+   палец на 3%. Наведение — только там, где есть настоящий курсор: на тапе
+   :hover залипает после нажатия и кнопка остаётся «подсвеченной». */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { background: #f7b874; transform: translateY(-1px); }
+  .btn:hover .ico { transform: translateX(4px); }
+}
+.btn:active, .btn-ghost:active, .hdr-cta:active { transform: scale(0.975); }
 
 /* Строка доверия живёт внутри окна как статус-бар */
 .hero-trust {
@@ -459,10 +479,6 @@ h1, h2, h3 {
   transition: border-color 0.2s ease;
 }
 .card:hover { border-color: var(--card-border-hover); }
-/* Ведущая карточка — не «важнее остальных», а «особый случай»: акцентная
-   граница вместо заливки или бейджа, чтобы услуга не начала выглядеть
-   единственной, которой консультант занимается. */
-.card-lead { border-color: var(--acc-deep); }
 .card h3 {
   font-size: 1.22rem;
   margin-bottom: 10px;
@@ -492,11 +508,6 @@ h1, h2, h3 {
 }
 .step:hover { border-color: var(--card-border-hover); }
 .step.free { border-color: var(--acc-deep); }
-/* Пятый шаг — не шаг, а развилка «разово или помесячно», и в сетке из четырёх
-   колонок он оставался один при трёх пустых. На всю ширину он и читается
-   правильнее: это то, чем оффер отличается от разовой услуги. */
-.step.ongoing { grid-column: 1 / -1; }
-.step.ongoing p { max-width: 78ch; }
 .step-n {
   font: 600 0.72rem var(--sans);
   letter-spacing: 0.1em;
@@ -556,7 +567,12 @@ h1, h2, h3 {
   .exp-grid { grid-template-columns: 1fr; }
 }
 
+/* Рублёвый знак берётся из системного шрифта: в вариативном Inter он идёт с
+   другой метрикой и рядом с цифрой заметно уезжает. */
+.rub { font-family: system-ui, sans-serif; }
+
 .nums {
+  margin-top: clamp(28px, 3.4vw, 42px);
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
@@ -651,10 +667,21 @@ h1, h2, h3 {
 }
 .faq details[open] summary .ico { transform: rotate(180deg); }
 @media (prefers-reduced-motion: no-preference) {
-  /* высоту не анимируем — она двигает макет; смягчаем приход самого ответа,
-     чтобы смена состояния читалась, а не щёлкала */
-  .faq details[open] .faq-a { animation: answer 240ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .faq details[open] .faq-a { animation: answer 240ms var(--ease-out); }
   @keyframes answer { from { opacity: 0; transform: translateY(-4px); } }
+
+  /* Где браузер умеет ::details-content, ответ ещё и раскрывается: карточка
+     перестаёт прыгать на всю высоту за один кадр. Где не умеет — остаётся
+     фейд выше, он самодостаточен. */
+  @supports (interpolate-size: allow-keywords) {
+    .faq details::details-content {
+      block-size: 0;
+      overflow: clip;
+      interpolate-size: allow-keywords;
+      transition: block-size 260ms var(--ease-out), content-visibility 260ms allow-discrete;
+    }
+    .faq details[open]::details-content { block-size: auto; }
+  }
 }
 
 .faq-a {
@@ -668,14 +695,6 @@ h1, h2, h3 {
   line-height: 1.65;
   padding-top: 14px;
   border-top: 1px solid var(--line);
-}
-
-/* Подсказка о том, что таблица прокручивается вбок: без неё на узком экране
-   она обрезается без единого признака, что там что-то есть. */
-.hint {
-  margin-top: 14px;
-  font: 400 0.8rem var(--sans);
-  color: var(--muted);
 }
 
 /* ============ FINAL CTA ============ */
@@ -880,6 +899,34 @@ h1, h2, h3 {
 .report-fields > div:last-child { padding-bottom: 0; }
 .report-fields dt { color: var(--acc); font: 500 .78rem/1.5 var(--mono); margin-bottom: 8px; }
 .report-fields dd { color: var(--ink-2); font-size: .94rem; line-height: 1.65; }
+
+/* Единственная поставленная сцена на странице: отчёт заполняется сам, сверху
+   вниз, когда до него доходят. Это доказательство вместо кейсов, и оно должно
+   читаться как документ, который пишут, а не как ещё один блок с фейдом.
+   Прячет строки ТОЛЬКО скрипт (js/animations.js): в CSS нет ни одного
+   opacity:0 без классов, которые он вешает. Сломанный скрипт, отключённый JS
+   или reduce-motion оставляют отчёт целиком видимым. */
+@media screen {
+  .is-writing .w-row { opacity: 0; }
+}
+.is-playing .w-row { animation: write 380ms var(--ease-out) both; animation-delay: calc(var(--i) * 70ms); }
+@keyframes write { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* Каретка живёт только пока идёт печать: класс снимается по её окончании,
+   поэтому за экраном ничего не мигает. */
+/* Каретка нарисована, а не набрана: блок в полстроки, а не юникодный глиф,
+   у которого своя ширина в каждом шрифте. */
+.is-playing .sample-label::after {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 4px;
+  vertical-align: -0.16em;
+  background: currentColor;
+  animation: caret 760ms steps(2, jump-none) infinite;
+}
+@keyframes caret { 50% { opacity: 0; } }
+
 .audit-aside { padding-top: 10px; }
 .audit-aside h3 { font-size: 1.4rem; }
 .audit-outline { list-style: none; counter-reset: report; }
@@ -896,9 +943,6 @@ h1, h2, h3 {
 .profile-links a:hover { color: var(--acc); }
 .f-err[hidden], .f-err-mail[hidden] { display: none; }
 .ftr .right { flex-wrap: wrap; }
-@media (max-width: 1200px) {
-  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
 @media (max-width: 1000px) {
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
