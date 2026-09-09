@@ -894,11 +894,52 @@ h1, h2, h3 {
 .sample-label { color: var(--acc); font: 500 .75rem/1.6 var(--mono); margin-bottom: 18px; }
 .report-body h3 { font-size: clamp(1.3rem, 2vw, 1.7rem); max-width: 28ch; }
 .report-disclosure { color: var(--muted); font-size: .82rem; line-height: 1.6; margin-top: 14px; max-width: 60ch; }
-.report-fields { margin-top: 26px; }
-.report-fields > div { padding-block: 16px; border-top: 1px solid var(--line-2); }
-.report-fields > div:last-child { padding-bottom: 0; }
-.report-fields dt { color: var(--acc); font: 500 .78rem/1.5 var(--mono); margin-bottom: 8px; }
-.report-fields dd { color: var(--ink-2); font-size: .94rem; line-height: 1.65; }
+/* Сводка по системам: строка = система, вердикт и что с ним делать. Статус
+   несёт не только цвет — рядом стоит слово, иначе строка неотличима на
+   монохромном экране и для того, кто цвет не различает. */
+.findings { list-style: none; margin-top: 26px; }
+.fnd {
+  position: relative;
+  padding: 16px 0 16px 22px;
+  border-top: 1px solid var(--line-2);
+}
+.fnd::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 23px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--fnd);
+}
+.fnd-h {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+}
+.fnd-n { font-weight: 600; font-size: .98rem; color: var(--ink); }
+.fnd-s {
+  font: 500 .72rem var(--mono);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--fnd);
+  white-space: nowrap;
+}
+.fnd-d { margin-top: 7px; color: var(--ink-2); font-size: .92rem; line-height: 1.62; }
+.fnd.is-ok { --fnd: var(--ok); }
+.fnd.is-warn { --fnd: var(--acc); }
+.fnd.is-act { --fnd: var(--danger); }
+.report-foot {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line-2);
+  color: var(--muted);
+  font-size: .86rem;
+  line-height: 1.6;
+}
 
 /* Единственная поставленная сцена на странице: отчёт заполняется сам, сверху
    вниз, когда до него доходят. Это доказательство вместо кейсов, и оно должно
@@ -909,7 +950,7 @@ h1, h2, h3 {
 @media screen {
   .is-writing .w-row { opacity: 0; }
 }
-.is-playing .w-row { animation: write 380ms var(--ease-out) both; animation-delay: calc(var(--i) * 70ms); }
+.is-playing .w-row { animation: write 380ms var(--ease-out) both; animation-delay: calc(var(--i) * 55ms); }
 @keyframes write { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 /* Каретка живёт только пока идёт печать: класс снимается по её окончании,
    поэтому за экраном ничего не мигает. */
@@ -927,7 +968,12 @@ h1, h2, h3 {
 }
 @keyframes caret { 50% { opacity: 0; } }
 
+/* Сводка длиннее пояснения втрое, и правая колонка иначе стоит пустой на
+   700px. Липкая она идёт рядом со списком, пока его читают. */
 .audit-aside { padding-top: 10px; }
+@media (min-width: 761px) {
+  .audit-aside { position: sticky; top: 96px; }
+}
 .audit-aside h3 { font-size: 1.4rem; }
 .audit-outline { list-style: none; counter-reset: report; }
 .audit-outline li { counter-increment: report; position: relative; padding: 24px 0 24px 42px; border-bottom: 1px solid var(--line-2); }
@@ -953,6 +999,10 @@ h1, h2, h3 {
 }
 @media (max-width: 620px) {
   .cards, .steps { grid-template-columns: minmax(0, 1fr); }
+  /* На узком экране статус то влезал в строку с названием, то падал под неё —
+     список шёл рваным. Ставим его отдельной строкой у всех находок. */
+  .fnd-h { display: block; }
+  .fnd-s { display: block; margin-top: 3px; }
   .cta-row { align-items: stretch; flex-direction: column; }
   .cta-row .btn, .cta-row .btn-ghost { justify-content: center; text-align: center; }
   .final { margin-inline: 16px; }

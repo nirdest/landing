@@ -40,7 +40,7 @@ if (location.hostname === 'devops.toys' && location.protocol === 'http:') {
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/latin-500.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/cyrillic-500.css" rel="stylesheet">
 
-<link href="css/styles.css?v=2026-09-09a" rel="stylesheet">
+<link href="css/styles.css?v=2026-09-09b" rel="stylesheet">
 
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -135,40 +135,6 @@ if (location.hostname === 'devops.toys' && location.protocol === 'http:') {
 </div>
   </section>
 
-  <!-- ============ audit example ============ -->
-  <section class="wrap sec" id="audit" aria-labelledby="auditH">
-    <div class="sec-head">
-      <h2 class="h2" id="auditH" data-i18n="audit.h">Что вы получите после диагностики</h2>
-<p class="lead" data-i18n="audit.lead">Отчёт с находками, приоритетами и планом работ. Ниже — пример одной записи, чтобы оценить формат до обращения.</p>
-    </div>
-    <div class="audit-grid">
-      <article class="term audit-report">
-        <div class="term-bar"><i class="tl-1"></i><i class="tl-2"></i><i class="tl-3"></i><span class="term-title">~/audit/example.md</span></div>
-        <div class="report-body">
-          <p class="sample-label" data-i18n="audit.sample">Учебный пример · без клиентских данных</p>
-<h3 data-i18n="audit.title">Бэкап есть. Восстановление не проверено.</h3>
-<p class="report-disclosure" data-i18n="audit.disclosure">Пример заполнения отчёта, а не проведённый аудит. Результаты тестов здесь не заявлены.</p>
-          <dl class="report-fields">
-<div><dt data-i18n="audit.contextt">Исходная ситуация</dt><dd data-i18n="audit.contextd">В этом примере задания бэкапа завершаются успешно, но протокола восстановления нет.</dd></div>
-<div><dt data-i18n="audit.riskt">Риск для продукта</dt><dd data-i18n="audit.riskd">Неизвестно, сколько займёт восстановление и какие данные удастся вернуть.</dd></div>
-<div><dt data-i18n="audit.checkt">Предлагаемая проверка</dt><dd data-i18n="audit.checkd">Восстановить выбранный бэкап в изолированной среде. Проверить целостность данных и запуск приложения.</dd></div>
-<div><dt data-i18n="audit.acceptt">Как принять работу</dt><dd data-i18n="audit.acceptd">Зафиксировать время восстановления и свежесть данных. Сравнить с целями, согласованными до работ.</dd></div></dl></div></article>
-<aside class="audit-aside">
-<h3 data-i18n="audit.scopeh">В вашем отчёте</h3>
-<ol class="audit-outline">
-<li>
-<h4 data-i18n="audit.evidencet">Находки с основаниями</h4>
-<p data-i18n="audit.evidenced">Что видно в конфигурации, метриках и расходах. Что ещё нужно проверить.</p></li>
-<li>
-<h4 data-i18n="audit.priorityt">Порядок действий</h4>
-<p data-i18n="audit.priorityd">Что исправить сначала, что можно отложить и почему.</p></li>
-<li>
-<h4 data-i18n="audit.plant">План и оценка</h4>
-<p data-i18n="audit.pland">Объём, стоимость, сроки и критерии результата до начала изменений.</p></li></ol>
-<p class="audit-note" data-i18n="audit.scope">Глубину диагностики согласуем под задачу. Обычно достаточно доступа на чтение к выбранным системам.</p></aside></div></section>
-
-
-
   <!-- ============ process ============ -->
   <section class="wrap sec" id="process" aria-labelledby="prcH">
     <div class="sec-head">
@@ -205,6 +171,50 @@ if (location.hostname === 'devops.toys' && location.protocol === 'http:') {
       <button class="btn js-open" type="button"><span data-i18n="cta.btn">Обсудить задачу</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
     </div>
   </section>
+
+  <!-- ============ audit example ============ -->
+  <section class="wrap sec" id="audit" aria-labelledby="auditH">
+    <div class="sec-head">
+      <h2 class="h2" id="auditH" data-i18n="audit.h">Что вы получите после диагностики</h2>
+<p class="lead" data-i18n="audit.lead">Сводку по системам: что работает, что можно улучшить и что нужно чинить в первую очередь. Ниже — как она выглядит.</p>
+    </div>
+    <div class="audit-grid">
+      <article class="term audit-report">
+        <div class="term-bar"><i class="tl-1"></i><i class="tl-2"></i><i class="tl-3"></i><span class="term-title">~/audit/summary.md</span></div>
+        <div class="report-body">
+          <p class="sample-label" data-i18n="audit.sample">Учебный пример · системы и цифры вымышленные</p>
+<h3 data-i18n="audit.title">Сводка по системам</h3>
+<p class="report-disclosure" data-i18n="audit.disclosure">Так выглядит первая страница отчёта. Это образец формата, а не чей-то аудит: названия систем и числа здесь придуманы.</p>
+          <ul class="findings">
+<li class="fnd is-act"><p class="fnd-h"><span class="fnd-n" data-i18n="audit.f1n">База данных · бэкапы</span><span class="fnd-s" data-i18n="audit.act">нужно действие</span></p>
+<p class="fnd-d" data-i18n="audit.f1d">Задания проходят успешно, но восстановление ни разу не проверяли. Пока не восстановим копию в отдельной среде, срок и полнота возврата данных неизвестны.</p></li>
+<li class="fnd is-act"><p class="fnd-h"><span class="fnd-n" data-i18n="audit.f2n">Реакция на инциденты</span><span class="fnd-s" data-i18n="audit.act">нужно действие</span></p>
+<p class="fnd-d" data-i18n="audit.f2d">Нет порядка: кто поднимает трубку ночью, кого зовут дальше, что записываем после. Каждое падение разбирается заново.</p></li>
+<li class="fnd is-act"><p class="fnd-h"><span class="fnd-n" data-i18n="audit.f3n">Алерты</span><span class="fnd-s" data-i18n="audit.act">нужно действие</span></p>
+<p class="fnd-d" data-i18n="audit.f3d">Метрики собираются, но оповещения никуда не доходят: о сбое узнают от пользователей. Нужны маршрут доставки и проверка, что он работает.</p></li>
+<li class="fnd is-warn"><p class="fnd-h"><span class="fnd-n" data-i18n="audit.f4n">Расходы на облако</span><span class="fnd-s" data-i18n="audit.warn">можно улучшить</span></p>
+<p class="fnd-d" data-i18n="audit.f4d">Три простаивающие ноды, снапшоты за два года и оплаченный резерв, который не используется. В этом примере — около $3 000 в месяц мимо задачи.</p></li>
+<li class="fnd is-warn"><p class="fnd-h"><span class="fnd-n" data-i18n="audit.f5n">Время ответа API</span><span class="fnd-s" data-i18n="audit.warn">можно улучшить</span></p>
+<p class="fnd-d" data-i18n="audit.f5d">Медленно отвечает один эндпоинт, и тянет за собой весь профиль нагрузки. Причина видна в запросах, а не в размере сервера.</p></li>
+<li class="fnd is-ok"><p class="fnd-h"><span class="fnd-n" data-i18n="audit.f6n">CI/CD и выкатка</span><span class="fnd-s" data-i18n="audit.ok">в порядке</span></p>
+<p class="fnd-d" data-i18n="audit.f6d">Сборка укладывается в несколько минут, откат описан и проверен. Трогать не нужно.</p></li>
+<li class="fnd is-ok"><p class="fnd-h"><span class="fnd-n" data-i18n="audit.f7n">Доступы и секреты</span><span class="fnd-s" data-i18n="audit.ok">в порядке</span></p>
+<p class="fnd-d" data-i18n="audit.f7d">Ключей в репозитории нет, доступы выдаются точечно. Замечаний по этой части не будет.</p></li>
+</ul>
+<p class="report-foot" data-i18n="audit.tally">Итого: 3 требуют действий · 2 можно улучшить · 2 в порядке. Дальше в отчёте — порядок работ, оценка и критерии приёмки.</p></div></article>
+<aside class="audit-aside">
+<h3 data-i18n="audit.scopeh">В вашем отчёте</h3>
+<ol class="audit-outline">
+<li>
+<h4 data-i18n="audit.evidencet">Находки с основаниями</h4>
+<p data-i18n="audit.evidenced">Что видно в конфигурации, метриках и расходах. Что ещё нужно проверить.</p></li>
+<li>
+<h4 data-i18n="audit.priorityt">Порядок действий</h4>
+<p data-i18n="audit.priorityd">Что исправить сначала, что можно отложить и почему.</p></li>
+<li>
+<h4 data-i18n="audit.plant">План и оценка</h4>
+<p data-i18n="audit.pland">Объём, стоимость, сроки и критерии результата до начала изменений.</p></li></ol>
+<p class="audit-note" data-i18n="audit.scope">Глубину диагностики согласуем под задачу. Обычно достаточно доступа на чтение к выбранным системам.</p></aside></div></section>
 
   <!-- ============ experience ============ -->
   <section class="wrap sec" id="experience" aria-labelledby="expH">
@@ -331,7 +341,7 @@ if (location.hostname === 'devops.toys' && location.protocol === 'http:') {
 </div>
 
 
-<script src="js/main.js?v=2026-09-09a"></script>
-<script src="js/animations.js?v=2026-09-09a"></script>
+<script src="js/main.js?v=2026-09-09b"></script>
+<script src="js/animations.js?v=2026-09-09b"></script>
 </body>
 </html>

@@ -13,7 +13,7 @@ var report = document.querySelector('#audit .report-body');
 if (!report || !window.IntersectionObserver) return;
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-var rows = report.querySelectorAll('.sample-label, h3, .report-disclosure, .report-fields > div');
+var rows = report.querySelectorAll('.sample-label, h3, .report-disclosure, .fnd, .report-foot');
 if (rows.length < 2) return;
 
 /* Если отчёт виден уже при загрузке (высокий экран, переход по якорю,
@@ -46,7 +46,7 @@ try {
        задержки. */
     report.classList.remove('is-writing');
     report.classList.add('is-playing');
-    setTimeout(done, 380 + rows.length * 70 + 120);
+    setTimeout(done, 380 + rows.length * 55 + 120);
     /* Порог по доле площади тут не годится: окно отчёта выше экрана, и «15%
        видимости» набирается, когда пустая рамка уже несколько сотен
        миллисекунд стоит на экране. Считаем от верхнего края — печать

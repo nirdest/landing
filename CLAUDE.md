@@ -2,6 +2,21 @@
 
 ## Current release — 2026-09-09
 
+**2026-09-09 (second pass) — the owner reordered and rewrote `#audit`.** Process
+now comes before the audit example: the process explains what step 01 produces,
+and the example then shows it. The example itself was a single abstract report
+entry with four form fields ("Исходная ситуация / Риск / Проверка / Приёмка");
+the owner's words were "выглядит красиво, но ничего не даёт потенциальному
+покупателю". It is now a **systems summary** — seven findings, each a system, a
+verdict (`нужно действие` / `можно улучшить` / `в порядке`) and one line on what
+to do about it, ordered worst first and closed by a tally. The systems and the
+figures in it, including the ≈$3 000/month cloud saving, are **invented for the
+example** and must stay labelled as such in three places: the sample label, the
+disclosure paragraph and inside the row text itself ("в этом примере"). This is
+the same licence the deleted incident log had — an illustrative scenario, never
+a claimed client result — and it is the only place on the site where numbers may
+appear at all.
+
 **2026-09-09 — motion and craft pass.** No content, copy, offer or page order
 changed. GSAP was deleted (see dependencies); the hero arrival is CSS keyframes
 and the page's one authored moment is now the audit report writing itself in.
@@ -14,7 +29,7 @@ Motion and Footguns below.
 
 The owner requested removal of the “What I won’t do” section on 2026-09-07. Its markup, translations and styles are removed. Do not restore it from the historical notes below.
 
-The owner authorized a content and usability revision following a CTO review. Current page order: hero → six services with deliverables → explicitly illustrative audit entry (`#audit`) → process → named consultant → engagement formats (`#formats`) → FAQ → contact. The old incident logs (`#compare`) and competitor table (`#alt`) were removed; descriptions of them below are historical, not requirements to restore them. There are no client cases or claimed demo measurements. AI prototype work remains a service without dominating the hero.
+The owner authorized a content and usability revision following a CTO review. Current page order: hero → six services with deliverables → process → explicitly illustrative audit summary (`#audit`) → named consultant → engagement formats (`#formats`) → FAQ → contact. The old incident logs (`#compare`) and competitor table (`#alt`) were removed; descriptions of them below are historical, not requirements to restore them. There are no client cases or claimed demo measurements. AI prototype work remains a service without dominating the hero.
 
 The lead endpoint and Worker remain unchanged. The modal now guards close/focus timers and hidden error styling. Production HTTP visits redirect in the document and the form refuses plaintext transmission; this is a frontend safeguard, not an edge HTTPS redirect or HSTS. The Cloudflare edge still needs server-side HTTPS enforcement.
 
@@ -247,8 +262,8 @@ grid rather than reaching for a glyph.
 
 **The focal sequence is the audit report, and it is the only authored moment on
 the page.** When `#audit` comes into frame, `.report-body` fills itself in from
-the top — label, headline, disclosure, then the four `.report-fields` rows —
-each 380 ms, 70 ms apart, with a drawn block caret blinking on the sample label
+the top — label, headline, disclosure, the seven `.fnd` findings, then the
+tally — each 380 ms, 55 ms apart, with a drawn block caret blinking on the sample label
 while it runs. The section is the page's proof instead of client cases, and it
 should read as a document being written, not as one more block with a fade.
 Nothing else on the page reveals on scroll.
