@@ -941,6 +941,34 @@ h1, h2, h3 {
   line-height: 1.6;
 }
 
+/* Закрывающий блок отчёта: что чинить, сколько это займёт и что это даёт.
+   Ради него страница и показывает пример — без него сводка заканчивается
+   перечнем проблем и не отвечает на «и что дальше». */
+.report-plan {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-2);
+}
+.plan-h { font-weight: 600; font-size: .98rem; color: var(--ink); margin-bottom: 8px; }
+.plan-d { color: var(--ink-2); font-size: .92rem; line-height: 1.62; }
+.plan-est {
+  margin-top: 16px;
+  padding: 13px 15px;
+  border-radius: 6px;
+  background: var(--acc-soft);
+  color: var(--ink-2);
+  font-size: .9rem;
+  line-height: 1.55;
+}
+.plan-est b {
+  color: var(--acc);
+  font: 600 .9rem var(--mono);
+  white-space: nowrap;
+}
+/* Цифра выше — из вымышленного примера. Эта строка обязана стоять рядом с ней:
+   без неё пример читается как прайс-лист, которого на сайте нет. */
+.plan-note { margin-top: 12px; color: var(--muted); font-size: .82rem; line-height: 1.55; }
+
 /* Единственная поставленная сцена на странице: отчёт заполняется сам, сверху
    вниз, когда до него доходят. Это доказательство вместо кейсов, и оно должно
    читаться как документ, который пишут, а не как ещё один блок с фейдом.

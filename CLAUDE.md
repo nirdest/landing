@@ -12,7 +12,14 @@ verdict (`нужно действие` / `можно улучшить` / `в п�
 to do about it, ordered worst first and closed by a tally. The systems and the
 figures in it, including the ≈$3 000/month cloud saving, are **invented for the
 example** and must stay labelled as such in three places: the sample label, the
-disclosure paragraph and inside the row text itself ("в этом примере"). This is
+disclosure paragraph and inside the row text itself ("в этом примере"). The
+report closes on `.report-plan` — what to fix, the acceptance criteria, and the
+owner's own figure for the example scope: **5 дней · $3 000, окупается за 28
+дней** against the $3 000/month saving above it. The owner set that number on
+2026-09-09; do not adjust it, and do not add a second price anywhere. The
+`.plan-note` line under it ("стоимость вашей работы называю после диагностики…
+не смог помочь — не платите") is what keeps the example from reading as a price
+list, and it ships with the figure or not at all. This is
 the same licence the deleted incident log had — an illustrative scenario, never
 a claimed client result — and it is the only place on the site where numbers may
 appear at all.

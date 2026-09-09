@@ -13,7 +13,7 @@ var report = document.querySelector('#audit .report-body');
 if (!report || !window.IntersectionObserver) return;
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-var rows = report.querySelectorAll('.sample-label, h3, .report-disclosure, .fnd, .report-foot');
+var rows = report.querySelectorAll('.sample-label, h3, .report-disclosure, .fnd, .report-foot, .report-plan');
 if (rows.length < 2) return;
 
 /* Если отчёт виден уже при загрузке (высокий экран, переход по якорю,
