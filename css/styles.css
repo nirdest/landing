@@ -866,6 +866,27 @@ h1, h2, h3 {
 .btn-block { width: 100%; justify-content: center; margin-top: 12px; }
 /* Стоит над кнопкой: обещание о том, как поступят с контактом, нужно прочитать
    до нажатия, а не после. */
+/* Выход для тех, кто не хочет оставлять контакт и ждать ответа: модалка ставит
+   inert на страницу, так что ни футер, ни один другой контакт в этот момент
+   недоступны. Стоит под кнопкой — не спорит с основным действием. */
+.m-alt {
+  margin-top: 16px;
+  text-align: center;
+  font-size: .84rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.m-alt a {
+  color: var(--ink-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.m-alt a .ico { font-size: .8em; }
+.m-alt a:hover { color: var(--acc); }
+
 .m-priv {
   font-size: 0.78rem;
   color: var(--muted);

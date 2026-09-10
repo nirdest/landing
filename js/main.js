@@ -71,6 +71,7 @@ var I18N = {
     'form.valEmpty':'Enter a contact, otherwise I can’t reply.',
     'form.valErr':'That doesn’t look like a contact. An email, @telegram handle, LinkedIn link or phone number all work.',
     'form.privacy':'Your contact is used only to reply to this request.',
+    'form.alt':'Or message me on Telegram:',
     'form.done':'Done','form.closeAria':'Close dialog',
     'foot.rights':'© 2026 DevOps.toys · DevOps & FinOps consulting',
     'svc.3r':"You get: a test report, measured recovery time and a team runbook.",
