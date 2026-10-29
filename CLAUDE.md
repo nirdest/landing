@@ -75,7 +75,7 @@ done
 
 Live URL: **https://devops.toys/** (`nirdest.github.io/landing/` 301-redirects there).
 
-Publishing is filtered by `_config.yml`. Internal working documents (`competitive-analysis.html`, `research/`, `CLAUDE.md`) are listed under `exclude:` so Jekyll does not copy them into the built site — they live in git but are **not** reachable over the web. `robots.txt` repeats those paths as `Disallow:` for defence in depth. Note this only protects the *site*: the repository is public, so every excluded file is still readable at `raw.githubusercontent.com/nirdest/landing/main/…`. If you add another internal document, add it to both, then verify it 404s after deploy rather than assuming.
+Publishing is filtered by `_config.yml`. Non-site files (`CLAUDE.md`, `PRODUCT.md`, `worker/`, `tools/`) are listed under `exclude:` so Jekyll does not copy them into the built site — they live in git but are **not** reachable over the web. `robots.txt` repeats those paths as `Disallow:` for defence in depth. Note this only protects the *site*: the repository is public, so every excluded file is still readable at `raw.githubusercontent.com/nirdest/landing/main/…`. If you add another internal document, add it to both, then verify it 404s after deploy rather than assuming.
 
 `CNAME` pins the custom domain to `devops.toys`; do not delete it.
 
@@ -103,7 +103,7 @@ Markup in `index.html`, styles in `css/styles.css`, behavior in `js/main.js` + `
 
 Page order: see "Current release" above.
 
-Single-page is a **deliberate** choice, re-confirmed by competitor research in `research/02-competitor-analysis.md`: the top-scoring competitors win search visibility through 45+-page programmatic architecture that doesn't fit this site's actual sales motion. Don't split this into multiple pages without re-reading that file first.
+Single-page is a **deliberate** choice (the competitor research behind it was removed from the tree on 2026-10-29 and lives in git history before that): the top-scoring competitors win search visibility through 45+-page programmatic architecture that doesn't fit this site's actual sales motion. Don't split this into multiple pages without re-reading that file first.
 
 ### i18n
 
@@ -274,4 +274,3 @@ Breakpoints are `900 / 760 / 620 / 430` and are **not** written in descending or
 - **Telegram (`t.me/nirdest`) is the primary channel** — footer, JSON-LD `sameAs`, and `.m-alt` inside the lead modal. The modal one is load-bearing: the modal puts `inert` on `#page`, so while it is open no other contact is reachable. It sits below the submit button on purpose. The personal LinkedIn/GitHub links were dropped in the team redesign.
 - The lead form now mails leads to the owner's inbox (see "Backend"). It has **no spam protection beyond the honeypot and a length check** — no Turnstile, no rate limit. Workers Free allows 100k requests/day, so a bot could burn that; add Turnstile if spam actually shows up. Leads are not stored anywhere, the mailbox is the only archive.
 - Don't invent metrics, case studies or client names — an earlier interactive "tuner" showing fabricated latency/cost numbers was removed for exactly this reason.
-- Full competitive research behind this rebuild: `research/01-client-brand.md`, `research/02-competitor-analysis.md`, `research/03-build-brief.md`, `research/04-quality-audit.md`, and `competitive-analysis.html` in the repo root. **These are internal.** `competitive-analysis.html` scores ten named competitors; it and `research/` were briefly served publicly on the live domain before `_config.yml` excluded them. Keep them excluded.
