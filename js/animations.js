@@ -1,60 +1,70 @@
 (function(){
 'use strict';
-/* Единственная поставленная сцена страницы: пример отчёта заполняется сам,
-   сверху вниз, когда до него доскроллили. Это доказательство вместо кейсов, и
-   оно должно читаться как документ, который пишут.
+/* Движение страницы. Прятать контент имеет право только этот скрипт и только
+   через .is-pending: отключённый JS, ошибка, отсутствие IntersectionObserver
+   или prefers-reduced-motion оставляют всё видимым. Приход героя — чистый CSS. */
 
-   Скрывать строки имеет право ТОЛЬКО этот скрипт: в CSS нет ни одного
-   opacity: 0 без классов .is-writing / .is-playing. Поэтому отключённый JS,
-   ошибка внутри, отсутствующий IntersectionObserver и prefers-reduced-motion
-   одинаково оставляют отчёт целиком видимым — украшение падать может,
-   содержимое отчёта нет. */
-var report = document.querySelector('#audit .report-body');
-if (!report || !window.IntersectionObserver) return;
+/* ============ header hairline ============ */
+var hdr = document.getElementById('hdr');
+if (hdr) {
+  var onScroll = function(){ hdr.classList.toggle('is-scrolled', window.scrollY > 8); };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
+/* ============ statement words ============ */
+/* Слова подсвечиваются по скроллу через animation-timeline: view() в CSS;
+   здесь только нарезка на <span class="w">. Без поддержки — просто текст. */
+var say = document.querySelector('.big-say');
+function splitWords(){
+  if (!say) return;
+  var words = say.textContent.trim().split(/[ \t\n]+/);
+  say.innerHTML = '';
+  words.forEach(function(w, i){
+    var s = document.createElement('span');
+    s.className = 'w';
+    s.textContent = w;
+    s.style.setProperty('--i', i);
+    say.appendChild(s);
+    if (i < words.length - 1) say.appendChild(document.createTextNode(' '));
+  });
+}
+splitWords();
+document.addEventListener('langchange', splitWords);
+
+/* ============ scroll reveals ============ */
+if (!window.IntersectionObserver) return;
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-var rows = report.querySelectorAll('.sample-label, h3, .report-disclosure, .fnd, .report-foot, .report-plan');
-if (rows.length < 2) return;
-
-/* Если отчёт виден уже при загрузке (высокий экран, переход по якорю,
-   восстановленная позиция скролла) — сцены нет: прятать то, на что человек
-   уже смотрит, значит мигнуть ему пустой рамкой. */
-if (report.getBoundingClientRect().top < window.innerHeight) return;
-
 try {
-  for (var i = 0; i < rows.length; i++) {
-    rows[i].classList.add('w-row');
-    rows[i].style.setProperty('--i', i);
-  }
-  report.classList.add('is-writing');
-
-  var done = function(){
-    report.classList.remove('is-writing');
-    report.classList.remove('is-playing');
-  };
-  /* Страховка на случай, если наблюдатель почему-то не сработает:
-     через 6 с отчёт показывается целиком независимо от сцены. */
-  var failsafe = setTimeout(done, 6000);
-
+  var items = Array.prototype.slice.call(document.querySelectorAll('.rv'));
+  var alive = false;
   var io = new IntersectionObserver(function(entries){
-    if (!entries[0].isIntersecting) return;
-    io.disconnect();
-    clearTimeout(failsafe);
-    /* is-writing снимается ровно в этот момент: пока он висит, базовое
-       значение строки — opacity: 0, и анимация интерполировала бы 0 → 0.
-       Пропуска кадра нет, backwards-fill держит строку скрытой до её
-       задержки. */
-    report.classList.remove('is-writing');
-    report.classList.add('is-playing');
-    setTimeout(done, 380 + rows.length * 55 + 120);
-    /* Порог по доле площади тут не годится: окно отчёта выше экрана, и «15%
-       видимости» набирается, когда пустая рамка уже несколько сотен
-       миллисекунд стоит на экране. Считаем от верхнего края — печать
-       начинается ровно тогда, когда окно въезжает в кадр. */
-  }, { threshold: 0, rootMargin: '0px 0px -12% 0px' });
-  io.observe(report);
+    alive = true;
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      e.target.classList.add('is-in');
+      e.target.classList.remove('is-pending');
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+
+  items.forEach(function(el){
+    /* То, что уже на экране при загрузке, не прячем — это было бы миганием. */
+    if (el.getBoundingClientRect().top < window.innerHeight) return;
+    /* Соседи в одном списке приходят лесенкой, а не разом. */
+    var sib = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
+    el.style.setProperty('--d', (Math.min(sib, 6) * 0.06) + 's');
+    el.classList.add('is-pending');
+    io.observe(el);
+  });
+
+  /* Страховка: наблюдатель так и не позвонил ни разу — показываем всё. */
+  setTimeout(function(){
+    if (alive) return;
+    items.forEach(function(el){ el.classList.remove('is-pending'); });
+  }, 3000);
 } catch (e) {
-  report.classList.remove('is-writing');
-  report.classList.remove('is-playing');
+  Array.prototype.forEach.call(document.querySelectorAll('.is-pending'), function(el){ el.classList.remove('is-pending'); });
 }
 })();

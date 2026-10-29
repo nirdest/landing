@@ -10,5 +10,6 @@ Disallow: /worker/
 Disallow: /CLAUDE.md
 Disallow: /docs/
 Disallow: /PRODUCT.md
+Disallow: /tools/
 
 Sitemap: https://devops.toys/sitemap.xml

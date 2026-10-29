@@ -1,1060 +1,304 @@
-/* ============ DEVOPS.TOYS — WARM TERMINAL DESIGN SYSTEM ============ */
-/* Палитра тёплая и плоская: ни неона, ни свечения, ни фоновых градиентов.
-   Прежний вариант (#00E676 на #07090E со свечением и радиальными градиентами)
-   владелец забраковал как «сгенерированный ИИ» — это узнаваемый штамп. */
-:root {
-  --bg: #1c1b19;
-  --bg-subtle: #242220;
+/* ============ tokens ============ */
+:root{
+  --paper:#f3f1ec;
+  --paper-2:#ebe8e1;
+  --ink:#111110;
+  --ink-2:#2a2927;
+  --muted:#6d6a63;
+  --line:#d6d2c9;
+  --accent:#ff4a1c;
+  --on-ink:#f3f1ec;
+  --on-ink-muted:#9b978e;
 
-  --card: #201f1c;
-  --card-hover: #262421;
-  --card-border: #35322e;
-  --card-border-hover: #4a453e;
+  --f-sans:'Inter Tight Variable','Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-hand:'Caveat Variable','Caveat','Comic Sans MS',cursive;
+  --f-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
 
-  --ink: #f4ede3;
-  --ink-2: #a89e8f;
-  --muted: #9b9285;
-
-  --line: rgba(244, 237, 227, 0.09);
-  --line-2: rgba(244, 237, 227, 0.17);
-
-  --acc: #f2a65a;
-  --acc-deep: #c97f3a;
-  --acc-soft: rgba(242, 166, 90, 0.10);
-
-  --danger: #e8917c;
-  --danger-soft: rgba(232, 145, 124, 0.10);
-  --ok: #9ec99b;
-
-  /* чром окна терминала macOS */
-  --term-bg: #1c1b19;
-  --term-bar: #242220;
-  --tl-red: #ff5f57;
-  --tl-amber: #febc2e;
-  --tl-green: #28c840;
-
-  /* Встроенные ease/ease-out слишком вялые: они тормозят ровно в тот момент,
-     когда человек смотрит на движение внимательнее всего. Одна кривая на всю
-     страницу — приход элементов и отклик контролов читаются как одна система. */
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-
-  --sans: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
-  /* Source Serif 4 несёт полную кириллицу — проверено перед выбором.
-     Fraunces и Newsreader, которые рассматривались рядом, её не имеют вовсе. */
-  --serif: 'Source Serif 4 Variable', 'Source Serif 4', Georgia, serif;
-  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --wrap:1320px;
+  --gutter:clamp(16px,4vw,48px);
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --ease-io:cubic-bezier(0.65,0,0.35,1);
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ============ base ============ */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:84px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.55 var(--f-sans);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:clip}
+h1,h2,h3,p,ol,ul{margin:0}
+ol,ul{padding:0;list-style:none}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+::selection{background:var(--ink);color:var(--paper)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter)}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:6px;text-decoration:none}
+.skip:focus{top:12px}
+
+.ico{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.dot{font-style:normal;color:var(--accent)}
+
+/* ============ buttons ============ */
+.btn{display:inline-flex;align-items:center;gap:.7em;background:var(--ink);color:var(--paper);
+  font-weight:600;font-size:15px;letter-spacing:.01em;padding:15px 22px;border-radius:8px;
+  text-decoration:none;transition:transform .16s var(--ease-out),background-color .2s}
+.btn .ico{font-size:1.1em;transition:transform .3s var(--ease-out)}
+.btn:active{transform:scale(.975)}
+.btn-sm{padding:10px 15px;font-size:14px}
+.btn-inv{background:var(--paper);color:var(--ink)}
+.btn-block{width:100%;justify-content:center}
+.link-u{font-weight:600;font-size:15px;text-decoration:none;background:linear-gradient(currentColor,currentColor) 0 100%/100% 1.5px no-repeat;padding-bottom:3px;transition:background-size .35s var(--ease-out)}
+@media (hover:hover) and (pointer:fine){
+  .btn:hover .ico{transform:translateX(4px)}
+  .btn:hover{background:var(--ink-2)}
+  .btn-inv:hover{background:#fff}
+  .link-u:hover{background-size:0 1.5px;background-position:100% 100%}
 }
 
-html {
-  -webkit-text-size-adjust: 100%;
-  color-scheme: dark;
-  /* Скроллбар, каретка и выделение — тоже часть страницы; по умолчанию они
-     принадлежат браузеру, а не этой палитре. */
-  scrollbar-color: #46413a var(--bg);
+/* ============ handwritten notes ============ */
+.note{font:600 26px/1 var(--f-hand);color:var(--ink);transform:rotate(-4deg);display:flex;gap:6px;align-items:flex-start;pointer-events:none}
+.note svg{width:64px;height:auto;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ============ header ============ */
+.hdr{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  -webkit-backdrop-filter:saturate(1.4) blur(10px);backdrop-filter:saturate(1.4) blur(10px);
+  border-bottom:1px solid transparent;transition:border-color .3s}
+.hdr.is-scrolled{border-bottom-color:var(--line)}
+.hdr-in{display:flex;align-items:center;gap:32px;height:68px}
+.brand{font-weight:800;font-size:20px;letter-spacing:-.03em;text-decoration:none;white-space:nowrap}
+.brand span{color:var(--muted);font-weight:600}
+.nav{display:flex;gap:28px;margin-left:auto}
+.nav-a{font-size:15px;font-weight:500;text-decoration:none;color:var(--ink-2);position:relative}
+.nav-a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1.5px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .35s var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.nav-a:hover::after{transform:scaleX(1);transform-origin:left}}
+.hdr-r{display:flex;align-items:center;gap:18px}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;padding:2px}
+.lang button{font:500 12px/1 var(--f-mono);padding:6px 9px;border-radius:999px;color:var(--muted);transition:background-color .2s,color .2s}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+/* ============ hero ============ */
+.hero{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:24px;align-items:center;
+  padding-block:clamp(40px,7vw,96px) clamp(40px,6vw,72px)}
+.h1{font-weight:800;font-size:clamp(56px,9.4vw,148px);line-height:.9;letter-spacing:-.045em}
+.ln{display:block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
+.ln>span{display:inline-block}
+.hero-lead{max-width:30em;margin-top:clamp(24px,3vw,40px);font-size:clamp(17px,1.35vw,20px);line-height:1.5;color:var(--ink-2)}
+.hero-act{display:flex;flex-wrap:wrap;align-items:center;gap:28px;margin-top:32px}
+.hero-art{position:relative}
+.note-hero{position:absolute;top:2%;left:-2%;z-index:1}
+.note-hero svg{margin-top:14px}
+
+/* the illustration */
+.stack{display:block;width:100%;height:auto}
+.stack polygon,.stack ellipse,.stack path{stroke:var(--ink);stroke-width:1.3;stroke-linejoin:round}
+.stack text{font:500 12.5px var(--f-mono);letter-spacing:.06em;text-anchor:middle;dominant-baseline:central;stroke:none}
+.stack .cable{fill:none;stroke-width:1.6}
+.stack .ground{fill:none;stroke-width:1.1}
+.stack .slot{fill:none;stroke-dasharray:4 4;stroke-width:1.4}
+
+/* ============ marquee ============ */
+.marquee{border-block:1px solid var(--ink);overflow:hidden;background:var(--paper);user-select:none}
+.mq-track{display:flex;width:max-content;animation:mq 48s linear infinite}
+.mq-track span{white-space:pre;font:500 clamp(18px,2vw,26px)/1 var(--f-sans);letter-spacing:-.01em;padding-block:18px}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media (hover:hover){.marquee:hover .mq-track{animation-play-state:paused}}
+@media (prefers-reduced-motion:reduce){.mq-track{animation:none}}
+
+/* ============ sections ============ */
+.sec{padding-block:clamp(72px,10vw,140px)}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:clamp(32px,4vw,56px)}
+.h2{font-weight:800;font-size:clamp(40px,5.6vw,84px);line-height:.95;letter-spacing:-.045em;max-width:12em}
+.note-svc{margin-right:4%}
+.note-svc svg{width:44px;margin-top:22px}
+.note-prc{margin-right:6%;transform:rotate(3deg)}
+
+/* ============ services ============ */
+.svc{border-top:1px solid var(--ink)}
+.svc-row{border-bottom:1px solid var(--ink)}
+.svc-btn{position:relative;isolation:isolate;width:100%;text-align:left;display:grid;
+  grid-template-columns:64px minmax(0,1.1fr) minmax(0,1fr) 28px;gap:24px;align-items:center;
+  padding:26px 8px;transition:color .35s var(--ease-out)}
+.svc-btn::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--ink);transform:scaleY(0);transform-origin:bottom;transition:transform .45s var(--ease-out)}
+.svc-n{font:500 13px var(--f-mono);color:var(--muted);transition:color .35s}
+.svc-t{font-weight:700;font-size:clamp(22px,2.4vw,34px);letter-spacing:-.03em;line-height:1.1;transition:transform .45s var(--ease-out)}
+.svc-d{color:var(--muted);font-size:16px;transition:color .35s}
+.svc-a{font-size:26px;justify-self:end;transition:transform .45s var(--ease-out)}
+.svc-btn:active{transform:scale(.995)}
+@media (hover:hover) and (pointer:fine){
+  .svc-btn:hover{color:var(--paper)}
+  .svc-btn:hover::before{transform:scaleY(1)}
+  .svc-btn:hover .svc-n,.svc-btn:hover .svc-d{color:var(--on-ink-muted)}
+  .svc-btn:hover .svc-t{transform:translateX(12px)}
+  .svc-btn:hover .svc-a{transform:translateX(-6px) rotate(-45deg)}
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
-}
-
-body {
-  font-family: var(--sans);
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--ink);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-a { color: inherit; text-decoration: none; }
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-
-/* border-radius тут стоять не может: правило применяется к самому элементу, и
-   кнопка со скруглением 8px на клавиатурном фокусе меняла форму на 4px.
-   Обводка и так повторяет скругление элемента. */
-:focus-visible {
-  outline: 2px solid var(--acc);
-  outline-offset: 3px;
-}
-
-::selection {
-  background: rgba(242, 166, 90, 0.28);
-  color: var(--ink);
-}
-
-/* Иконки рисованные и однослойные: одна толщина штриха, одни скругления.
-   Юникодные стрелки и галочки, стоявшие тут раньше, приходят из шрифта —
-   у них своя метрика и свой вес, и рядом друг с другом они не система. */
-.ico {
-  width: 1em;
-  height: 1em;
-  flex: none;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.wrap {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 clamp(20px, 4vw, 48px);
-}
-
-.skip {
-  position: absolute;
-  left: 16px;
-  top: -56px;
-  z-index: 200;
-  background: var(--acc);
-  color: #1c1b19;
-  padding: 14px 18px;
-  border-radius: 6px;
-  font: 600 0.85rem var(--sans);
-  transition: top 0.2s ease;
-}
-.skip:focus { top: 14px; }
-
-/* ============ TYPOGRAPHY & HEADINGS ============ */
-h1, h2, h3 {
-  font-family: var(--serif);
-  text-wrap: balance;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.14;
-  color: var(--ink);
-}
-
-.h1 {
-  font-size: clamp(2.2rem, 4.8vw, 3.9rem);
-  line-height: 1.08;
-  max-width: 26ch;
-}
-/* Раньше акцент был градиентной заливкой текста через background-clip.
-   Теперь — курсив цветом акцента: сериф для этого и выбирался. */
-.h1 em {
-  font-style: italic;
-  color: var(--acc);
-}
-
-.h2 {
-  font-size: clamp(1.7rem, 3vw, 2.5rem);
-  max-width: 24ch;
-}
-
-.lead {
-  font-size: clamp(1.02rem, 1.4vw, 1.18rem);
-  line-height: 1.65;
-  color: var(--ink-2);
-  max-width: 64ch;
-  font-weight: 400;
-}
-
-/* ============ HEADER ============ */
-.hdr {
-  position: sticky;
-  top: 0;
-  z-index: 80;
-  background: rgba(28, 27, 25, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line);
-}
-
-/* Наверху страницы разделять нечего — линия там режет шапку от окна терминала,
-   с которым она стоит на одном фоне. Появляется она ровно тогда, когда под неё
-   начинает уезжать контент. Без поддержки scroll() остаётся как было. */
-@supports (animation-timeline: scroll()) {
-  .hdr {
-    border-bottom-color: transparent;
-    animation: hdr-line linear both;
-    animation-timeline: scroll(root);
-    animation-range: 0 64px;
-  }
-  @keyframes hdr-line { to { border-bottom-color: var(--line); } }
-}
-
-.hdr-in {
-  display: flex;
-  align-items: center;
-  gap: clamp(14px, 2.4vw, 32px);
-  height: 72px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--serif);
-  font-weight: 600;
-  font-size: 1.18rem;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  min-height: 44px;
-  transition: opacity 0.2s;
-}
-.brand:hover { opacity: 0.85; }
-
-.hdr nav {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: clamp(14px, 1.8vw, 28px);
-}
-
-.nav-a {
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: var(--ink-2);
-  padding: 6px 0;
-  transition: color 0.18s ease;
-}
-.nav-a:hover { color: var(--ink); }
-
-.hdr-cta {
-  font: 600 0.85rem var(--sans);
-  background: transparent;
-  border: 1px solid var(--line-2);
-  color: var(--ink);
-  padding: 8px 18px;
-  border-radius: 6px;
-  transition: border-color 0.2s ease, color 0.2s ease, transform 160ms var(--ease-out);
-}
-.hdr-cta:hover {
-  border-color: var(--acc);
-  color: var(--acc);
-}
-
-.lang {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font: 600 0.78rem var(--sans);
-  color: var(--muted);
-  padding: 2px 6px;
-  border-radius: 6px;
-  border: 1px solid var(--line);
-}
-.lang button {
-  position: relative;
-  font: 600 0.78rem var(--sans);
-  color: var(--muted);
-  padding: 4px 6px;
-  border-radius: 4px;
-  transition: color 0.18s, background 0.18s;
-}
-/* Кнопка 23×20 — промах пальцем на телефоне; расширяем зону нажатия
-   до 44px по высоте, не раздувая саму плашку переключателя. */
-.lang button::after {
-  content: "";
-  position: absolute;
-  left: -9px;
-  right: -9px;
-  top: 50%;
-  height: 44px;
-  transform: translateY(-50%);
-}
-.lang button[aria-pressed="true"] {
-  color: var(--acc);
-  background: var(--acc-soft);
-}
-.lang button:hover { color: var(--ink); }
-
-/* Шапка не сжималась: nav держал 473px и вылезал за вьюпорт на всём, что уже
-   760px — пункты меню при этом были физически недостижимы. Гамбургер тут не
-   нужен, все разделы есть в потоке страницы. */
-@media (max-width: 760px) {
-  .nav-a { display: none; }
-}
-/* Ниже 430px в шапке помещались только два элемента из трёх. Раньше уходил
-   CTA — то есть единственная постоянная поверхность страницы отдавалась
-   контролу, которым пользуются максимум один раз, при том что RU и так язык
-   по умолчанию. Теперь сжимается логотип: глиф остаётся ссылкой наверх,
-   вордмарк уходит, и помещается всё. */
-@media (max-width: 430px) {
-  .brand-name { display: none; }
-  .hdr-in { gap: 12px; }
-  .hdr-cta { padding: 8px 14px; }
-}
-
-/* ============ SECTIONS ============ */
-.sec {
-  /* Шапка липкая и высотой 73px. Сейчас якоря проходят только потому, что
-     padding секции случайно больше; уменьшишь отступы — сломается молча. */
-  scroll-margin-top: 88px;
-  padding-block: clamp(48px, 6vw, 80px);
-  border-top: 1px solid var(--line);
-  position: relative;
-}
-
-.sec-head {
-  margin-bottom: clamp(28px, 3.5vw, 42px);
-}
-.sec-head .h2 { margin-top: 10px; }
-.sec-head .lead { margin-top: 16px; }
-
-/* ============ TERMINAL WINDOW ============ */
-/* Общий чром для hero и секции сравнения. Три кружка + заголовок окна —
-   мотив всей страницы; скан-линий и CRT-эффектов сознательно нет. */
-.term {
-  background: var(--term-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  overflow: hidden;
-}
-.term-bar {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 11px 15px;
-  background: var(--term-bar);
-  border-bottom: 1px solid var(--card-border);
-}
-.term-bar i {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  flex: none;
-}
-.tl-1 { background: var(--tl-red); }
-.tl-2 { background: var(--tl-amber); }
-.tl-3 { background: var(--tl-green); }
-.term-title {
-  margin-left: 10px;
-  font: 400 0.72rem var(--mono);
-  color: var(--muted);
-}
-.term-body { padding: 18px 18px 20px; }
-
-/* ============ HERO SECTION ============ */
-.hero {
-  padding-block: clamp(44px, 6vw, 76px) clamp(36px, 5vw, 64px);
-}
-
-.hero-term .term-body {
-  padding: clamp(28px, 4vw, 48px) clamp(22px, 3.4vw, 44px);
-}
-
-.hero .h1 { margin-top: 6px; }
-.hero .lead { margin-top: 22px; }
-
-/* Приход первого экрана. Раньше это делал GSAP — 70 КБ стороннего кода ради
-   четырёх строк; CSS-анимация идёт мимо основного потока, а он на загрузке как
-   раз занят. Ничего не прячется в состоянии по умолчанию: правило живёт только
-   внутри prefers-reduced-motion: no-preference и стартует сразу. */
-@media (prefers-reduced-motion: no-preference) {
-  .hero .h1, .hero .lead, .hero .cta-row, .hero .hero-trust {
-    animation: hero-in 520ms var(--ease-out) both;
-  }
-  .hero .lead { animation-delay: 70ms; }
-  .hero .cta-row { animation-delay: 140ms; }
-  .hero .hero-trust { animation-delay: 210ms; }
-  @keyframes hero-in { from { opacity: 0; transform: translateY(10px); } }
-}
-
-.cta-row {
-  margin-top: clamp(28px, 3.6vw, 40px);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px 22px;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--acc);
-  color: #1c1b19;
-  font-weight: 700;
-  font-size: 1rem;
-  padding: 15px 30px;
-  border-radius: 8px;
-  transition: background 0.2s ease, transform 160ms var(--ease-out);
-}
-.btn[disabled] { opacity: 0.5; pointer-events: none; }
-/* Стрелка ехала по классу .arr, которого в разметке нет: иконки давно рисуются
-   на общем .ico, и наведение на главную кнопку страницы не делало ничего. */
-.btn .ico { transition: transform 0.2s var(--ease-out); }
-
-.btn-ghost {
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--ink-2);
-  padding: 14px 22px;
-  border-radius: 8px;
-  border: 1px solid var(--line-2);
-  transition: color 0.2s ease, border-color 0.2s ease, transform 160ms var(--ease-out);
-}
-.btn-ghost:hover {
-  color: var(--ink);
-  border-color: var(--acc);
-}
-
-/* Нажатие подтверждается сразу, без ожидания ответа сети: контрол уходит под
-   палец на 3%. Наведение — только там, где есть настоящий курсор: на тапе
-   :hover залипает после нажатия и кнопка остаётся «подсвеченной». */
-@media (hover: hover) and (pointer: fine) {
-  .btn:hover { background: #f7b874; transform: translateY(-1px); }
-  .btn:hover .ico { transform: translateX(4px); }
-}
-.btn:active, .btn-ghost:active, .hdr-cta:active { transform: scale(0.975); }
-
-/* Строка доверия живёт внутри окна как статус-бар */
-.hero-trust {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 28px;
-  align-items: center;
-  padding: 16px clamp(22px, 3.4vw, 44px);
-  border-top: 1px solid var(--card-border);
-  background: var(--term-bar);
-}
-.hero-trust span {
-  font: 400 0.84rem var(--sans);
-  color: var(--ink-2);
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-}
-.hero-trust b {
-  color: var(--acc);
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-/* На вьюпорте 844px кнопка hero стояла на 762px — с хромом Safari это уже за
-   сгибом. Поджимаем внутренние отступы окна и интервалы, чтобы главное
-   действие попадало на первый экран. */
-@media (max-width: 430px) {
-  .hero { padding-block: 28px 32px; }
-  .hero-term .term-body { padding: 24px 18px 26px; }
-  .hero .lead { margin-top: 16px; }
-  .cta-row { margin-top: 22px; }
-}
-
-/* ============ INLINE CTA ============ */
-/* Выход на пике намерения: после доказательной секции и после процесса.
-   Намеренно не карточка и не блок — это строка в потоке, отбитая той же
-   волосяной линией, что и остальной ритм страницы. Иначе она спорила бы с
-   финальным CTA, а их задача разная: этот ловит того, кто уже готов, а не
-   закрывает страницу. */
-.cta-inline {
-  margin-top: clamp(32px, 4vw, 48px);
-  padding-top: clamp(24px, 3vw, 32px);
-  border-top: 1px solid var(--line);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px 40px;
-}
-.cta-inline p {
-  color: var(--ink-2);
-  font-size: clamp(0.98rem, 1.2vw, 1.08rem);
-  line-height: 1.6;
-  max-width: 52ch;
-}
-
-/* ============ SERVICES ============ */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-}
-.card {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: clamp(24px, 3vw, 30px);
-  transition: border-color 0.2s ease;
-}
-.card:hover { border-color: var(--card-border-hover); }
-.card h3 {
-  font-size: 1.22rem;
-  margin-bottom: 10px;
-}
-.card p {
-  font-size: 0.94rem;
-  color: var(--ink-2);
-  line-height: 1.62;
-}
-
-/* ============ PROCESS ============ */
-.steps {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  /* Без этого сетка равняла все карточки по первой — той, что несёт список
-     артефактов, — и шаги 02–04 держали по 250px пустоты под 150px текста:
-     законченная последовательность выглядела недоделанной. */
-  align-items: stretch;
-  gap: 20px;
-}
-.step {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 26px;
-  transition: border-color 0.2s ease;
-}
-.step:hover { border-color: var(--card-border-hover); }
-.step.free { border-color: var(--acc-deep); }
-.step-n {
-  font: 600 0.72rem var(--sans);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 12px;
-}
-.step.free .step-n { color: var(--acc); }
-.step h3 {
-  font-size: 1.15rem;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.badge {
-  font: 600 0.72rem var(--sans);
-  text-transform: uppercase;
-  background: var(--acc);
-  color: #1c1b19;
-  padding: 3px 8px;
-  border-radius: 4px;
-  letter-spacing: 0.05em;
-}
-.step p {
-  font-size: 0.92rem;
-  color: var(--ink-2);
-  line-height: 1.6;
-}
-.step-deliv {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.step-deliv li {
-  font: 500 0.78rem var(--sans);
-  color: var(--acc);
-  background: var(--acc-soft);
-  padding: 4px 10px;
-  border-radius: 4px;
-}
-
-/* ============ EXPERIENCE & STACK ============ */
-.exp-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: clamp(32px, 5vw, 60px);
-  align-items: start;
-}
-@media (max-width: 900px) {
-  .exp-grid { grid-template-columns: 1fr; }
-}
-
-/* Рублёвый знак берётся из системного шрифта: в вариативном Inter он идёт с
-   другой метрикой и рядом с цифрой заметно уезжает. */
-.rub { font-family: system-ui, sans-serif; }
-
-.nums {
-  margin-top: clamp(28px, 3.4vw, 42px);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-}
-.num {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 20px 22px;
-  flex: 1;
-  min-width: 140px;
-}
-.num b {
-  display: block;
-  font-family: var(--serif);
-  font-size: clamp(1.9rem, 2.8vw, 2.4rem);
-  font-weight: 600;
-  color: var(--acc);
-  line-height: 1;
-  margin-bottom: 6px;
-}
-.num span {
-  font: 400 0.82rem var(--sans);
-  color: var(--ink-2);
-}
-
-.stack {
-  display: grid;
-  gap: 10px;
-}
-.stack > div {
-  border: 1px solid var(--card-border);
-  background: var(--card);
-  border-radius: 8px;
-  padding: 13px 17px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  transition: border-color 0.2s ease;
-}
-.stack > div:hover { border-color: var(--card-border-hover); }
-.stack dt {
-  font-weight: 600;
-  font-size: 0.92rem;
-  color: var(--ink);
-}
-.stack dd {
-  font: 400 0.86rem var(--sans);
-  /* Было var(--acc): крупнейшее скопление цвета CTA на всей странице сидело на
-     содержимом, по которому никто не кликает, и ослабляло каждую кнопку. */
-  color: var(--ink-2);
-}
-
-/* ============ FAQ ACCORDION ============ */
-.faq {
-  display: grid;
-  gap: 12px;
-}
-.faq details {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 18px 22px;
-  transition: border-color 0.2s ease;
-}
-.faq details[open] { border-color: var(--card-border-hover); }
-.faq summary {
-  font-family: var(--serif);
-  font-weight: 600;
-  font-size: 1.08rem;
-  color: var(--ink);
-  cursor: pointer;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
-/* Строка вопроса — основное касание на телефоне; на десктопе тот же минимум
-   просто раздувал бы карточки. */
-@media (max-width: 760px) {
-  .faq summary { min-height: 44px; }
-}
-.faq summary::-webkit-details-marker { display: none; }
-.faq summary > span { flex: 1; }
-.faq summary .ico {
-  color: var(--acc);
-  font-size: 1.15rem;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.faq details[open] summary .ico { transform: rotate(180deg); }
-@media (prefers-reduced-motion: no-preference) {
-  .faq details[open] .faq-a { animation: answer 240ms var(--ease-out); }
-  @keyframes answer { from { opacity: 0; transform: translateY(-4px); } }
-
-  /* Где браузер умеет ::details-content, ответ ещё и раскрывается: карточка
-     перестаёт прыгать на всю высоту за один кадр. Где не умеет — остаётся
-     фейд выше, он самодостаточен. */
-  @supports (interpolate-size: allow-keywords) {
-    .faq details::details-content {
-      block-size: 0;
-      overflow: clip;
-      interpolate-size: allow-keywords;
-      transition: block-size 260ms var(--ease-out), content-visibility 260ms allow-discrete;
-    }
-    .faq details[open]::details-content { block-size: auto; }
+/* ============ dark sections ============ */
+.dark{background:var(--ink);color:var(--on-ink)}
+.statement{padding-block:clamp(96px,14vw,200px)}
+.big-say{font-weight:800;font-size:clamp(40px,6.4vw,104px);line-height:.98;letter-spacing:-.05em;max-width:13em}
+.big-say .w{transition:opacity .2s}
+.st-p{max-width:34em;margin-top:clamp(32px,4vw,56px);margin-left:auto;font-size:clamp(17px,1.4vw,21px);color:var(--on-ink-muted)}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .big-say{view-timeline:--say block}
+    .big-say .w{animation:lit linear both;animation-timeline:--say;animation-range:cover calc(12% + var(--i) * 2.6%) cover calc(20% + var(--i) * 2.6%)}
   }
 }
+@keyframes lit{from{opacity:.16}to{opacity:1}}
 
-.faq-a {
-  /* Единственный текстовый блок на странице без ограничения меры: строки шли
-     по 144 символа при читаемых 65–75. FAQ — место, где ищут ответ на
-     возражение перед конверсией, и читать его должно быть легче всего. */
-  max-width: 68ch;
-  margin-top: 14px;
-  font-size: 0.95rem;
-  color: var(--ink-2);
-  line-height: 1.65;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
-}
+/* ============ process ============ */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink)}
+.step{padding:28px 28px 8px 0;border-right:1px solid var(--line);margin-right:28px}
+.step:last-child{border-right:0;margin-right:0}
+.step-n{display:block;font:500 13px var(--f-mono);color:var(--muted);margin-bottom:56px}
+.step-n::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink);margin-right:10px;vertical-align:1px}
+.step:first-child .step-n::before{background:var(--accent)}
+.step h3{font-size:clamp(24px,2.2vw,30px);font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+.step p{color:var(--muted);font-size:16px}
 
-/* ============ FINAL CTA ============ */
-.final {
-  text-align: center;
-  border: 1px solid var(--card-border);
-  border-radius: 14px;
-  background: var(--card);
-  padding-block: clamp(48px, 7vw, 80px);
-  margin-block: 40px 80px;
-}
-.final .h2 { margin-inline: auto; }
-.final .lead { margin-inline: auto; margin-top: 18px; }
-.final .btn { margin-top: 30px; }
+/* ============ formats ============ */
+.fmts{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.fmt{border:1px solid var(--ink);border-radius:14px;padding:clamp(28px,3.4vw,48px);display:flex;flex-direction:column;gap:16px;min-height:360px}
+.fmt h3{font-weight:800;font-size:clamp(28px,3vw,44px);letter-spacing:-.04em;line-height:1}
+.fmt p{color:var(--muted);max-width:26em}
+.fmt ul{margin-top:auto;border-top:1px solid var(--line)}
+.fmt li{padding:13px 0;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:baseline}
+.fmt li::before{content:"→";font-family:var(--f-mono);font-size:14px}
+.fmt-ink{background:var(--ink);color:var(--on-ink)}
+.fmt-ink p{color:var(--on-ink-muted)}
+.fmt-ink ul,.fmt-ink li{border-color:#3a3936}
+.find{margin-top:20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;align-items:baseline;
+  padding:28px clamp(28px,3.4vw,48px);border-radius:14px;background:var(--paper-2)}
+.find-t{font-weight:700;font-size:clamp(22px,2.2vw,30px);letter-spacing:-.03em;line-height:1.1}
+.find-d{color:var(--ink-2)}
 
-/* ============ FOOTER ============ */
-.ftr {
-  border-top: 1px solid var(--line);
-  padding-block: 34px;
-  font-size: 0.86rem;
-  color: var(--muted);
-}
-.ftr-in {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
-.ftr a {
-  color: var(--ink-2);
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  min-height: 44px;
-  transition: color 0.18s;
-}
-.ftr a .ico { font-size: 0.8em; }
-.ftr a:hover { color: var(--acc); }
-.ftr .right { display: flex; gap: 20px; }
+/* ============ faq ============ */
+.faq{border-top:1px solid var(--ink)}
+.faq details{border-bottom:1px solid var(--ink)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:24px;
+  padding:24px 0;font-weight:600;font-size:clamp(19px,1.8vw,24px);letter-spacing:-.02em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:18px;height:18px;
+  background:linear-gradient(currentColor,currentColor) center/100% 1.6px no-repeat,linear-gradient(currentColor,currentColor) center/1.6px 100% no-repeat;
+  transition:transform .35s var(--ease-out)}
+.faq details[open] summary::after{transform:rotate(135deg)}
+.faq details p{max-width:44em;padding:0 0 26px;color:var(--muted)}
+.faq details::details-content{block-size:0;overflow:hidden;transition:block-size .35s var(--ease-out),content-visibility .35s allow-discrete}
+.faq details[open]::details-content{block-size:auto}
+@supports (interpolate-size:allow-keywords){:root{interpolate-size:allow-keywords}}
+@media (prefers-reduced-motion:reduce){.faq details::details-content{transition:none}}
 
-/* ============ MODAL ============ */
-/* .ovl[hidden] обязателен: авторское display:flex/grid бьёт UA-правило
-   [hidden]{display:none} при равной специфичности, и невидимый слой
-   перехватывал все клики по странице. */
-.ovl {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  background: rgba(15, 14, 13, 0.86);
-  backdrop-filter: blur(10px);
-  display: grid;
-  place-items: center;
-  overflow-y: auto;
-  padding: 20px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-.ovl:not([hidden]) {
-  opacity: 1;
-  pointer-events: auto;
-}
-.ovl[hidden] { display: none; }
+/* ============ final cta ============ */
+.final{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:40px;align-items:end;padding-block:clamp(96px,13vw,180px)}
+.h-final{font-weight:800;font-size:clamp(48px,7.4vw,120px);line-height:.92;letter-spacing:-.055em}
+.final-r{display:flex;flex-direction:column;align-items:flex-start;gap:28px}
+.final-r p{color:var(--on-ink-muted);font-size:18px}
+.final-r .note-cta{color:var(--on-ink);font-size:28px;transform:rotate(-5deg);margin-left:20px}
 
-.modal {
-  background: var(--bg-subtle);
-  opacity: 0;
-  transition: opacity 200ms ease;
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: clamp(28px, 4vw, 38px);
-  max-width: 480px;
-  max-height: calc(100dvh - 40px);
-  overflow-y: auto;
-  width: 100%;
-  position: relative;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
-}
+/* ============ footer ============ */
+.ftr{background:var(--ink);color:var(--on-ink-muted);border-top:1px solid #2c2b29;font-size:14px}
+.ftr-in{display:flex;flex-wrap:wrap;align-items:center;gap:16px 32px;padding-block:28px}
+.ftr .brand{color:var(--on-ink);font-size:17px}
+.ftr-l{display:flex;gap:24px;margin-left:auto}
+.ftr a{text-decoration:none}
+.ftr-l a{display:inline-flex;align-items:center;gap:4px}
+@media (hover:hover) and (pointer:fine){.ftr-l a:hover{color:var(--on-ink)}}
 
-/* Панель приезжает, а не проявляется на месте: 320 мс на приход,
-   170 мс на уход — выход всегда быстрее входа. */
-.ovl.show .modal { opacity: 1; }
-@media (prefers-reduced-motion: no-preference) {
-  .modal {
-    transform: translateY(12px) scale(0.985);
-    transition: opacity 200ms ease, transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .ovl.show .modal { transform: none; }
-  .ovl:not(.show) .modal { transition-duration: 140ms, 170ms; }
-}
+/* ============ lead modal ============ */
+.ovl{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;
+  background:rgba(17,17,16,.45);opacity:0;transition:opacity .17s}
+.ovl[hidden]{display:none}
+.ovl.show{opacity:1;transition-duration:.3s}
+.modal{position:relative;width:100%;max-width:460px;max-height:calc(100dvh - 32px);overflow:auto;background:var(--paper);border:1px solid var(--ink);border-radius:16px;
+  padding:36px 32px 28px;transform:translateY(12px) scale(.98);transition:transform .17s var(--ease-out)}
+.ovl.show .modal{transform:none;transition-duration:.32s}
+.m-close{position:absolute;top:14px;right:14px;width:36px;height:36px;display:grid;place-items:center;border-radius:8px;font-size:18px}
+@media (hover:hover){.m-close:hover{background:var(--paper-2)}}
+.modal h3{font-weight:800;font-size:30px;letter-spacing:-.04em;line-height:1.05;padding-right:32px}
+.m-desc{color:var(--muted);margin-top:10px;font-size:15.5px}
+#leadForm{margin-top:22px}
+#leadForm label{display:block;font-weight:600;font-size:14px;margin-bottom:8px}
+#contact{width:100%;font:inherit;font-size:16px;padding:14px 14px;border:1px solid var(--ink);border-radius:8px;background:#fff;color:var(--ink)}
+#contact::placeholder{color:#a19d94}
+#contact:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+#contact[aria-invalid="true"]{border-color:#c62f0a}
+.f-hint{font-size:13.5px;color:var(--muted);margin-top:8px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.f-err{margin-top:12px;font-size:14px;color:#b12a08;display:flex;flex-direction:column;gap:4px}
+.f-err[hidden],.f-err-mail[hidden]{display:none}
+.f-err-mail{font-weight:600}
+.m-priv{font-size:13px;color:var(--muted);margin:18px 0 12px}
+.m-alt{margin-top:18px;font-size:14px;color:var(--muted)}
+.m-alt a{color:var(--ink);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:3px}
+.m-ok{text-align:center;padding:12px 0 4px;display:flex;flex-direction:column;align-items:center;gap:18px}
+.m-ok[hidden]{display:none}
+.m-ok p{font-size:18px;font-weight:600}
+.tick{stroke-dasharray:40;stroke-dashoffset:40}
+.m-ok:not([hidden]) .tick{animation:tick .5s .1s var(--ease-out) forwards}
+@keyframes tick{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.tick{stroke-dashoffset:0}.m-ok:not([hidden]) .tick{animation:none}.modal,.ovl{transition:none}}
 
-.m-close {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 44px;
-  height: 44px;
-  border-radius: 6px;
-  color: var(--ink-2);
-  display: grid;
-  place-items: center;
-  font-size: 1.05rem;
-  transition: background 0.18s ease, color 0.18s ease;
-}
-.m-close:hover { background: var(--card); color: var(--ink); }
+/* ============ motion ============ */
+@media (prefers-reduced-motion:no-preference){
+  /* hero arrival — CSS only, runs before any script */
+  .h1 .ln>span{animation:rise .9s var(--ease-out) both}
+  .h1 .ln:nth-child(2)>span{animation-delay:.08s}
+  .hero-lead{animation:fade .8s .3s var(--ease-out) both}
+  .hero-act{animation:fade .8s .4s var(--ease-out) both}
+  .stack .brick{animation:drop .7s var(--ease-out) both;animation-delay:calc(.25s + var(--i) * .09s)}
+  .stack .hook{animation:lower 1.3s .95s var(--ease-out) both}
+  .stack .sway{transform-box:fill-box;transform-origin:50% 0;animation:sway 5s 2.25s var(--ease-io) infinite alternate}
+  .note-hero{animation:fade .6s 2s both}
+  .note-hero .draw{stroke-dasharray:120;stroke-dashoffset:120;animation:draw .8s 2.2s var(--ease-out) forwards}
 
-.modal h3 { font-size: 1.45rem; margin-bottom: 8px; padding-right: 32px; }
-.m-desc { font-size: 0.92rem; color: var(--ink-2); margin-bottom: 22px; }
+  /* scroll reveals: hidden only once the script marks the element as pending */
+  .js .rv.is-pending{opacity:0;transform:translateY(28px)}
+  .js .rv.is-in{opacity:1;transform:none;transition:opacity .8s var(--ease-out),transform .9s var(--ease-out);transition-delay:var(--d,0s)}
+  .js .note .draw{stroke-dasharray:140;stroke-dashoffset:140}
+  .js .note.is-in .draw{stroke-dashoffset:0;transition:stroke-dashoffset .9s .35s var(--ease-out)}
+}
+@keyframes rise{from{transform:translateY(105%)}to{transform:none}}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes drop{0%{opacity:0;transform:translateY(-36px)}60%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes lower{from{transform:translateY(-120px)}to{transform:none}}
+@keyframes sway{from{transform:rotate(-1.1deg)}to{transform:rotate(1.1deg)}}
+@keyframes draw{to{stroke-dashoffset:0}}
 
-#leadForm label {
-  display: block;
-  font: 600 0.74rem var(--sans);
-  color: var(--ink-2);
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+/* ============ responsive ============ */
+@media (max-width:1100px){
+  .svc-btn{grid-template-columns:48px minmax(0,1fr) 28px}
+  .svc-d{grid-column:2;grid-row:2;margin-top:-14px}
+  .svc-a{grid-column:3;grid-row:1}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .step:nth-child(2){border-right:0;margin-right:0}
+  .step:nth-child(n+3){border-top:1px solid var(--line)}
 }
-#leadForm input[type="text"] {
-  width: 100%;
-  background: var(--term-bg);
-  border: 1px solid var(--line-2);
-  border-radius: 8px;
-  padding: 14px 16px;
-  color: var(--ink);
-  font: 400 1rem var(--sans);
-  caret-color: var(--acc);
-  transition: border-color 0.2s ease;
+@media (max-width:900px){
+  .nav{display:none}
+  .hdr-r{margin-left:auto}
+  .hero{grid-template-columns:1fr;gap:8px}
+  .hero-art{max-width:560px;width:100%;margin-inline:auto}
+  .final{grid-template-columns:1fr}
+  .fmts,.find{grid-template-columns:1fr}
+  .fmt{min-height:0}
+  .note-svc,.note-prc{display:none}
 }
-#leadForm input[type="text"]:focus {
-  border-color: var(--acc);
-  outline: none;
+@media (max-width:620px){
+  body{font-size:16px}
+  .h1{font-size:19vw}
+  .steps{grid-template-columns:1fr}
+  .step{border-right:0;margin-right:0;padding-right:0}
+  .step:nth-child(n+2){border-top:1px solid var(--line)}
+  .step-n{margin-bottom:20px}
+  .svc-btn{grid-template-columns:36px minmax(0,1fr) 22px;gap:14px;padding:22px 0}
+  .svc-a{font-size:20px}
+  .note-hero{font-size:21px;left:0}
+  .ftr-l{margin-left:0;width:100%}
 }
-/* Ошибочное поле остаётся ошибочным и в фокусе: раньше оно получало ту же
-   оранжевую рамку, что и корректное, и единственным признаком ошибки был
-   текст под ним. Цвет тут не единственный носитель смысла — рядом стоит
-   сообщение, а поле помечено aria-invalid. */
-#leadForm input[aria-invalid="true"],
-#leadForm input[aria-invalid="true"]:focus {
-  border-color: var(--danger);
-}
-#leadForm input[aria-invalid="true"]:focus-visible { outline-color: var(--danger); }
-.hp { display: none !important; }
-
-.f-hint {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin-top: 8px;
-  line-height: 1.5;
-}
-
-.f-err {
-  color: var(--danger);
-  font-size: 0.85rem;
-  line-height: 1.5;
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3px;
-}
-.f-err-mail {
-  color: var(--danger);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.f-err-mail:hover { color: var(--ink); }
-
-.btn-block { width: 100%; justify-content: center; margin-top: 12px; }
-/* Стоит над кнопкой: обещание о том, как поступят с контактом, нужно прочитать
-   до нажатия, а не после. */
-/* Выход для тех, кто не хочет оставлять контакт и ждать ответа: модалка ставит
-   inert на страницу, так что ни футер, ни один другой контакт в этот момент
-   недоступны. Стоит под кнопкой — не спорит с основным действием. */
-.m-alt {
-  margin-top: 16px;
-  text-align: center;
-  font-size: .84rem;
-  color: var(--muted);
-  line-height: 1.5;
-}
-.m-alt a {
-  color: var(--ink-2);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.m-alt a .ico { font-size: .8em; }
-.m-alt a:hover { color: var(--acc); }
-
-.m-priv {
-  font-size: 0.78rem;
-  color: var(--muted);
-  line-height: 1.5;
-  margin-top: 20px;
-  text-align: center;
-}
-
-/* Единственное конверсионное действие страницы заслуживает подтверждения,
-   которое видно: галочка прочерчивается, а не появляется готовой. */
-@media (prefers-reduced-motion: no-preference) {
-  .m-ok .tick { stroke-dasharray: 34; stroke-dashoffset: 34; }
-  .m-ok:not([hidden]) .tick { animation: tick 460ms cubic-bezier(0.16, 1, 0.3, 1) 90ms forwards; }
-  @keyframes tick { to { stroke-dashoffset: 0; } }
-}
-
-.m-ok { text-align: center; padding-block: 20px; }
-.m-ok svg { margin-bottom: 16px; }
-.m-ok p { font-size: 1.05rem; font-weight: 600; color: var(--ink); margin-bottom: 22px; }
-
-/* ============ AUDIT EXAMPLE & PROJECT OUTCOMES ============ */
-.card { display: flex; flex-direction: column; min-width: 0; }
-.card .card-result { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line-2); color: var(--ink); font-size: .86rem; }
-.audit-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .85fr); gap: clamp(28px, 4vw, 48px); align-items: start; }
-.report-body { padding: clamp(22px, 3vw, 34px); }
-.sample-label { color: var(--acc); font: 500 .75rem/1.6 var(--mono); margin-bottom: 18px; }
-.report-body h3 { font-size: clamp(1.3rem, 2vw, 1.7rem); max-width: 28ch; }
-.report-disclosure { color: var(--muted); font-size: .82rem; line-height: 1.6; margin-top: 14px; max-width: 60ch; }
-/* Сводка по системам: строка = система, вердикт и что с ним делать. Статус
-   несёт не только цвет — рядом стоит слово, иначе строка неотличима на
-   монохромном экране и для того, кто цвет не различает. */
-.findings { list-style: none; margin-top: 26px; }
-.fnd {
-  position: relative;
-  padding: 16px 0 16px 22px;
-  border-top: 1px solid var(--line-2);
-}
-.fnd::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 23px;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--fnd);
-}
-.fnd-h {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 4px 16px;
-}
-.fnd-n { font-weight: 600; font-size: .98rem; color: var(--ink); }
-.fnd-s {
-  font: 500 .72rem var(--mono);
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--fnd);
-  white-space: nowrap;
-}
-.fnd-d { margin-top: 7px; color: var(--ink-2); font-size: .92rem; line-height: 1.62; }
-.fnd.is-ok { --fnd: var(--ok); }
-.fnd.is-warn { --fnd: var(--acc); }
-.fnd.is-act { --fnd: var(--danger); }
-.report-foot {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line-2);
-  color: var(--muted);
-  font-size: .86rem;
-  line-height: 1.6;
-}
-
-/* Закрывающий блок отчёта: что чинить, сколько это займёт и что это даёт.
-   Ради него страница и показывает пример — без него сводка заканчивается
-   перечнем проблем и не отвечает на «и что дальше». */
-.report-plan {
-  margin-top: 22px;
-  padding-top: 20px;
-  border-top: 1px solid var(--line-2);
-}
-.plan-h { font-weight: 600; font-size: .98rem; color: var(--ink); margin-bottom: 8px; }
-.plan-d { color: var(--ink-2); font-size: .92rem; line-height: 1.62; }
-.plan-est {
-  margin-top: 16px;
-  padding: 13px 15px;
-  border-radius: 6px;
-  background: var(--acc-soft);
-  color: var(--ink-2);
-  font-size: .9rem;
-  line-height: 1.55;
-}
-.plan-est b {
-  color: var(--acc);
-  font: 600 .9rem var(--mono);
-  white-space: nowrap;
-}
-/* Цифра выше — из вымышленного примера. Эта строка обязана стоять рядом с ней:
-   без неё пример читается как прайс-лист, которого на сайте нет. */
-.plan-note { margin-top: 12px; color: var(--muted); font-size: .82rem; line-height: 1.55; }
-
-/* Единственная поставленная сцена на странице: отчёт заполняется сам, сверху
-   вниз, когда до него доходят. Это доказательство вместо кейсов, и оно должно
-   читаться как документ, который пишут, а не как ещё один блок с фейдом.
-   Прячет строки ТОЛЬКО скрипт (js/animations.js): в CSS нет ни одного
-   opacity:0 без классов, которые он вешает. Сломанный скрипт, отключённый JS
-   или reduce-motion оставляют отчёт целиком видимым. */
-@media screen {
-  .is-writing .w-row { opacity: 0; }
-}
-.is-playing .w-row { animation: write 380ms var(--ease-out) both; animation-delay: calc(var(--i) * 55ms); }
-@keyframes write { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-/* Каретка живёт только пока идёт печать: класс снимается по её окончании,
-   поэтому за экраном ничего не мигает. */
-/* Каретка нарисована, а не набрана: блок в полстроки, а не юникодный глиф,
-   у которого своя ширина в каждом шрифте. */
-.is-playing .sample-label::after {
-  content: "";
-  display: inline-block;
-  width: 0.5em;
-  height: 1em;
-  margin-left: 4px;
-  vertical-align: -0.16em;
-  background: currentColor;
-  animation: caret 760ms steps(2, jump-none) infinite;
-}
-@keyframes caret { 50% { opacity: 0; } }
-
-/* Сводка длиннее пояснения втрое, и правая колонка иначе стоит пустой на
-   700px. Липкая она идёт рядом со списком, пока его читают. */
-.audit-aside { padding-top: 10px; }
-@media (min-width: 761px) {
-  .audit-aside { position: sticky; top: 96px; }
-}
-.audit-aside h3 { font-size: 1.4rem; }
-.audit-outline { list-style: none; counter-reset: report; }
-.audit-outline li { counter-increment: report; position: relative; padding: 24px 0 24px 42px; border-bottom: 1px solid var(--line-2); }
-.audit-outline li::before { content: '0' counter(report); position: absolute; left: 0; top: 27px; color: var(--acc); font: 500 .76rem var(--mono); }
-.audit-outline h4 { font-weight: 600; font-size: 1rem; margin-bottom: 8px; }
-.audit-outline p, .audit-note { color: var(--ink-2); font-size: .92rem; line-height: 1.65; }
-.audit-note { margin-top: 24px; }
-.formats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-.consultant-name { font-size: 1.8rem; margin-bottom: 10px; }
-.consultant-role { color: var(--acc); font-size: .9rem; margin-bottom: 22px; }
-.profile-links { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 20px; }
-.profile-links a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--ink); text-decoration: underline; text-underline-offset: 5px; }
-.profile-links a:hover { color: var(--acc); }
-.f-err[hidden], .f-err-mail[hidden] { display: none; }
-.ftr .right { flex-wrap: wrap; }
-@media (max-width: 1000px) {
-  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 760px) {
-  .audit-grid, .formats-grid { grid-template-columns: minmax(0, 1fr); }
-  .audit-aside { padding-top: 0; }
-}
-@media (max-width: 620px) {
-  .cards, .steps { grid-template-columns: minmax(0, 1fr); }
-  /* На узком экране статус то влезал в строку с названием, то падал под неё —
-     список шёл рваным. Ставим его отдельной строкой у всех находок. */
-  .fnd-h { display: block; }
-  .fnd-s { display: block; margin-top: 3px; }
-  .cta-row { align-items: stretch; flex-direction: column; }
-  .cta-row .btn, .cta-row .btn-ghost { justify-content: center; text-align: center; }
-  .final { margin-inline: 16px; }
-  .hero .h1 { font-size: clamp(1.85rem, 7vw, 2.7rem); }
-  .hero-trust { gap: 10px 20px; }
+@media (max-width:430px){
+  .hdr-in{gap:12px}
+  .hdr-r .btn-sm span{display:none}
+  .hdr-r .btn-sm{padding:10px 12px}
+  .hero-act{gap:20px}
 }
