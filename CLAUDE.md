@@ -45,13 +45,26 @@ guard and Telegram link are unchanged.
   planets) followed by four AI service points and a CTA. It reuses the header,
   lead modal, footer, `main.js` and `animations.js`; `<html data-meta="ai.meta">`
   makes `applyLang` use `ai.meta.title/desc` instead of `meta.*`.
-- The film is a **Three.js** 3D scene (`three@0.169.0` from jsDelivr via an
-  `<script type="importmap">` in `ai.html`; `js/ai-film.js` is an ES module).
-  This is the only JS dependency on the site and is scoped to `ai.html` — the
-  main page stays dependency-free. Modules do not load over `file://`; preview
-  with `python3 -m http.server` from the repo root. The Sky shader returns NaN
-  at zero rayleigh/mie, and bloom smears NaN over the whole frame (black
-  screen) — keep the minimums in `render()`.
+- The film is a **Three.js** 3D scene. Three.js r169 is **self-hosted** as one
+  tree-shaken file, `js/vendor/three-ai.js` (~144 KB gzip), built from
+  `tools/three-ai.entry.js` with esbuild — the rebuild command is in that
+  file's header. It replaced ~10 chained jsDelivr module requests (the main
+  cause of slow first frame). It is the only JS dependency on the site and is
+  scoped to `ai.html`. If you use a new `THREE.*` symbol in `ai-film.js`, add
+  it to the entry and rebuild, or it is `undefined` at runtime. Modules do not
+  load over `file://`; preview with `python3 -m http.server`. The Sky shader
+  returns NaN at zero rayleigh/mie and bloom smears NaN over the whole frame
+  (black screen) — keep the minimums in `render()`.
+- **Performance rules for the film** (measured 2026-10-30 with Playwright, CPU
+  throttled 6×/15×: first frame 4.3 → 2.9 s, city frame 46 → 12 ms, very weak
+  profile 17 → 29 fps): static parts are merged per material (`batch()`,
+  `bakeTree()`), the truck fleet and the city are `InstancedMesh`es (window
+  UVs scale by instance size in the shader), mesh `matrixAutoUpdate` is off
+  except for meshes that move themselves, particles upload only the used
+  range. Quality tiers (`TIERS`) drop resolution → bloom → shadow size → 30 fps
+  cap when frames run slow, only downward. Rendering pauses when the film
+  scrolls out of view. Keep draw calls low when adding objects: a new moving
+  object is a group, its meshes get baked.
 - `js/ai-film.js` draws every frame as a pure function `render(t)` — no state
   between frames — so seeking, pause and the static last frame under
   `prefers-reduced-motion` all come free. Captions are HTML `.cap[data-t="from,to"]`

@@ -3,14 +3,9 @@
    частицы и камера считаются из t, состояния между кадрами нет. Отсюда бесплатно
    перемотка, пауза и статичный финальный кадр под prefers-reduced-motion.
    Единицы — метры, земля y=0, лента вдоль +x. */
-import * as THREE from 'three';
-import { Sky } from 'three/addons/objects/Sky.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+/* Один свой бандл вместо ~10 цепочкой грузящихся модулей с CDN (см. tools/three-ai.entry.js). */
+import * as THREE from './vendor/three-ai.js?v=r169a';
+const { Sky, RoomEnvironment, EffectComposer, RenderPass, UnrealBloomPass, OutputPass, RoundedBoxGeometry, mergeGeometries } = THREE;
 
 const cv = document.getElementById('film');
 const stage = document.getElementById('stage');
@@ -90,10 +85,23 @@ function truckX(tr, t){
 
 async function main(){
   let renderer;
-  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' }); }
+  /* antialias не нужен: кадр рисуется в render target композитора, MSAA канваса туда не попадает */
+  try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: false, powerPreference: 'high-performance' }); }
   catch (e) { return; }
-  /* Надписи на чипе рисуются шрифтом страницы — ждём его, но не дольше 1.5 с. */
-  await Promise.race([document.fonts.load('800 40px "Inter Tight Variable"').catch(() => {}), new Promise(r => setTimeout(r, 1500))]);
+
+  /* ============ quality ============ */
+  /* Ступени качества. Слабые устройства стартуют со второй; во время показа
+     частота кадров меряется, и если её не хватает — ступень понижается (только вниз,
+     чтобы не мигать туда-обратно). Картинка от ступени не зависит, только чёткость. */
+  const TIERS = [
+    { dpr: 1.5, bloom: true, shadow: 2048 },
+    { dpr: 1, bloom: true, shadow: 1024 },
+    { dpr: .8, bloom: false, shadow: 1024, fps: 30 },
+    { dpr: .65, bloom: false, shadow: 512, fps: 30 }
+  ];
+  const weak = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4 || matchMedia('(pointer: coarse)').matches;
+  let tier = weak ? 1 : 0;
+  renderer.info.autoReset = false;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -113,7 +121,7 @@ async function main(){
   su.mieDirectionalG.value = .8;
   const sunDir = V(0, 1, 0);
   const sun = new THREE.DirectionalLight(0xfff0dc, 3.4);
-  sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+  sun.castShadow = true; sun.shadow.mapSize.setScalar(TIERS[tier].shadow);
   sun.shadow.bias = -.0004; sun.shadow.normalBias = .04;
   const scam = sun.shadow.camera; scam.near = 1; scam.far = 600;
   scene.add(sun, sun.target);
@@ -140,8 +148,19 @@ async function main(){
     t.repeat.set(rx, ry); t.anisotropy = renderer.capabilities.getMaxAnisotropy();
     return t;
   }
+  /* Зерно рисуется один раз в плитку 128×128 и потом заливается узором —
+     раньше каждая текстура ставила тысячи точек сама. */
+  const tile = rgb => {
+    const c = document.createElement('canvas'); c.width = c.height = 128;
+    const g = c.getContext('2d');
+    for (let i = 0; i < 700; i++) { g.fillStyle = `rgba(${rgb},${Math.random()})`; g.fillRect(Math.random() * 128, Math.random() * 128, 1 + Math.random() * 2.5, 1 + Math.random() * 2.5); }
+    return c;
+  };
+  const tiles = { dark: tile('20,18,16'), light: tile('255,255,250') };
   function grain(g, w, h, n, a, rgb){
-    for (let i = 0; i < n; i++) { g.fillStyle = `rgba(${rgb},${Math.random() * a})`; g.fillRect(Math.random() * w, Math.random() * h, 1 + Math.random() * 2.5, 1 + Math.random() * 2.5); }
+    const light = rgb.startsWith('255') || rgb.startsWith('120') || rgb.startsWith('90,90');
+    g.save(); g.globalAlpha = Math.min(1, a * .6 * Math.min(1.2, n / (w * h / 128 / 128 * 700) + .2));
+    g.fillStyle = g.createPattern(light ? tiles.light : tiles.dark, 'repeat'); g.fillRect(0, 0, w, h); g.restore();
   }
   const tConcrete = ctex(512, 512, (g, w, h) => {
     g.fillStyle = '#8e8b84'; g.fillRect(0, 0, w, h);
@@ -190,12 +209,14 @@ async function main(){
     const gr = g.createRadialGradient(w / 2, h * .7, 10, w / 2, h * .6, 140); gr.addColorStop(0, 'rgba(255,170,90,.55)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
     g.fillStyle = gr; g.fillRect(20, 16, w - 40, h - 30);
   });
-  const tChip = ctex(256, 256, (g, w, h) => {
+  const drawChip = (g, w, h) => {
     g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
     g.strokeStyle = '#ff6a2c'; g.lineWidth = 6; g.strokeRect(26, 26, w - 52, h - 52);
     g.fillStyle = '#ff7a3c'; g.font = '800 120px "Inter Tight Variable",Arial,sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
     g.fillText('AI', w / 2, h / 2 + 6);
-  });
+  };
+  const tChip = ctex(256, 256, drawChip);
+  document.fonts.load('800 40px "Inter Tight Variable"').then(() => { drawChip(tChip.image.getContext('2d'), 256, 256); tChip.needsUpdate = true; }, () => {});
   /* Окна: шесть пар текстур на весь город; clone() делит картинку, у каждого дома свой repeat. */
   function windowTex(seed, lit){
     return ctex(256, 256, (g, w, h) => {
@@ -257,8 +278,41 @@ async function main(){
   const rbox = (w, h, d, r = .06) => new RoundedBoxGeometry(w, h, d, 3, r);
   const cyl = (r1, r2, h, s = 24) => new THREE.CylinderGeometry(r1, r2, h, s);
   const sph = (r, a = 16, b = 12) => new THREE.SphereGeometry(r, a, b);
-  const glowRing = (r, tube) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, tube, 8, 64), M.glow.clone()); m.rotation.x = Math.PI / 2; return m; };
+  const glowRing = (r, tube) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, tube, 8, 64), M.glow.clone()); m.rotation.x = Math.PI / 2; m.userData.keep = true; return m; };
   const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _s = V(1, 1, 1), _p = V();
+  /* Статика пакуется в один меш на материал: сотни мелких деталей (ноги ленты, ролики,
+     части фур) раньше были сотнями draw calls, плюс столько же в проходе теней. */
+  function batch(){
+    const parts = new Map();
+    const api = {
+      add(geo, mat, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0){
+        return api.addMatrix(geo, mat, _m.compose(_p.set(x, y, z), _q.setFromEuler(_e.set(rx, ry, rz)), _s.set(1, 1, 1)));
+      },
+      addMatrix(geo, mat, matrix){
+        const g = geo.index ? geo.toNonIndexed() : geo.clone();
+        for (const k of Object.keys(g.attributes)) if (!['position', 'normal', 'uv'].includes(k)) g.deleteAttribute(k);
+        g.applyMatrix4(matrix);
+        (parts.get(mat) || parts.set(mat, []).get(mat)).push(g);
+        return api;
+      },
+      geos(){ return [...parts].map(([mat, gs]) => [mergeGeometries(gs), mat]); },
+      flush(parent = scene, cast = true){ for (const [g, mat] of api.geos()) mesh(g, mat, 0, 0, 0, parent, cast); }
+    };
+    return api;
+  }
+  /* То же для подвижных групп (робот, рабочий, ракета, чип): меши-соседи внутри
+     одной группы двигаются вместе, значит их можно склеить по материалам.
+     Вложенные группы (суставы) и помеченные keep остаются отдельными. */
+  function bakeTree(root){
+    root.traverse(g => {
+      if (!g.isGroup) return;
+      const kids = g.children.filter(c => c.isMesh && !c.isInstancedMesh && !c.userData.keep && !Array.isArray(c.material));
+      if (kids.length < 2) return;
+      const b = batch();
+      for (const k of kids) { k.updateMatrix(); b.addMatrix(k.geometry, k.material, k.matrix); g.remove(k); }
+      for (const [geo, mat] of b.geos()) mesh(geo, mat, 0, 0, 0, g);
+    });
+  }
 
   /* ============ ground & road ============ */
   mesh(new THREE.PlaneGeometry(4000, 4000), M.concrete, 0, 0, 0, scene, false).rotation.x = -Math.PI / 2;
@@ -280,25 +334,30 @@ async function main(){
   }
 
   /* ============ factory ============ */
-  mesh(box(20, 7.5, 8), M.corr, 0, 3.75, -9);
-  for (let i = 0; i < 4; i++) {
+  {
+    const f = batch().add(box(20, 7.5, 8), M.corr, 0, 3.75, -9);
     const sh = new THREE.Shape(); sh.moveTo(0, 0); sh.lineTo(5, 0); sh.lineTo(5, 2.6); sh.closePath();
-    mesh(new THREE.ExtrudeGeometry(sh, { depth: 8, bevelEnabled: false }), M.roof, -10 + i * 5, 7.5, -13);
+    const roof = new THREE.ExtrudeGeometry(sh, { depth: 8, bevelEnabled: false });
+    for (let i = 0; i < 4; i++) f.add(roof, M.roof, -10 + i * 5, 7.5, -13);
+    f.add(box(5, 5, .1), M.dark, -5, 2.5, -4.95)
+      .add(cyl(.9, 1.25, 18, 32), M.brick, -7, 9, -11)
+      .add(cyl(.95, .95, .8, 32), M.white, -7, 17.2, -11)
+      .add(cyl(.95, .95, .5, 32), M.paint, -7, 16.4, -11)
+      .flush();
   }
-  mesh(box(5, 5, .1), M.dark, -5, 2.5, -4.95);
-  mesh(cyl(.9, 1.25, 18, 32), M.brick, -7, 9, -11);
-  mesh(cyl(.95, .95, .8, 32), M.white, -7, 17.2, -11);
-  mesh(cyl(.95, .95, .5, 32), M.paint, -7, 16.4, -11);
 
   /* лента: от рабочих мест прямо в задние двери первой фуры */
-  const rollers = [];
+  /* Ролики — гладкие цилиндры, их вращение глазу не видно: они статичны и склеены с рамой. */
+  const rail = box(1, .2, .1), leg = box(.12, 1, .12), roller = cyl(.13, .13, 1.5, 16);
   function belt(x0, len, mat, parent){
-    for (const z of [-.78, .78]) mesh(box(len + .3, .2, .1), M.steel, x0 + len / 2, 1.05, z, parent);
-    for (let x = x0 + .5; x < x0 + len; x += 2.4) for (const z of [-.7, .7]) mesh(box(.12, 1, .12), M.steel, x, .5, z, parent);
+    const b = batch();
+    for (const z of [-.78, .78]) b.add(box(len + .3, .2, .1), M.steel, x0 + len / 2, 1.05, z);
+    for (let x = x0 + .5; x < x0 + len; x += 2.4) for (const z of [-.7, .7]) b.add(leg, M.steel, x, .5, z);
+    for (let x = x0; x <= x0 + len; x += .85) b.add(roller, M.metal, x, 1.06, 0, Math.PI / 2);
+    b.flush(parent);
     mesh(new THREE.PlaneGeometry(len, 1.45), mat, x0 + len / 2, BY, 0, parent, false).rotation.x = -Math.PI / 2;
   }
   belt(BX0, BL + .4, M.belt, scene);
-  for (let x = BX0; x <= BX1 + .4; x += .85) { const r = mesh(cyl(.13, .13, 1.5, 16), M.metal, x, 1.06, 0); r.rotation.x = Math.PI / 2; rollers.push(r); }
 
   /* ============ people ============ */
   /* Люди собирают коробки вручную — до AI это единственная «мощность». */
@@ -349,7 +408,7 @@ async function main(){
     const chip = new THREE.Group(); scene.add(chip);
     mesh(rbox(1.1, .2, 1.1, .04), M.chip, 0, 0, 0, chip);
     for (let i = -2; i <= 2; i++) for (const [x, z, w, d] of [[i * .2, .62, .07, .16], [i * .2, -.62, .07, .16], [.62, i * .2, .16, .07], [-.62, i * .2, .16, .07]]) mesh(box(w, .05, d), M.pin, x, -.05, z, chip);
-    const cable = mesh(cyl(.025, .025, 40, 8), M.dark, 0, 20.1, 0, chip);
+    const cable = mesh(cyl(.025, .025, 40, 8), M.dark, 0, 20.1, 0, chip); cable.userData.keep = true;
     const ring = glowRing(1, .05); scene.add(ring);
     return { chip, cable, ring };
   }
@@ -370,32 +429,45 @@ async function main(){
   });
 
   /* ============ trucks ============ */
-  function makeTruck(trailerGeo){
-    const g = new THREE.Group();
-    mesh(trailerGeo || rbox(6.4, 2.7, 2.5, .08), [M.trailerPlain, M.rear, M.trailerPlain, M.dark, M.trailer, M.trailer], 3.2, 2.45, 0, g);
-    mesh(box(8.6, .3, 2.1), M.dark, 4.3, .95, 0, g);
-    mesh(rbox(2.2, 2.5, 2.45, .18), M.paint, 7.6, 2.15, 0, g);
-    mesh(rbox(1, 1.2, 2.45, .14), M.paint, 9.1, 1.5, 0, g);
-    mesh(box(.06, 1.05, 2.15), M.glass, 8.72, 2.75, 0, g).rotation.z = -.12;
-    mesh(box(1.3, .8, .04), M.glass, 7.7, 2.8, 1.23, g); mesh(box(1.3, .8, .04), M.glass, 7.7, 2.8, -1.23, g);
-    mesh(box(.12, .35, 2.5), M.metal, 9.58, .85, 0, g);
-    for (const z of [-1, 1]) mesh(box(.05, .2, .3), M.tail, -.03, 1.3, z, g);
-    const wheels = [];
+  /* Фура собирается из общих склеенных геометрий: ~7 draw calls вместо ~27.
+     Колёса — гладкие цилиндры, их вращение не видно, поэтому они статичны. */
+  const truckParts = (() => {
+    const b = batch()
+      .add(box(8.6, .3, 2.1), M.dark, 4.3, .95, 0)
+      .add(box(.12, .35, 2.5), M.dark, 9.58, .85, 0)
+      .add(rbox(2.2, 2.5, 2.45, .18), M.paint, 7.6, 2.15, 0)
+      .add(rbox(1, 1.2, 2.45, .14), M.paint, 9.1, 1.5, 0)
+      .add(box(.06, 1.05, 2.15), M.glass, 8.72, 2.75, 0, 0, 0, -.12)
+      .add(box(1.3, .8, .04), M.glass, 7.7, 2.8, 1.23).add(box(1.3, .8, .04), M.glass, 7.7, 2.8, -1.23);
+    for (const z of [-1, 1]) b.add(box(.05, .2, .3), M.tail, -.03, 1.3, z);
     for (const x of [1.2, 2.5, 7.9]) for (const z of [-1.08, 1.08]) {
-      const p = new THREE.Group(); p.position.set(x, .52, z); g.add(p);
-      mesh(cyl(.52, .52, .42, 28), M.rubber, 0, 0, 0, p).rotation.x = Math.PI / 2;
-      mesh(cyl(.26, .26, .44, 12), M.metal, 0, 0, 0, p).rotation.x = Math.PI / 2;
-      wheels.push(p);
+      b.add(cyl(.52, .52, .42, 28), M.rubber, x, .52, z, Math.PI / 2).add(cyl(.26, .26, .44, 12), M.metal, x, .52, z, Math.PI / 2);
     }
+    return b.geos();
+  })();
+  const trailerGeo = rbox(6.4, 2.7, 2.5, .08), rearGeo = new THREE.PlaneGeometry(2.3, 2.5);
+  function makeTruck(balloon){
+    const g = new THREE.Group();
+    if (balloon) mesh(balloon, [M.trailerPlain, M.rear, M.trailerPlain, M.dark, M.trailer, M.trailer], 3.2, 2.45, 0, g);
+    else {
+      mesh(trailerGeo, M.trailer, 3.2, 2.45, 0, g);
+      mesh(rearGeo, M.rear, -.01, 2.45, 0, g, false).rotation.y = -Math.PI / 2;
+    }
+    for (const [geo, mat] of truckParts) mesh(geo, mat, 0, 0, 0, g);
     scene.add(g);
-    return { g, wheels };
+    return { g };
   }
   /* Первая фура: свой кузов с сегментами, чтобы раздуть его в шар. */
   const balloonGeo = new THREE.BoxGeometry(6.4, 2.7, 2.5, 14, 8, 8);
   const bBase = balloonGeo.attributes.position.array.slice();
   const truck0 = makeTruck(balloonGeo);
   truck0.g.position.x = DOCK0;
-  const pool = Array.from({ length: 22 }, () => makeTruck());
+  /* Поток фур — по InstancedMesh на материал: все фуры одинаковые, это 9 draw calls на весь поток. */
+  const fleet = [
+    ...truckParts,
+    [trailerGeo.clone().translate(3.2, 2.45, 0), M.trailer],
+    [rearGeo.clone().rotateY(-Math.PI / 2).translate(-.01, 2.45, 0), M.rear]
+  ].map(([geo, mat]) => { const im = new THREE.InstancedMesh(geo, mat, 24); im.castShadow = im.receiveShadow = true; im.frustumCulled = false; im.count = 0; scene.add(im); return im; });
 
   function inflate(infl, t){
     const p = balloonGeo.attributes.position.array, hx = 3.2, hy = 1.35, hz = 1.25;
@@ -451,7 +523,12 @@ async function main(){
     return {
       m, reset(){ k = 0; },
       add(x, y, z, s, al, r, gg, b){ if (k >= n) return; a.p[k * 3] = x; a.p[k * 3 + 1] = y; a.p[k * 3 + 2] = z; a.s[k] = s; a.a[k] = al; a.c[k * 3] = r; a.c[k * 3 + 1] = gg; a.c[k * 3 + 2] = b; k++; },
-      flush(){ g.setDrawRange(0, k); for (const key of ['position', 'size', 'alpha', 'color']) g.attributes[key].needsUpdate = true; }
+      flush(){
+        g.setDrawRange(0, k);
+        for (const key of ['position', 'size', 'alpha', 'color']) {
+          const at = g.attributes[key]; at.clearUpdateRanges(); at.addUpdateRange(0, Math.max(1, k) * at.itemSize); at.needsUpdate = true;
+        }
+      }
     };
   }
   const smoke = particles(4000, false), fire = particles(2500, true);
@@ -460,19 +537,36 @@ async function main(){
   /* Город по обе стороны проспекта. Растёт и вширь, и ввысь: кварталы появляются
      кольцами от центра наружу, каждый дом сначала расширяется, потом тянется вверх. */
   const CX = 100, buildings = [];
+  /* Дома — шесть InstancedMesh (по набору окон) вместо 110 мешей с тремя группами.
+     Окна масштабируются по размеру экземпляра прямо в шейдере. */
+  const cityGeo = (() => {
+    const g = box(1, 1, 1); g.translate(0, .5, 0);
+    const ix = g.index.array, f = i => Array.from(ix.slice(i * 6, i * 6 + 6));
+    g.setIndex([...f(0), ...f(1), ...f(4), ...f(5), ...f(2)]);
+    g.clearGroups(); g.addGroup(0, 24, 0); g.addGroup(24, 6, 1);
+    return g;
+  })();
+  const cityMats = winSets.map(([day, lit]) => {
+    const m = std({ map: day, metalness: .55, roughness: .25, emissive: 0xffffff, emissiveMap: lit, emissiveIntensity: 0 });
+    m.onBeforeCompile = sh => {
+      sh.vertexShader = sh.vertexShader.replace('#include <uv_vertex>', `#include <uv_vertex>
+        #ifdef USE_INSTANCING
+          vec2 bs = vec2(abs(normal.x) > .5 ? length(instanceMatrix[2].xyz) : length(instanceMatrix[0].xyz), length(instanceMatrix[1].xyz));
+          vMapUv = uv * bs / vec2(9., 10.); vEmissiveMapUv = vMapUv;
+        #endif`);
+    };
+    m.customProgramCacheKey = () => 'city-uv';
+    return m;
+  });
+  const cityMeshes = cityMats.map(m => { const im = new THREE.InstancedMesh(cityGeo, [m, M.roof], 20); im.castShadow = im.receiveShadow = true; im.frustumCulled = false; im.count = 0; scene.add(im); return im; });
   {
     let i = 0;
     for (let c = 0; c < 11; c++) for (const side of [-1, 1]) for (let r = 0; r < 5; r++) {
       const w = 5 + rnd(i * 3) * 3.5, d = 5 + rnd(i * 3 + 1) * 3.5;
       const x = 58 + c * 9 + (rnd(i * 5) - .5) * 1.2, z = side * (12.5 + r * 9.5 + (rnd(i * 7) - .5) * 1.2);
       const dn = Math.min(1, Math.hypot((x - CX) / 50, z / 52));
-      const [day0, lit0] = winSets[i % winSets.length];
-      const day = day0.clone(), lit = lit0.clone();
-      const side_m = std({ map: day, metalness: .55, roughness: .25, emissive: 0xffffff, emissiveMap: lit, emissiveIntensity: 0 });
-      const geo = box(1, 1, 1); geo.translate(0, .5, 0);
-      const m = mesh(geo, [side_m, side_m, M.roof, M.dark, side_m, side_m], x, 0, z);
       const g1 = 18.4 + dn * 3.6 + rnd(i * 17) * .5;
-      buildings.push({ m, side: side_m, day, lit, w, d, x, z, h1: 3 + rnd(i * 11) * 5, h2: 10 + Math.pow(1 - dn, 2) * (70 + rnd(i * 13) * 80), g1, g2: g1 + .5 + rnd(i * 19) * 1.2 });
+      buildings.push({ set: i % cityMats.length, w, d, x, z, h1: 3 + rnd(i * 11) * 5, h2: 10 + Math.pow(1 - dn, 2) * (70 + rnd(i * 13) * 80), g1, g2: g1 + .5 + rnd(i * 19) * 1.2 });
       i++;
     }
   }
@@ -565,10 +659,19 @@ async function main(){
     if (t > 9 && t < T_POP) { const s = .02 * seg(speed(t), 5, 60); camP.x += Math.sin(t * 70) * s; camP.y += Math.cos(t * 83) * s; }
   }
 
+  for (const o of [...scene.children]) if (o.isGroup) bakeTree(o);
+  /* Локальные матрицы почти всех мешей не меняются (двигаются их группы) —
+     не пересчитываем их каждый кадр. Исключения — меши, которые сами двигаются. */
+  const moving = new Set([shock, chip1.ring, chip2.ring, ...planets.map(p => p.mesh)]);
+  scene.traverse(o => { if (o.isMesh && !moving.has(o)) { o.updateMatrix(); o.matrixAutoUpdate = false; } });
+  /* Тени от того, что в воздухе, на земле не видны — не рисуем их в проходе теней. */
+  for (const o of [chip1.chip, chip2.chip, ...rockets.map(r => r.g)]) o.traverse(m => { if (m.isMesh) m.castShadow = false; });
+
   /* ============ post ============ */
   const composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, camera));
-  composer.addPass(new UnrealBloomPass(new THREE.Vector2(256, 256), .45, .4, 2.6));
+  const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), .45, .4, 2.6);
+  composer.addPass(bloom);
   composer.addPass(new OutputPass());
 
   /* ============ frame ============ */
@@ -596,7 +699,10 @@ async function main(){
     rb.ring.material.opacity = .5 + .5 * Math.sin(ph * 2);
   }
 
+  let drawn = 0;
   function render(t){
+    renderer.info.reset();
+    drawn++;
     cameraAt(t);
     camera.position.copy(camP); camera.lookAt(camG);
     const alt = camP.y, space = seg(alt, 70, 330), eve = seg(t, 16, 24);
@@ -621,7 +727,6 @@ async function main(){
     const D = dist(t), sp = speed(t);
 
     /* лента и ролики */
-    for (const r of rollers) r.rotation.y = D / .13;
     tBelt.offset.x = -D / ((BL + .4) / 9);
     tLane.offset.x = -t * VB / 1.6;
 
@@ -707,15 +812,13 @@ async function main(){
 
     /* фуры у четырёх доков: появляются, грузятся, уезжают по проспекту в город */
     let slot = 0;
-    for (const p of pool) p.g.visible = false;
     for (const list of docks) for (const tr of list) {
       if (t < tr.s) break;
       const x = truckX(tr, t);
-      if (x > 140 || slot >= pool.length) continue;
-      const P = pool[slot++];
-      P.g.visible = true; P.g.position.set(x, 0, tr.z);
-      P.g.scale.setScalar(Math.max(.001, eback(seg(t, tr.s, tr.s + .25)) * (1 - seg(x, 122, 140))));
-      for (const w of P.wheels) w.rotation.z = -(x - DOCK) / .52;
+      if (x > 140 || slot >= 24) continue;
+      _m.compose(_p.set(x, 0, tr.z), _q.identity(), _s.setScalar(Math.max(.001, eback(seg(t, tr.s, tr.s + .25)) * (1 - seg(x, 122, 140)))));
+      for (const im of fleet) im.setMatrixAt(slot, _m);
+      slot++;
       const f = seg(t, tr.s, tr.s + .4);
       if (f < 1) for (let k = 0; k < 18; k++) {
         const a = k / 18 * Math.PI * 2;
@@ -723,16 +826,19 @@ async function main(){
       }
     }
 
+    for (const im of fleet) { im.count = slot; im.instanceMatrix.needsUpdate = true; }
+
     /* город растёт; к вечеру зажигаются окна */
     const dusk = seg(t, 19, 24);
-    for (const b of buildings) {
-      const k = grow(b, t), h = bh(b, t);
-      b.m.visible = k > .01;
-      if (!b.m.visible) continue;
-      b.m.scale.set(b.w * k, Math.max(.05, h), b.d * k);
-      b.day.repeat.set(b.w / 9, h / 10); b.lit.repeat.copy(b.day.repeat);
-      b.side.emissiveIntensity = dusk * 1.6 * seg(t, b.g2, b.g2 + 1.2);
+    for (const im of cityMeshes) im.count = 0;
+    if (t > 18.3) for (const b of buildings) {
+      const k = grow(b, t);
+      if (k <= .01) continue;
+      const im = cityMeshes[b.set];
+      im.setMatrixAt(im.count++, _m.compose(_p.set(b.x, 0, b.z), _q.identity(), _s.set(b.w * k, Math.max(.05, bh(b, t)), b.d * k)));
     }
+    for (const im of cityMeshes) im.instanceMatrix.needsUpdate = true;
+    for (const m of cityMats) m.emissiveIntensity = dusk * 1.6;
 
     /* облака */
     for (let i = 0; i < 60; i++) {
@@ -798,7 +904,9 @@ async function main(){
   }
 
   function resize(){
-    const W = stage.clientWidth, H = stage.clientHeight, dpr = Math.min(1.5, window.devicePixelRatio || 1);
+    const T = TIERS[tier], W = stage.clientWidth, H = stage.clientHeight, dpr = Math.min(T.dpr, window.devicePixelRatio || 1);
+    bloom.enabled = T.bloom;
+    if (sun.shadow.mapSize.x !== T.shadow) { sun.shadow.mapSize.setScalar(T.shadow); if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; } }
     renderer.setPixelRatio(dpr); renderer.setSize(W, H, false);
     composer.setPixelRatio(dpr); composer.setSize(W, H);
     camera.aspect = W / H;
@@ -821,8 +929,25 @@ async function main(){
     f ? fin.removeAttribute('inert') : fin.setAttribute('inert', '');
     stage.classList.toggle('is-playing', playing);
   }
+  /* Медленные кадры подряд — ступень качества вниз. Окно 40 кадров, порог ~40 fps. */
+  /* На нижних ступенях кадр рисуется через раз: ровные 30 fps лучше рваных 40,
+     а процессор и батарея разгружаются вдвое. */
+  let last = 0, slow = 0, seen = 0, lastDraw = 0;
+  function adapt(now){
+    const dt = now - last; last = now;
+    if (dt > 200 || tier >= TIERS.length - 1) return;   /* вкладка просыпалась или ниже некуда */
+    const budget = TIERS[tier].fps ? 40 : 21;
+    seen++; if (dt > budget) slow++;
+    if (seen < 40) return;
+    if (slow > 16) { tier++; resize(); }
+    seen = slow = 0;
+  }
   function frame(now){
     if (!playing) return;
+    const cap = TIERS[tier].fps;
+    if (cap && now - lastDraw < 1000 / cap - 4) { requestAnimationFrame(frame); return; }
+    lastDraw = now;
+    adapt(now);
     if (t0 === null) t0 = now - cur * 1000;
     cur = Math.min(END, (now - t0) / 1000);
     if (cur >= END) playing = false;
@@ -837,6 +962,12 @@ async function main(){
   document.getElementById('skip').addEventListener('click', () => { pause(); seek(END); });
   scrub.addEventListener('input', () => seek(+scrub.value));
   window.addEventListener('resize', resize);
+  /* Ушёл со ролика вниз по странице — не жжём CPU/GPU; вернулся — продолжаем. */
+  let autoPaused = false;
+  new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting && playing) { autoPaused = true; pause(); }
+    else if (e.isIntersecting && autoPaused) { autoPaused = false; play(); }
+  }, { threshold: .15 }).observe(stage);
   scrub.max = END;
   /* до этой строки финальная карточка видна — если WebGL или CDN недоступны, страница не пустая */
   stage.classList.add('is-ready');
@@ -844,6 +975,20 @@ async function main(){
   fin.style.transition = 'none'; sync(); fin.offsetWidth; fin.style.transition = '';
   resize();
   if (reduce) seek(END); else play();
-  window.__film = { render: t => { pause(); seek(t); }, END };
+  /* хуки для замеров из Playwright: стоимость кадра с синхронизацией GPU, счётчики рендера */
+  const gl = renderer.getContext(), px = new Uint8Array(4);
+  window.__film = {
+    render: t => { pause(); seek(t); }, END, ready: performance.now(),
+    playFrom: t => { cur = t; play(); },
+    drawn: () => drawn,
+    bench: (t, n = 20) => {
+      pause(); render(t); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+      const a = performance.now();
+      for (let i = 0; i < n; i++) { render(t + i * .001); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); }
+      return (performance.now() - a) / n;
+    },
+    tier: () => tier, setTier: n => { tier = n; resize(); },
+    info: () => ({ calls: renderer.info.render.calls, tris: renderer.info.render.triangles, programs: renderer.info.programs.length, textures: renderer.info.memory.textures, geometries: renderer.info.memory.geometries })
+  };
 }
 main();
