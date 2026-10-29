@@ -56,22 +56,39 @@ bricks.forEach((b, i) => {
 
 // Hanging brick: your task, lowered by the crane hook.
 const hb = [6, 0, 6.6, 4, 2, 'ВАША ЗАДАЧА', 'light'];
-const [ax] = P(hb[0] + 2, hb[1] + 1, hb[2] + 1);
-const topY = P(hb[0] + 2, hb[1] + 1, hb[2] + 1)[1];
-// Rigging is drawn AFTER the brick: the hook hangs above the top face, so the
-// four sling legs run over it down to lifting points at the top-face corners.
-const hookY = topY - 118;
-const rx = ax - 6, ringY = hookY + 22;            // ring sits in the bottom of the hook's bowl
-const zt = hb[2] + 1, ins = .3;
-const lifts = [[ins, ins], [hb[3] - ins, ins], [hb[3] - ins, hb[4] - ins], [ins, hb[4] - ins]]
-  .map(([dx, dy]) => P(hb[0] + dx, hb[1] + dy, zt));
-let hook = brick(hb, ' data-i18n="hero.brick"');
+// Rigging, after a real lifting beam: corner clamps grip the brick's top edges,
+// four vertical tie rods go up to a spreader beam, and the crane hook takes the
+// shackle on top of the beam. Painter's order matters: back parts first.
+function box(x, y, z, lx, ly, lz, t) {
+  const top = [P(x, y, z + lz), P(x + lx, y, z + lz), P(x + lx, y + ly, z + lz), P(x, y + ly, z + lz)];
+  const front = [P(x, y + ly, z), P(x + lx, y + ly, z), P(x + lx, y + ly, z + lz), P(x, y + ly, z + lz)];
+  const side = [P(x + lx, y, z), P(x + lx, y + ly, z), P(x + lx, y + ly, z + lz), P(x + lx, y, z + lz)];
+  return `<polygon points="${pts(front)}" fill="${t.front}"/><polygon points="${pts(side)}" fill="${t.side}"/><polygon points="${pts(top)}" fill="${t.top}"/>`;
+}
+const steel = { top: '#fbfaf7', front: '#e2dfd7', side: 'url(#hd)' };
+const grip = { top: '#3b3a37', front: '#1b1a19', side: '#050505' };
+const [x0, y0, , lx0, ly0] = hb, zt = hb[2] + 1, zb = zt + 1.9;
+const cxs = [x0 + .3, x0 + lx0 - .3];             // clamp / rod x positions
+const cyB = y0 + .12, cyF = y0 + ly0 - .12;         // back and front rod y
+const clamp = (cx, front) => front
+  ? box(cx - .22, y0 + ly0 - .3, zt - .22, .44, .38, .52, grip)
+  : box(cx - .22, y0 - .08, zt, .44, .36, .3, grip);
+const rod = (cx, cy, z1) => { const [ax1, ay1] = P(cx, cy, z1), [, ay2] = P(cx, cy, zb);
+  return `<path class="rod" d="M${f(ax1)} ${f(ay1)}V${f(ay2)}"/>`; };
+
+let hook = brick(hb, ' data-i18n="hero.brick" style="font-size:11px;letter-spacing:.02em"');
+for (const cx of cxs) hook += clamp(cx, false) + rod(cx, cyB + .05, zt + .3);
+for (const cx of cxs) hook += box(cx - .17, cyB - .14, zb, .34, cyF - cyB + .28, .26, steel);   // cross bars
+hook += box(x0 + .1, y0 + ly0 / 2 - .24, zb + .26, lx0 - .2, .48, .32, steel);                  // spreader beam
+for (const cx of cxs) hook += rod(cx, cyF, zt + .3) + clamp(cx, true);
+
+// Shackle on the beam, the hook through it, the block and cable above.
+const [sx, sy] = P(x0 + lx0 / 2, y0 + ly0 / 2, zb + .58);
+const sTop = sy - 18, hookY = sTop - 17, ax = sx + 6;   // hook bowl bottoms out inside the ring
 hook += `<path class="cable" d="M${f(ax)} -400V${f(hookY - 12)}"/>`;
-hook += `<path class="cable" d="${lifts.map(([lx, ly]) => `M${f(rx)} ${f(ringY)}L${f(lx)} ${f(ly)}`).join('')}"/>`;
-hook += lifts.map(([lx, ly]) => `<ellipse cx="${f(lx)}" cy="${f(ly)}" rx="3" ry="1.8" fill="#111"/>`).join('');
-hook += `<circle cx="${f(rx)}" cy="${f(ringY - 1)}" r="3.4" fill="none" stroke-width="2"/>`;
 hook += `<rect x="${f(ax - 7)}" y="${f(hookY - 14)}" width="14" height="16" rx="2" fill="#111"/>`;
 hook += `<path d="M${f(ax)} ${f(hookY + 2)}V${f(hookY + 16)}A6 6 0 0 1 ${f(ax - 12)} ${f(hookY + 16)}v-4" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round"/>`;
+hook += `<ellipse cx="${f(sx)}" cy="${f(sy - 9)}" rx="3.6" ry="9" fill="none" stroke-width="2.4"/>`;
 
 // Ground: one line along the front edge and short hatch strokes under it.
 const g0 = P(-1.2, 2.4, 0), g1 = P(12.5, 2.4, 0);
