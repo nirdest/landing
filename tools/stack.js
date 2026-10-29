@@ -56,37 +56,14 @@ bricks.forEach((b, i) => {
 
 // Hanging brick: your task, lowered on the crane cable.
 const hb = [6, 0, 6.6, 4, 2, 'ВАША ЗАДАЧА', 'light'];
-// Rigging, after a real lifting beam: corner clamps grip the brick's top edges,
-// four vertical tie rods go up to a slim spreader beam, and the crane cable
-// ends in an eye on top of the beam. Painter's order matters: back parts first.
-function box(x, y, z, lx, ly, lz, t) {
-  const top = [P(x, y, z + lz), P(x + lx, y, z + lz), P(x + lx, y + ly, z + lz), P(x, y + ly, z + lz)];
-  const front = [P(x, y + ly, z), P(x + lx, y + ly, z), P(x + lx, y + ly, z + lz), P(x, y + ly, z + lz)];
-  const side = [P(x + lx, y, z), P(x + lx, y + ly, z), P(x + lx, y + ly, z + lz), P(x + lx, y, z + lz)];
-  return `<polygon points="${pts(front)}" fill="${t.front}"/><polygon points="${pts(side)}" fill="${t.side}"/><polygon points="${pts(top)}" fill="${t.top}"/>`;
-}
-const steel = { top: '#fbfaf7', front: '#e2dfd7', side: 'url(#hd)' };
-const grip = { top: '#3b3a37', front: '#1b1a19', side: '#050505' };
-const [x0, y0, , lx0, ly0] = hb, zt = hb[2] + 1, zb = zt + 1.7;
-const cxs = [x0 + .28, x0 + lx0 - .28];            // clamp / rod x positions
-const cyB = y0 + .14, cyF = y0 + ly0 - .14;         // back and front rod y
-const clamp = (cx, front) => front
-  ? box(cx - .15, y0 + ly0 - .2, zt - .14, .3, .26, .34, grip)
-  : box(cx - .15, y0 - .06, zt, .3, .26, .2, grip);
-const rod = (cx, cy, z1) => { const [ax1, ay1] = P(cx, cy, z1), [, ay2] = P(cx, cy, zb);
-  return `<path class="rod" d="M${f(ax1)} ${f(ay1)}V${f(ay2)}"/>`; };
-
+// Rigging: one cable straight down into an eye on the top face, between studs.
+const [x0, y0] = hb, zt = hb[2] + 1;
+const [ex, ey] = P(x0 + 2, y0 + 1, zt);
+const eyeY = ey - 40;
 let hook = brick(hb, ' data-i18n="hero.brick" style="font-size:11px;letter-spacing:.02em"');
-for (const cx of cxs) hook += clamp(cx, false) + rod(cx, cyB, zt + .2);
-for (const cx of cxs) hook += box(cx - .09, cyB - .09, zb, .18, cyF - cyB + .18, .14, steel);   // cross bars
-hook += box(x0 + .12, y0 + ly0 / 2 - .13, zb + .14, lx0 - .24, .26, .18, steel);                // spreader beam
-for (const cx of cxs) hook += rod(cx, cyF, zt + .2) + clamp(cx, true);
-
-// The crane cable comes straight down to an eye on top of the beam.
-const [sx, sy] = P(x0 + lx0 / 2, y0 + ly0 / 2, zb + .32);
-const eyeY = sy - 8;
-hook += `<path class="cable" d="M${f(sx)} -400V${f(sy - 7)}"/>`;
-hook += `<ellipse cx="${f(sx)}" cy="${f(sy - 3.5)}" rx="2.6" ry="3.8" fill="#fbfaf7" stroke-width="1.6"/>`;
+hook += `<path class="cable" d="M${f(ex)} -400V${f(ey - 6)}"/>`;
+hook += `<ellipse cx="${f(ex)}" cy="${f(ey - 3)}" rx="3" ry="4" fill="none" stroke-width="1.8"/>`;
+hook += `<ellipse cx="${f(ex)}" cy="${f(ey)}" rx="2.6" ry="1.6" fill="#111"/>`;
 
 // Ground: one line along the front edge and short hatch strokes under it.
 const g0 = P(-1.2, 2.4, 0), g1 = P(12.5, 2.4, 0);
