@@ -10,8 +10,8 @@ const pts = a => a.map(p => f(p[0]) + ',' + f(p[1])).join(' ');
 const bricks = [
   // x, y, z, lx, ly, label, tone
   [0, 0, 0, 6, 2, 'INFRASTRUCTURE', 'light'],
-  [6, 0, 0, 5, 2, 'CI/CD', 'dark'],
-  [1, 0, 1, 5, 2, 'KUBERNETES', 'dark'],
+  [6, 0, 0, 5, 2, 'KUBERNETES', 'dark'],
+  [1, 0, 1, 5, 2, 'CI/CD', 'dark'],
   [6, 0, 1, 4, 2, 'CLOUD', 'light'],
   [2, 0, 2, 8, 2, 'AUTOMATION', 'light'],
   [2, 0, 3, 4, 2, 'MONITORING', 'dark'],
@@ -58,13 +58,20 @@ bricks.forEach((b, i) => {
 const hb = [6, 0, 6.6, 4, 2, 'ВАША ЗАДАЧА', 'light'];
 const [ax] = P(hb[0] + 2, hb[1] + 1, hb[2] + 1);
 const topY = P(hb[0] + 2, hb[1] + 1, hb[2] + 1)[1];
-const c1 = P(hb[0] + .3, hb[1] + 1, hb[2] + 1.2), c2 = P(hb[0] + hb[3] - .3, hb[1] + 1, hb[2] + 1.2);
-const hookY = topY - 46;
-let hook = `<path class="cable" d="M${f(ax)} -400V${f(hookY - 10)}"/>`;
-hook += `<path class="cable" d="M${f(c1[0])} ${f(c1[1])}L${f(ax)} ${f(hookY + 8)}L${f(c2[0])} ${f(c2[1])}"/>`;
+// Rigging is drawn AFTER the brick: the hook hangs above the top face, so the
+// four sling legs run over it down to lifting points at the top-face corners.
+const hookY = topY - 118;
+const rx = ax - 6, ringY = hookY + 22;            // ring sits in the bottom of the hook's bowl
+const zt = hb[2] + 1, ins = .3;
+const lifts = [[ins, ins], [hb[3] - ins, ins], [hb[3] - ins, hb[4] - ins], [ins, hb[4] - ins]]
+  .map(([dx, dy]) => P(hb[0] + dx, hb[1] + dy, zt));
+let hook = brick(hb, ' data-i18n="hero.brick"');
+hook += `<path class="cable" d="M${f(ax)} -400V${f(hookY - 12)}"/>`;
+hook += `<path class="cable" d="${lifts.map(([lx, ly]) => `M${f(rx)} ${f(ringY)}L${f(lx)} ${f(ly)}`).join('')}"/>`;
+hook += lifts.map(([lx, ly]) => `<ellipse cx="${f(lx)}" cy="${f(ly)}" rx="3" ry="1.8" fill="#111"/>`).join('');
+hook += `<circle cx="${f(rx)}" cy="${f(ringY - 1)}" r="3.4" fill="none" stroke-width="2"/>`;
 hook += `<rect x="${f(ax - 7)}" y="${f(hookY - 14)}" width="14" height="16" rx="2" fill="#111"/>`;
-hook += `<path d="M${f(ax)} ${f(hookY + 2)}v6a5 5 0 1 0 5 5" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round"/>`;
-hook += brick(hb, ' data-i18n="hero.brick"');
+hook += `<path d="M${f(ax)} ${f(hookY + 2)}V${f(hookY + 16)}A6 6 0 0 1 ${f(ax - 12)} ${f(hookY + 16)}v-4" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round"/>`;
 
 // Ground: one line along the front edge and short hatch strokes under it.
 const g0 = P(-1.2, 2.4, 0), g1 = P(12.5, 2.4, 0);
@@ -78,7 +85,7 @@ for (const b of [...bricks, hb]) for (const dx of [0, b[3]]) for (const dy of [0
 }
 const pad = 24;
 const minX = Math.min(...xs) - pad, maxX = Math.max(...xs) + pad;
-const minY = Math.min(...ys) - 70, maxY = Math.max(...ys) + pad;
+const minY = Math.min(Math.min(...ys) - 70, hookY - 70), maxY = Math.max(...ys) + pad;
 
 const svg = `<svg class="stack" viewBox="${f(minX)} ${f(minY)} ${f(maxX - minX)} ${f(maxY - minY)}" role="img" aria-labelledby="stackT">
 <title id="stackT" data-i18n="hero.artAlt">Кран опускает кирпич с вашей задачей на стопку из облака, Kubernetes, CI/CD, автоматизации и мониторинга</title>
