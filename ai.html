@@ -28,9 +28,20 @@ document.documentElement.className = 'js';
 <link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/caveat@5/index.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/latin-500.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/cyrillic-500.css" rel="stylesheet">
-<link href="css/styles.css?v=2026-10-30e" rel="stylesheet">
-<link rel="modulepreload" href="js/vendor/three-ai.js?v=r169a">
-<link rel="modulepreload" href="js/ai-film.js?v=2026-10-30e">
+<link href="css/styles.css?v=2026-10-30g" rel="stylesheet">
+<link rel="preload" href="img/ai-poster.webp" as="image" media="(min-aspect-ratio: 1/1)" fetchpriority="high">
+<link rel="preload" href="img/ai-poster-tall.webp" as="image" media="(max-aspect-ratio: 1/1)" fetchpriority="high">
+<script>
+// Рендер идёт в воркере, он сам подгружает сцену; preload кладёт файлы в HTTP-кэш заранее,
+// чтобы не ждать цепочку film → worker → scene → three. При Save-Data/2G 3D не грузим сами.
+(function(){
+  var c = navigator.connection;
+  if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;
+  ['js/vendor/three-ai.js?v=r169b', 'js/ai-scene.js?v=2026-10-30g', 'js/ai-worker.js?v=2026-10-30g'].forEach(function(h){
+    var l = document.createElement('link'); l.rel = 'preload'; l.as = 'script'; l.href = h; document.head.appendChild(l);
+  });
+})();
+</script>
 </head>
 <body>
 <a class="skip" href="#main" data-i18n="skip">Перейти к содержанию</a>
@@ -146,8 +157,8 @@ document.documentElement.className = 'js';
   </div>
 </div>
 
-<script src="js/main.js?v=2026-10-30e"></script>
-<script src="js/animations.js?v=2026-10-30e"></script>
-<script type="module" src="js/ai-film.js?v=2026-10-30e"></script>
+<script src="js/main.js?v=2026-10-30g"></script>
+<script src="js/animations.js?v=2026-10-30g"></script>
+<script type="module" src="js/ai-film.js?v=2026-10-30g"></script>
 </body>
 </html>

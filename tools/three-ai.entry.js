@@ -9,7 +9,7 @@ export {
   ACESFilmicToneMapping, AdditiveBlending, BoxGeometry, BufferAttribute, BufferGeometry, CanvasTexture,
   CapsuleGeometry, Color, CylinderGeometry, DirectionalLight, DoubleSide, Euler, ExtrudeGeometry, Fog, Group,
   HemisphereLight, IcosahedronGeometry, InstancedMesh, LatheGeometry, MathUtils, Matrix4, Mesh,
-  MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, NormalBlending, PCFSoftShadowMap,
+  MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, NormalBlending, PCFShadowMap, PCFSoftShadowMap,
   PerspectiveCamera, PlaneGeometry, PMREMGenerator, PointLight, Points, PointsMaterial, Quaternion,
   RepeatWrapping, RingGeometry, Scene, ShaderMaterial, Shape, SphereGeometry, SRGBColorSpace, TorusGeometry,
   Vector2, Vector3, WebGLRenderer

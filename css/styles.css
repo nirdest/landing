@@ -365,6 +365,14 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .is-night .hud{color:var(--on-ink)}
 @media (max-aspect-ratio:1/1){.film{height:auto;min-height:0;aspect-ratio:4/5}}
 .film canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+/* Постер — первый кадр ролика картинкой: виден мгновенно, пока грузится 3D.
+   Холст проявляется поверх, когда нарисован первый кадр. */
+.film{background:#c9cdd1 url(../img/ai-poster.webp) center/cover no-repeat}
+@media (max-aspect-ratio:1/1){.film{background-image:url(../img/ai-poster-tall.webp)}}
+.js .film canvas{opacity:0;transition:opacity .4s}
+.js .film.is-ready canvas{opacity:1}
+/* финальная карточка — запасной контент без JS/WebGL; пока сцена грузится, она не нужна */
+.js .film:not(.is-ready):not(.is-failed) .fin{opacity:0;visibility:hidden}
 .caps{position:absolute;left:0;right:0;bottom:clamp(76px,11vh,120px);display:grid;justify-items:center;padding-inline:var(--gutter);pointer-events:none}
 /* Субтитры в духе Reels: белый жирный текст с тёмной обводкой и тенью читается
    на любом фоне, слова выскакивают по одному, ключевая фраза — на плашке акцента.
@@ -380,7 +388,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   .cap .w{opacity:0}
   .cap.on .w{animation:cap-w .42s var(--ease-out) forwards;animation-delay:calc(var(--i) * var(--step,.12s))}
 }
-@keyframes cap-w{0%{opacity:0;transform:translateY(.4em) scale(.8)}60%{opacity:1;transform:translateY(-.05em) scale(1.08)}100%{opacity:1;transform:none}}
+@keyframes cap-w{0%{opacity:0;transform:translateY(.4em) scale(.8)}60%{opacity:1;transform:translateY(-.05em) scale(1.04)}100%{opacity:1;transform:none}}
 @media (max-width:620px){.caps{bottom:64px}.hud{bottom:auto;top:16px}}
 .fin{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:22px;padding:var(--gutter);text-align:center;color:var(--on-ink);
   background:radial-gradient(closest-side,rgba(17,17,16,.88),rgba(17,17,16,0));opacity:0;visibility:hidden;transition:opacity .8s var(--ease-out),visibility 0s .8s}

@@ -55,6 +55,32 @@ guard and Telegram link are unchanged.
   load over `file://`; preview with `python3 -m http.server`. The Sky shader
   returns NaN at zero rayleigh/mie and bloom smears NaN over the whole frame
   (black screen) — keep the minimums in `render()`.
+- **Three files, two threads.** `js/ai-film.js` is the player (time, captions,
+  HUD, buttons, quality tiers) and stays on the main thread. `js/ai-scene.js`
+  is the whole Three.js scene with no DOM access; `js/ai-worker.js` runs it on
+  an `OffscreenCanvas` in a module Worker, so the page never blocks on scene
+  build, shader compile or frames (main-thread long tasks during load went
+  from ~1.1 s to 0 on a CPU-throttled profile). Browsers without OffscreenCanvas
+  WebGL or module workers fall back to running `ai-scene.js` on the main
+  thread; `?main` in the URL forces that path for testing. The worker gets the
+  next frame only after it returned the previous one (no queue build-up).
+  The worker has no page fonts, so the player draws the "AI" chip label and
+  sends it as an ImageBitmap.
+- **Poster.** `img/ai-poster.webp` / `ai-poster-tall.webp` are the first frame
+  as images, the `.film` background until the canvas fades in — something is on
+  screen before any JS. Regenerate with `tools/poster.js` when the opening shot
+  changes. With Save-Data or 2G the 3D is not loaded at all (not even the
+  preloads, which live in an inline script for that reason); the poster and the
+  final card show and ▶ / "watch again" starts the film.
+- **Staged build.** Only the factory is built before the first frame; the hub,
+  city and space are built in the background (`buildRest`) and compiled with
+  `compileAsync`, or synchronously if the viewer seeks ahead (`ensure(t)`).
+  Code that touches stage objects in `render()` must guard for them not
+  existing yet. The shadow map is redrawn every other frame.
+- **Measuring.** Chrome's CPU throttling (DevTools/CDP) slows only the main
+  thread, **not workers** — verified. Throttled numbers for the worker path
+  are therefore not a weak-device simulation; compare render cost on `?main`,
+  and judge the worker by main-thread time and long tasks.
 - **Performance rules for the film** (measured 2026-10-30 with Playwright, CPU
   throttled 6×/15×: first frame 4.3 → 2.9 s, city frame 46 → 12 ms, very weak
   profile 17 → 29 fps): static parts are merged per material (`batch()`,
