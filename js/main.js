@@ -9,6 +9,8 @@ var I18N = {
   ru: {
     'meta.title':"DevOps.toys — IT, которое просто работает",
     'meta.desc':"Команда инженеров, которая берёт IT на себя: инфраструктура, DevOps, сопровождение и создание нового. Разово или на постоянной основе.",
+    'ai.meta.title':'AI-пайплайны — DevOps.toys',
+    'ai.meta.desc':'AI-пайплайны, которые ускоряют бизнес-процессы: превращаем идеи в работающие решения за минуты и снимаем рутину с людей.',
     'form.sending':'Отправляем…',
     'form.err':'Не удалось отправить заявку. Попробуйте ещё раз или напишите нам напрямую.',
     'form.valEmpty':'Укажите контакт, иначе мы не сможем ответить.',
@@ -49,6 +51,31 @@ var I18N = {
     'fmt.2t':'Ongoing support','fmt.2d':'We become your IT department. You run the business, we handle the rest.',
     'fmt.2a':'Monitoring and incident response','fmt.2b':'Updates, backups, access','fmt.2c':'Infrastructure that grows with the product',
     'fmt.3t':'Need someone very specific?','fmt.3d':'We find a specialist for your narrow task, brief them and check the result. You won’t have to be involved.',
+    'aib.h':'What about AI?<br>We do that too<i class="dot">.</i>',
+    'aib.p':'We build AI pipelines that speed up business processes: turning ideas into working solutions in minutes and taking routine off people.',
+    'aib.l':'See what it looks like',
+    'pill.t':'What about AI?','pill.note':'click — we’ll show you',
+    'ai.meta.title':'AI pipelines — DevOps.toys',
+    'ai.meta.desc':'AI pipelines that speed up business processes: turning ideas into working solutions in minutes and taking routine off people.',
+    'ai.back':'← Home',
+    'ai.alt':'3D film: people pack boxes on a conveyor, AI robots join them, the belt speeds up, a truck overfills and bursts, an AI hub splits the boxes across several trucks, they drive into a growing city and rockets take off for other planets',
+    'ai.c1':'Business as usual: people do everything <mark>by\u00a0hand</mark>.',
+    'ai.c2':'We plug in <mark>AI</mark>: robots help the people.',
+    'ai.c3':'The line runs <mark>dozens of times</mark> faster.',
+    'ai.c4':'Another <mark>AI</mark> splits the flow across trucks.',
+    'ai.c5':'The business grows <mark>like yeast dough</mark>.',
+    'ai.c6':'Ideas become working products <mark>in\u00a0minutes</mark>.',
+    'ai.h':'AI pipelines<br>for business<i class="dot">.</i>',
+    'ai.p':'We speed up business processes, turn ideas into working solutions in minutes and take routine off people.',
+    'ai.cta':'Discuss an AI task','ai.again':'Watch again','ai.skip':'Skip',
+    'ai.playAria':'Pause / play','ai.scrubAria':'Seek',
+    'ai.wh':'What we do with AI',
+    'ai.1t':'Pipelines for business processes','ai.1d':'Requests, documents, reports, support — we automate the chains where people do the work by hand today.',
+    'ai.2t':'From idea to prototype','ai.2d':'We quickly put together a working prototype so you can test the idea before a big investment.',
+    'ai.3t':'Routine off your plate','ai.3d':'AI takes the repetitive work, and your team does the part that needs people.',
+    'ai.4t':'Inside your infrastructure','ai.4d':'We fit AI into what already runs: with access control, monitoring and spend under control.',
+    'ai.ctaH':'Got routine?<br>Hand it to AI<i class="dot">.</i>',
+    'ai.ctaP':'Tell us which process is slowing you down. We’ll suggest what to automate first.',
     'faq.h':'Frequently asked',
     'faq.q1':'What does it cost?','faq.a1':'It depends on the task: we quote the price and timeline after the first call, before any work starts. It usually costs less than hiring your own DevOps team — you pay for results, not headcount. And FinOps optimisation can pay for itself quickly and cut your infrastructure budget.',
     'faq.q2':'Do we need a technical spec?','faq.a2':'No. Tell us what’s in the way — turning that into a plan is our job.',
@@ -93,6 +120,8 @@ $all('[data-i18n-html]').forEach(function(el){ BASE[el.getAttribute('data-i18n-h
 $all('[data-i18n-ph]').forEach(function(el){ BASE[el.getAttribute('data-i18n-ph')] = el.placeholder; });
 $all('[data-i18n-aria]').forEach(function(el){ BASE[el.getAttribute('data-i18n-aria')] = el.getAttribute('aria-label'); });
 
+/* ai.html — отдельная страница со своим title/description: <html data-meta="ai.meta">. */
+var META = document.documentElement.getAttribute('data-meta') || 'meta';
 function t(k){ return (lang === 'en' && I18N.en[k]) || BASE[k] || I18N.ru[k] || k; }
 
 /* ================= проверка контакта ================= */
@@ -123,9 +152,9 @@ function applyLang(l){
   $all('[data-i18n-html]').forEach(function(el){ el.innerHTML = t(el.getAttribute('data-i18n-html')); });
   $all('[data-i18n-ph]').forEach(function(el){ el.placeholder = t(el.getAttribute('data-i18n-ph')); });
   $all('[data-i18n-aria]').forEach(function(el){ el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
-  document.title = t('meta.title');
+  document.title = t(META + '.title');
   var md = document.querySelector('meta[name="description"]');
-  if(md) md.setAttribute('content', t('meta.desc'));
+  if(md) md.setAttribute('content', t(META + '.desc'));
   $all('.lang button').forEach(function(b){
     b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
   });

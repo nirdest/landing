@@ -38,6 +38,29 @@ reference. What changed, and what it overrides further down this file:
 The lead endpoint, Worker, validation, honeypot, modal focus handling, HTTPS
 guard and Telegram link are unchanged.
 
+## AI page — 2026-10-30
+
+- `ai.html` is a second page: a ~34 s canvas cartoon (factory → AI chip → belt
+  ×60 → truck inflates and pops → trucks cycle → city grows → rockets to
+  planets) followed by four AI service points and a CTA. It reuses the header,
+  lead modal, footer, `main.js` and `animations.js`; `<html data-meta="ai.meta">`
+  makes `applyLang` use `ai.meta.title/desc` instead of `meta.*`.
+- The film is a **Three.js** 3D scene (`three@0.169.0` from jsDelivr via an
+  `<script type="importmap">` in `ai.html`; `js/ai-film.js` is an ES module).
+  This is the only JS dependency on the site and is scoped to `ai.html` — the
+  main page stays dependency-free. Modules do not load over `file://`; preview
+  with `python3 -m http.server` from the repo root. The Sky shader returns NaN
+  at zero rayleigh/mie, and bloom smears NaN over the whole frame (black
+  screen) — keep the minimums in `render()`.
+- `js/ai-film.js` draws every frame as a pure function `render(t)` — no state
+  between frames — so seeking, pause and the static last frame under
+  `prefers-reduced-motion` all come free. Captions are HTML `.cap[data-t="from,to"]`
+  (translated via i18n), the finale `#fin` is `inert` until shown.
+  `window.__film.render(t)` exists for Playwright frame checks.
+- The main page links to it twice: the `#ai` card after `#formats` and the
+  floating `.ai-pill` (fixed bottom-right, inside `#page` so the modal's
+  `inert` covers it; pulls ≤18 px toward the cursor on fine pointers).
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 

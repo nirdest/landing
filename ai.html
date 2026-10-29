@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ru" data-meta="ai.meta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// Keep visitors on the existing HTTPS origin; local previews stay local.
+if (location.hostname === 'devops.toys' && location.protocol === 'http:') {
+  location.replace('https://devops.toys' + location.pathname + location.search + location.hash);
+}
+document.documentElement.className = 'js';
+</script>
+
+<title>AI-пайплайны — DevOps.toys</title>
+<meta name="description" content="AI-пайплайны, которые ускоряют бизнес-процессы: превращаем идеи в работающие решения за минуты и снимаем рутину с людей.">
+<link rel="canonical" href="https://devops.toys/ai.html">
+<meta name="theme-color" content="#111110">
+<meta property="og:site_name" content="DevOps.toys">
+<meta property="og:url" content="https://devops.toys/ai.html">
+<meta property="og:title" content="AI-пайплайны — DevOps.toys">
+<meta property="og:description" content="AI-пайплайны, которые ускоряют бизнес-процессы: превращаем идеи в работающие решения за минуты и снимаем рутину с людей.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://devops.toys/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/inter-tight@5/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/caveat@5/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/latin-500.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/cyrillic-500.css" rel="stylesheet">
+<link href="css/styles.css?v=2026-10-30d" rel="stylesheet">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js" crossorigin>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<a class="skip" href="#main" data-i18n="skip">Перейти к содержанию</a>
+
+<div id="page">
+<!-- ============ header ============ -->
+<header class="hdr" id="hdr">
+  <div class="wrap hdr-in">
+    <a class="brand" href="./" aria-label="DevOps.toys">DevOps<span>.toys</span></a>
+    <nav class="nav" aria-label="Main">
+      <a class="nav-a" href="./" data-i18n="ai.back">← На главную</a>
+    </nav>
+    <div class="hdr-r">
+      <span class="lang" aria-label="Language">
+        <button type="button" data-lang="ru" aria-pressed="true">RU</button><button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </span>
+      <button class="btn btn-sm js-open" type="button" aria-label="Обсудить задачу" data-i18n-aria="nav.contact"><span data-i18n="nav.contact">Обсудить задачу</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ============ film ============ -->
+  <section class="film" id="stage" aria-labelledby="aiH">
+    <canvas id="film" role="img" aria-label="3D-ролик: люди собирают коробки на конвейере, к ним подключают AI-роботов, лента ускоряется, фура переполняется и лопается, AI-узел распределяет коробки по нескольким фурам, они въезжают в растущий город, оттуда взлетают ракеты к другим планетам" data-i18n-aria="ai.alt"></canvas>
+    <div class="caps">
+      <p class="cap" data-t="0.4,5" data-i18n-html="ai.c1">Обычный процесс: люди собирают всё <mark>вручную</mark>.</p>
+      <p class="cap" data-t="5,8" data-i18n-html="ai.c2">Подключаем <mark>AI</mark>: роботы помогают людям.</p>
+      <p class="cap" data-t="8,13" data-i18n-html="ai.c3">Конвейер ускоряется <mark>в&nbsp;десятки раз</mark>.</p>
+      <p class="cap" data-t="13.3,18.4" data-i18n-html="ai.c4">Ещё один <mark>AI</mark> распределяет поток по&nbsp;фурам.</p>
+      <p class="cap" data-t="18.4,24" data-i18n-html="ai.c5">Бизнес растёт <mark>как на&nbsp;дрожжах</mark>.</p>
+      <p class="cap" data-t="24,30.6" data-i18n-html="ai.c6">Идеи превращаются в&nbsp;реализацию <mark>за&nbsp;минуты</mark>.</p>
+    </div>
+    <div class="hud" id="hud" aria-hidden="true"><span id="hudK"></span><b id="hudV"></b></div>
+    <div class="fin on" id="fin">
+      <h1 class="h-fin" id="aiH" data-i18n-html="ai.h">AI-пайплайны<br>для бизнеса<i class="dot">.</i></h1>
+      <p class="fin-p" data-i18n="ai.p">Ускоряем бизнес-процессы, превращаем идеи в работающие решения за минуты и снимаем рутину с людей.</p>
+      <div class="fin-b">
+        <button class="btn btn-inv js-open" type="button"><span data-i18n="ai.cta">Обсудить AI-задачу</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
+        <button class="link-u" id="again" type="button" data-i18n="ai.again">Смотреть ещё раз</button>
+      </div>
+    </div>
+    <div class="ctl">
+      <button class="ctl-b" id="play" type="button" aria-label="Пауза / воспроизведение" data-i18n-aria="ai.playAria"><svg class="ico i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="ico i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>
+      <input class="ctl-r" id="scrub" type="range" min="0" max="34" step="0.01" value="0" aria-label="Перемотка" data-i18n-aria="ai.scrubAria">
+      <button class="ctl-s" id="skip" type="button" data-i18n="ai.skip">Пропустить</button>
+    </div>
+  </section>
+
+  <!-- ============ ai services ============ -->
+  <section class="wrap sec" id="what" aria-labelledby="whatH">
+    <div class="sec-head">
+      <h2 class="h2 rv" id="whatH" data-i18n="ai.wh">Что мы делаем с AI</h2>
+    </div>
+    <ol class="ai-list">
+      <li class="rv"><h3 data-i18n="ai.1t">Пайплайны для бизнес-процессов</h3><p data-i18n="ai.1d">Заявки, документы, отчёты, поддержка — автоматизируем цепочки, где сейчас вручную работают люди.</p></li>
+      <li class="rv"><h3 data-i18n="ai.2t">От идеи до прототипа</h3><p data-i18n="ai.2d">Быстро собираем работающий прототип, чтобы проверить идею до больших вложений.</p></li>
+      <li class="rv"><h3 data-i18n="ai.3t">Снимаем рутину</h3><p data-i18n="ai.3d">Повторяющуюся работу забирает AI, а команда занимается тем, где нужны люди.</p></li>
+      <li class="rv"><h3 data-i18n="ai.4t">В вашей инфраструктуре</h3><p data-i18n="ai.4d">Встраиваем AI в то, что уже работает: с доступами, мониторингом и контролем расходов.</p></li>
+    </ol>
+  </section>
+
+  <!-- ============ final cta ============ -->
+  <section class="dark" aria-labelledby="ctaH">
+    <div class="wrap final">
+      <h2 class="h-final rv" id="ctaH" data-i18n-html="ai.ctaH">Есть рутина?<br>Отдайте её AI<i class="dot">.</i></h2>
+      <div class="final-r rv">
+        <p data-i18n="ai.ctaP">Расскажите, какой процесс тормозит. Мы предложим, что автоматизировать первым.</p>
+        <button class="btn btn-inv js-open" type="button"><span data-i18n="cta.btn">Обсудить задачу</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M12.5 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr-in">
+    <a class="brand" href="./" aria-label="DevOps.toys">DevOps<span>.toys</span></a>
+    <span class="ftr-l">
+      <a href="https://t.me/nirdest" target="_blank" rel="noopener">Telegram<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16L16.5 7.5M9 7h8v8"/></svg></a>
+      <a href="mailto:hello@devops.toys">hello@devops.toys</a>
+    </span>
+    <span class="ftr-c" data-i18n="foot.rights">© 2026 DevOps.toys</span>
+  </div>
+</footer>
+</div>
+
+<!-- ============ lead modal ============ -->
+<div class="ovl" id="ovl" hidden>
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <button class="m-close" id="mClose" type="button" aria-label="Закрыть окно" data-i18n-aria="form.closeAria"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
+    <div id="mForm">
+      <h3 id="mTitle" data-i18n="form.title">Расскажите о задаче</h3>
+      <p class="m-desc" data-i18n="form.desc">Оставьте контакт — мы свяжемся, уточним, что мешает, и предложим, с чего начать. Первый разговор ни к чему не обязывает.</p>
+      <form id="leadForm" novalidate>
+        <label for="contact" data-i18n="form.label">Ваш контакт</label>
+        <input id="contact" name="contact" type="text" maxlength="200"
+               autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false"
+               placeholder="name@example.com или @username" data-i18n-ph="form.ph" aria-describedby="fHint">
+        <p class="f-hint" id="fHint" data-i18n="form.hint">Email, Telegram, LinkedIn или телефон.</p>
+        <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <p class="f-err" id="fErr" role="alert" hidden><span id="fErrMsg"></span><a class="f-err-mail" id="fErrMail" href="mailto:hello@devops.toys" hidden>hello@devops.toys</a></p>
+        <p class="m-priv" data-i18n="form.privacy">Контакт используем только для ответа на эту заявку.</p>
+        <button class="btn btn-block" id="mSubmit" type="submit"><span id="mSubmitTxt" data-i18n="form.send">Отправить</span></button>
+      </form>
+      <p class="m-alt"><span data-i18n="form.alt">Или напишите сразу в Telegram:</span> <a href="https://t.me/nirdest" target="_blank" rel="noopener">@nirdest<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16L16.5 7.5M9 7h8v8"/></svg></a></p>
+    </div>
+    <div class="m-ok" id="mOk" hidden>
+      <svg width="54" height="54" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="none" stroke="currentColor" stroke-width="2"/><path class="tick" d="M16 27 l7 7 l14 -15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <p data-i18n="form.ok">Спасибо! Заявка у нас — скоро свяжемся.</p>
+      <button class="btn" id="okClose" type="button" data-i18n="form.done">Готово</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/main.js?v=2026-10-30d"></script>
+<script src="js/animations.js?v=2026-10-30d"></script>
+<script type="module" src="js/ai-film.js?v=2026-10-30d"></script>
+</body>
+</html>

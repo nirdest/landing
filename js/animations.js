@@ -32,6 +32,19 @@ function splitWords(){
 splitWords();
 document.addEventListener('langchange', splitWords);
 
+/* ============ ai pill ============ */
+/* Курсор рядом — кнопка тянется к нему (не дальше 18px), ушёл — возвращается. */
+var pill = document.getElementById('aiPill');
+if (pill && window.matchMedia('(hover:hover) and (pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  window.addEventListener('pointermove', function(e){
+    var r = pill.getBoundingClientRect();
+    var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    var d = Math.sqrt(dx * dx + dy * dy), k = d < 220 ? 18 * (1 - d / 220) / (d || 1) : 0;
+    pill.style.setProperty('--mx', (dx * k).toFixed(1) + 'px');
+    pill.style.setProperty('--my', (dy * k).toFixed(1) + 'px');
+  }, { passive: true });
+}
+
 /* ============ scroll reveals ============ */
 if (!window.IntersectionObserver) return;
 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
