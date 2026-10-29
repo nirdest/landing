@@ -50,7 +50,7 @@ var I18N = {
     'fmt.2a':'Monitoring and incident response','fmt.2b':'Updates, backups, access','fmt.2c':'Infrastructure that grows with the product',
     'fmt.3t':'Need someone very specific?','fmt.3d':'We find a specialist for your narrow task, brief them and check the result. You won’t have to be involved.',
     'faq.h':'Frequently asked',
-    'faq.q1':'What does it cost?','faq.a1':'It depends on the task: we quote the price and timeline after the first call, before any work starts. It usually costs less than hiring your own DevOps team — you pay for results, not headcount. And FinOps optimisation can pay for itself many times over and cut your infrastructure budget.',
+    'faq.q1':'What does it cost?','faq.a1':'It depends on the task: we quote the price and timeline after the first call, before any work starts. It usually costs less than hiring your own DevOps team — you pay for results, not headcount. And FinOps optimisation can pay for itself quickly and cut your infrastructure budget.',
     'faq.q2':'Do we need a technical spec?','faq.a2':'No. Tell us what’s in the way — turning that into a plan is our job.',
     'faq.q3':'Is it only DevOps?','faq.a3':'No. Infrastructure, support, building new things. If the task is narrow, we bring in the right specialist and own the result.',
     'faq.q4':'Can we start with one small task?','faq.a4':'Yes. One task, no commitment. Whether to continue is up to you.',

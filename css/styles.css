@@ -112,6 +112,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .sec{padding-block:var(--sec-pad)}
 /* A nav jump lands the heading just under the sticky header, not the section's top padding. */
 .sec[id]{scroll-margin-top:calc(18px - var(--sec-pad))}
+#formats{scroll-margin-top:calc(13px - var(--sec-pad))}
 .sec-head{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:clamp(32px,4vw,56px)}
 .h2{font-weight:800;font-size:clamp(40px,5.6vw,84px);line-height:.95;letter-spacing:-.045em;max-width:12em}
 .note-svc{margin-right:4%}
