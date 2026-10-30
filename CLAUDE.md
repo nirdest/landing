@@ -103,6 +103,18 @@ guard and Telegram link are unchanged.
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 
+## Analytics — 2026-10-30
+
+Yandex Metrika counter `113919508` (owner's snippet, verbatim: Webvisor,
+clickmap, trackLinks, accurateTrackBounce) sits before `</head>` on both
+`index.html` and `ai.html`, its `<noscript>` pixel right after `<body>`. It is
+the one third-party script on the site, owner-requested; it loads async and
+costs one ~80 ms long task on a 6×-throttled phone, nothing during the film.
+Webvisor cannot record canvas, so the film shows up blank in replays. Google
+Analytics was deliberately not used (RU data-localization rules since
+2025-07-01). The site still has no privacy policy / cookie notice — owner's
+to-do, with a lawyer.
+
 ## What this is
 
 A bilingual (RU default / EN toggle) one-page landing site for DevOps.toys, an IT engineering team: infrastructure, DevOps, support and new builds.
