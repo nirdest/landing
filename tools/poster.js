@@ -10,7 +10,7 @@ const { chromium } = require('playwright'); const fs = require('fs');
     const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
     await p.goto(process.env.URL || 'http://127.0.0.1:8000/ai.html');
     await p.waitForFunction(() => window.__car?.ready);
-    await p.addStyleTag({ content: '.car-ctl,.car-txt,.car-parts{visibility:hidden!important}' });
+    await p.addStyleTag({ content: '.car-ctl,.car-txt,.car-parts,.co{visibility:hidden!important}' });
     await p.evaluate(() => { window.__car.explode(0); }); await p.waitForTimeout(600);
     await p.evaluate(() => window.__car.render());
     const png = await p.locator(sel).screenshot();

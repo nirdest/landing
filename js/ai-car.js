@@ -124,7 +124,7 @@ async function build(T) {
       P.mats.add(m); return m;
     });
     o.material = Array.isArray(o.material) ? ms : ms[0];
-    P.pieces.push({ g, dir, name: o.name, c: c.toArray().map(v => +v.toFixed(2)) });
+    P.pieces.push({ g, dir, lc: c.clone(), name: o.name, c: c.toArray().map(v => +v.toFixed(2)) });
   }
   /* лак: кузов и крылья получают clearcoat поверх PBR-текстуры — блик как на настоящей краске */
   for (const m of paint) {
@@ -136,6 +136,70 @@ async function build(T) {
     root.traverse(o => { if (o.isMesh && o.material === m) o.material = ph; });
     for (const P of Object.values(parts)) if (P.mats.delete(m)) P.mats.add(ph);
   }
+
+  /* ============ callouts ============ */
+  /* Выноски как на техническом чертеже: подпись, короткая горизонталь, диагональ к детали, точка.
+     Немного и по делу: в собранном виде — внешние узлы, в разобранном — внутренние, плюс выбранная деталь. */
+  const coBox = $('co'), coSvg = coBox.querySelector('svg'), coEls = {};
+  const SHOW_A = ['fwing', 'wheels', 'rwing', 'cockpit'], SHOW_E = ['engine', 'ers', 'fuel', 'cooling', 'gearbox'];
+  const nameOf = id => btns.find(b => b.dataset.part === id)?.querySelector('span').textContent || id;
+  const wp = new T.Vector3(), cbox = new T.Box3(), corner = new T.Vector3();
+  function anchor(P) {                              // центр куска детали, ближайшего к камере
+    let best = null, bd = Infinity;
+    for (const pc of P.pieces) {
+      const v = pc.lc.clone().add(pc.g.position).add(root.position), d = v.distanceToSquared(cam.position);
+      if (d < bd) { bd = d; best = v; }
+    }
+    return best;
+  }
+  function callouts() {
+    const w = cv.clientWidth, h = cv.clientHeight, narrow = w < 620;
+    let ids = (e > .5 ? SHOW_E : SHOW_A).slice(0, narrow ? 2 : 9);
+    if (sel && !ids.includes(sel)) ids = narrow ? [sel] : [...ids, sel];
+    for (const id of Object.keys(coEls)) if (!ids.includes(id)) { coEls[id].remove(); delete coEls[id]; }
+    /* точки на деталях */
+    const pts = [];
+    for (const id of ids) {
+      const P = parts[id]; if (!P) continue;
+      wp.copy(anchor(P)).project(cam);
+      if (wp.z > 1) continue;
+      let el = coEls[id];
+      if (!el) {
+        el = coEls[id] = document.createElement('button');
+        el.type = 'button'; el.className = 'co-l'; el.tabIndex = -1;
+        el.addEventListener('click', () => select(id));
+        coBox.appendChild(el);
+      }
+      const t = nameOf(id); if (el.textContent !== t) el.textContent = t;
+      el.classList.toggle('on', id === sel);
+      pts.push({ id, el, ax: (wp.x + 1) / 2 * w, ay: (1 - wp.y) / 2 * h, lw: el.offsetWidth });
+    }
+    /* подписи — столбиками слева и справа от машины, раздвинуты по вертикали, как на чертеже */
+    const mid = pts.reduce((a, p) => a + p.ax, 0) / (pts.length || 1);
+    /* габарит машины на экране — столбики подписей стоят за ним, а не поверх деталей */
+    let L = Infinity, Rr = -Infinity;
+    for (let i = 0; i < 8; i++) {
+      corner.set(i & 1 ? cbox.max.x : cbox.min.x, i & 2 ? cbox.max.y : cbox.min.y, i & 4 ? cbox.max.z : cbox.min.z).project(cam);
+      const x = (corner.x + 1) / 2 * w; L = Math.min(L, x); Rr = Math.max(Rr, x);
+    }
+    const maxR = wide.matches ? aside.offsetLeft - 16 : w - 8, gap = narrow ? 18 : 24, dx = narrow ? 24 : 44, run = narrow ? 14 : 22;
+    const out = [];
+    for (const s of [-1, 1]) {
+      const side = pts.filter(p => (p.ax < mid) === (s < 0)).sort((a, b) => a.ay - b.ay);
+      if (!side.length) continue;
+      let col = s < 0 ? Math.min(L + 12, Math.min(...side.map(p => p.ax)) - dx - run) : Math.max(Rr - 12, Math.max(...side.map(p => p.ax)) + dx + run);
+      col = s < 0 ? Math.max(col, Math.max(...side.map(p => p.lw)) + 10) : Math.min(col, maxR - Math.max(...side.map(p => p.lw)) - 6);
+      let y = -Infinity;
+      for (const p of side) {
+        y = Math.min(Math.max(p.ay - (narrow ? 26 : 40), y + gap, 14), h - (narrow ? 70 : 90));
+        const ex = col - s * run;                   // от подписи короткая горизонталь, затем диагональ к точке
+        out.push(`<path d="M${col.toFixed(1)} ${y.toFixed(1)}H${ex.toFixed(1)}L${p.ax.toFixed(1)} ${p.ay.toFixed(1)}"/><circle cx="${p.ax.toFixed(1)}" cy="${p.ay.toFixed(1)}" r="3"/>`);
+        p.el.style.transform = `translate(${(s < 0 ? col - 6 - p.lw : col + 6).toFixed(1)}px, ${y.toFixed(1)}px) translateY(-50%)`;
+      }
+    }
+    coSvg.innerHTML = out.join('');
+  }
+  const draw = () => { renderer.render(scene, cam); callouts(); };
 
   /* земля: мягкая тень от солнца + пятно контактной тени под машиной */
   const ground = new T.Mesh(new T.PlaneGeometry(30, 30).rotateX(-Math.PI / 2), new T.ShadowMaterial({ opacity: .22 }));
@@ -162,6 +226,7 @@ async function build(T) {
       const k = smooth((e - P.t) / .6);
       for (const pc of P.pieces) { pc.g.position.copy(pc.dir).multiplyScalar(k); pc.g.updateMatrix(); }
     }
+    root.updateMatrixWorld(true); cbox.setFromObject(root);
     blob.material.opacity = 1 - smooth(e / .3);
     renderer.shadowMap.needsUpdate = true;
     ex.value = e;
@@ -285,7 +350,7 @@ async function build(T) {
       setE(tw.from + (tw.to - tw.from) * s); busy = k < 1; if (!busy) tw = null;
     }
     busy = controls.update(dt) || busy || controls.autoRotate;
-    renderer.render(scene, cam);
+    draw();
     drawn = now;
     if (busy) { if (last) quality(dt); last = now; req(); } else last = 0;
   }
@@ -297,18 +362,18 @@ async function build(T) {
   setE(0);
   applyTier();
   await renderer.compileAsync(scene, cam);
-  renderer.render(scene, cam);
+  draw();
   view.classList.add('is-ready');
   req();
 
   const api = {
     select(id) { sel = id; if (id && INSIDE.includes(id) && e < .6 && !tw) tween(1); glow(); },
-    explode(v) { tw = null; setE(v); renderer.render(scene, cam); },
-    render() { renderer.render(scene, cam); },
+    explode(v) { tw = null; setE(v); draw(); },
+    render() { draw(); },
     debugCam(v, pos, tgt) {                          // для Playwright: кадр с заданной точки
       tw = null; setE(v); controls.autoRotate = false;
       cam.position.set(...pos); controls.target.set(...tgt); cam.lookAt(...tgt); cam.clearViewOffset(); cam.updateProjectionMatrix();
-      renderer.render(scene, cam);
+      draw();
     },
     pieces: () => Object.values(parts).flatMap(P => P.pieces.map(p => [P.id, p.name, p.c, p.dir.toArray()])),
     info: () => ({ tier, model: MODEL, calls: renderer.info.render.calls, tris: renderer.info.render.triangles, gpuTex: renderer.info.memory.textures, e }),

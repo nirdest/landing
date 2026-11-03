@@ -50,11 +50,16 @@ guard and Telegram link are unchanged.
   for CGTrader-level photorealism, which code-built geometry cannot reach.
 - **Owner's decisions, don't revert without asking:** the Red Bull livery and
   sponsor logos stay as in the model (owner's explicit choice, after being told it
-  is third-party trademarks on a commercial site). To keep it from reading as
-  "Red Bull is our client", `.car-note` says the model is by an independent CGTrader
-  artist and DevOps.toys is not affiliated with Red Bull Racing — keep that line.
-  The lead says what is true: AI prepared the model for the web (compression,
-  parts, tuning); it does **not** claim AI modelled the car.
+  is third-party trademarks on a commercial site). The "not affiliated with Red Bull
+  Racing" line under the part list was removed on 2026-11-03 at the owner's request.
+  Heading: «Разбираем сложность на понятные узлы.»; the lead is about scanning the
+  client's processes — the car is the metaphor, not the product.
+- **Callouts.** `callouts()` in `js/ai-car.js` draws technical-drawing labels after
+  every rendered frame: bold label → short horizontal → diagonal → 3 px dot, orange
+  1.25 px (`.co` SVG + `.co-l` buttons, `aria-hidden`, clicking selects the part).
+  Few on purpose: assembled `SHOW_A`, exploded `SHOW_E`, plus the selected part; two
+  on screens < 620 px. Labels stack in columns outside the car's projected bounds
+  (`cbox`, recomputed in `setE`) and never past the part list (`aside.offsetLeft`).
 - **Model source:** CGTrader "Red Bull 2022 Formula 1 Car" (free, royalty-free),
   downloaded by the owner to `~/Downloads/f1/` — the source `.blend`/textures
   (~260 MB) are **not** in the repo. Pipeline: `tools/car-export.py` (Blender,

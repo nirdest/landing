@@ -36,7 +36,7 @@ document.documentElement.className = 'js';
 <link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/caveat@5/index.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/latin-500.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/cyrillic-500.css" rel="stylesheet">
-<link href="css/styles.css?v=2026-11-03e" rel="stylesheet">
+<link href="css/styles.css?v=2026-11-03f" rel="stylesheet">
 <link rel="preload" href="img/car-poster.webp" as="image" media="(min-width: 901px)" fetchpriority="high">
 <link rel="preload" href="img/car-poster-tall.webp" as="image" media="(max-width: 900px)" fetchpriority="high">
 <!-- Yandex.Metrika counter -->
@@ -77,10 +77,11 @@ document.documentElement.className = 'js';
   <!-- ============ car ============ -->
   <section class="car" id="stage" aria-labelledby="aiH">
     <div class="car-txt">
-      <h1 class="h-car" id="aiH" data-i18n-html="ai.h">AI-пайплайны<br>для бизнеса<i class="dot">.</i></h1>
-      <p class="car-lead" data-i18n="car.lead">Red Bull RB18 сезона 2022 — фотореалистичная 3D-модель прямо в браузере. AI сжал её исходники в десятки раз и настроил так, чтобы она шла даже на слабых телефонах.</p>
+      <h1 class="h-car" id="aiH" data-i18n-html="ai.h">Разбираем сложность на&nbsp;понятные узлы<i class="dot">.</i></h1>
+      <p class="car-lead" data-i18n="car.lead">Глубоко просканируем процессы, найдём узкие места и&nbsp;покажем, где AI и&nbsp;автоматизация дадут максимальный эффект.</p>
     </div>
     <div class="car-view" id="view">
+      <div class="co" id="co" aria-hidden="true"><svg></svg></div>
       <canvas id="car" role="img" aria-label="3D-модель болида Формулы-1 Red Bull RB18: её можно вращать и разобрать на детали" data-i18n-aria="car.alt"></canvas>
       <progress class="car-prog" id="prog" max="1" value="0" hidden></progress>
       <button class="btn car-load" id="load" type="button" hidden><span data-i18n="car.load">Показать 3D</span></button>
@@ -111,7 +112,6 @@ document.documentElement.className = 'js';
         <li><button type="button" data-part="gearbox" aria-pressed="false"><span data-i18n="car.gearbox">Коробка и выхлоп</span></button><p data-i18n="car.gearbox.d">Восьмиступенчатая коробка — несущая деталь: на неё крепятся задняя подвеска и крыло. Над ней проходит выхлопная труба.</p></li>
         <li><button type="button" data-part="rwing" aria-pressed="false"><span data-i18n="car.rwing">Заднее крыло</span></button><p data-i18n="car.rwing.d">Прижимает заднюю ось. Верхний элемент открывается системой DRS: на прямой сопротивление падает, и машине проще пойти на обгон.</p></li>
       </ol>
-      <p class="car-note" data-i18n="car.note">3D-модель — работа независимого автора с CGTrader. DevOps.toys не связан с Red Bull Racing.</p>
     </aside>
   </section>
 
@@ -181,8 +181,8 @@ document.documentElement.className = 'js';
   </div>
 </div>
 
-<script src="js/main.js?v=2026-11-03e"></script>
-<script src="js/animations.js?v=2026-11-03e"></script>
-<script type="module" src="js/ai-car.js?v=2026-11-03e"></script>
+<script src="js/main.js?v=2026-11-03f"></script>
+<script src="js/animations.js?v=2026-11-03f"></script>
+<script type="module" src="js/ai-car.js?v=2026-11-03f"></script>
 </body>
 </html>
