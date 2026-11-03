@@ -198,8 +198,8 @@ async function build(T) {
   /* на широком экране машина сдвинута от списка деталей и вниз от заголовка; разобранная — ещё ниже */
   function offset() {
     const w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return;
-    const sx = wide.matches ? aside.offsetWidth / 2 : 0;
-    cam.setViewOffset(w, h, sx, wide.matches ? -h * (.07 + .1 * Math.max(e, 0)) : 0, w, h);
+    const sx = wide.matches ? aside.offsetWidth / 2 - w * .07 : 0;   // чуть правее и выше центра свободной области
+    cam.setViewOffset(w, h, sx, wide.matches ? -h * (.0 + .1 * Math.max(e, 0)) : -h * .04, w, h);
     cam.updateProjectionMatrix();
   }
   function fitCam() {

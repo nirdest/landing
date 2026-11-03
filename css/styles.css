@@ -386,8 +386,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .car-info{position:absolute;z-index:1;left:var(--gutter);bottom:calc(clamp(18px,4vh,36px) + 64px);width:min(340px,30%);display:grid;gap:8px;pointer-events:none}
 .car-ph{font:500 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .car-pd{font-size:15px;line-height:1.4;color:var(--ink-2);text-wrap:pretty}
-.parts{flex:0 1 auto;min-height:0;overflow-y:auto;counter-reset:pt;border-top:1.5px solid var(--ink);scrollbar-width:thin}
-.parts li{counter-increment:pt;border-bottom:1px solid var(--line)}
+.parts{flex:0 1 auto;min-height:0;overflow-y:auto;counter-reset:pt;scrollbar-width:thin}
+.parts li{counter-increment:pt}
 .parts button{display:flex;align-items:baseline;gap:12px;width:100%;padding:8px 6px;text-align:left;font-weight:600;font-size:15px;letter-spacing:-.01em;transition:background-color .2s,color .2s,padding .3s var(--ease-out)}
 .parts button::before{content:counter(pt,decimal-leading-zero);font:500 11px var(--f-mono);color:var(--muted)}
 .parts button[aria-pressed="true"]{background:var(--ink);color:var(--paper);padding-left:12px}
