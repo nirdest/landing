@@ -54,14 +54,9 @@ guard and Telegram link are unchanged.
   Racing" line under the part list was removed on 2026-11-03 at the owner's request.
   Heading: «Разбираем сложность на понятные узлы.»; the lead is about scanning the
   client's processes — the car is the metaphor, not the product.
-- **Callouts.** `callouts()` in `js/ai-car.js` runs after every rendered frame and
-  draws one technical-drawing callout, owner's reference style: 3.5 px orange dot on
-  the part → long diagonal → short horizontal underlining a bold label (`.co` SVG +
-  `.co-l`, `aria-hidden`, no pointer events). **Only on hover** (the part under the
-  cursor or the hovered list item); on touch screens, where there is no hover, for
-  the selected part. The label sits beyond the car's projected bounds (`cbox`,
-  recomputed in `setE`), never past the part list (`aside.offsetLeft`), and goes up
-  or down so it doesn't land on `.car-txt` / `.car-info`.
+- **No callouts.** Orange line-and-label callouts were built and then removed on
+  2026-11-03 at the owner's request (git history, commit 3adcabc); hover/selection is
+  shown by the emissive glow only.
 - **Layout of the text blocks:** heading and lead top-left; `.car-info` («Из чего
   он состоит» + the selected part's description) bottom-left above the explode
   controls; the part list alone on the right, vertically centred.
