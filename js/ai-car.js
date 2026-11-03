@@ -12,8 +12,8 @@ const wide = matchMedia('(min-width: 901px)');
 const conn = navigator.connection;
 const lite = !!(conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')));
 const weak = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
-/* лёгкая модель (текстуры ≤1024, ~31 МБ видеопамяти) — телефонам и слабым машинам */
-const MODEL = `models/car-${weak || matchMedia('(max-width: 900px), (pointer: coarse)').matches ? 'lo' : 'hi'}.glb?v=1`;
+/* какую модель грузить, решает инлайн-скрипт в <head> ai.html (он же её предзагружает) */
+const MODEL = window.__carModel || 'models/car-lo.glb?v=1';
 const INSIDE = ['cockpit', 'wheel', 'gearbox', 'rsusp', 'fsusp', 'brakes', 'fuel', 'ers', 'engine', 'cooling'];   // видны только после разборки
 
 /* ============ ui (работает и без 3D) ============ */
@@ -124,7 +124,7 @@ async function build(T) {
       P.mats.add(m); return m;
     });
     o.material = Array.isArray(o.material) ? ms : ms[0];
-    P.pieces.push({ g, dir, lc: c.clone(), name: o.name, c: c.toArray().map(v => +v.toFixed(2)) });
+    P.pieces.push({ g, dir, name: o.name, c: c.toArray().map(v => +v.toFixed(2)) });
   }
   /* лак: кузов и крылья получают clearcoat поверх PBR-текстуры — блик как на настоящей краске */
   for (const m of paint) {

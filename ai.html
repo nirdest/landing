@@ -24,11 +24,20 @@ document.documentElement.className = 'js';
 <meta name="twitter:card" content="summary_large_image">
 
 <script>
-// Three.js качаем параллельно с ai-car.js. Скрипт стоит до CSS: иначе он ждал бы шрифты с CDN. При Save-Data/2G 3D не грузим сами.
+// Скрипт стоит до CSS, иначе ждал бы шрифты с CDN. Здесь — единственное место, где выбирается модель:
+// лёгкая (текстуры ≤1024) для телефонов и слабых машин, полная — для остальных. ai-car.js берёт её отсюда.
+// Three.js, модель и студийная HDRI начинают качаться сразу, параллельно с CSS и ai-car.js.
+// При Save-Data/2G ничего 3D сами не грузим — только по кнопке.
 (function(){
+  var weak = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+  var m = window.__carModel = 'models/car-' + (weak || matchMedia('(max-width: 900px), (pointer: coarse)').matches ? 'lo' : 'hi') + '.glb?v=1';
   var c = navigator.connection;
   if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) return;
-  var l = document.createElement('link'); l.rel = 'modulepreload'; l.href = 'js/vendor/three-car.js?v=r169d'; document.head.appendChild(l);
+  [['modulepreload', 'js/vendor/three-car.js?v=r169d'], ['preload', m], ['preload', 'models/car-inner.glb?v=7'], ['preload', 'models/studio.hdr?v=1']].forEach(function(x){
+    var l = document.createElement('link'); l.rel = x[0]; l.href = x[1];
+    if (x[0] === 'preload') { l.as = 'fetch'; l.crossOrigin = 'anonymous'; }   // так же, как fetch() у GLTFLoader — иначе браузер скачает дважды
+    document.head.appendChild(l);
+  });
 })();
 </script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -36,7 +45,7 @@ document.documentElement.className = 'js';
 <link href="https://cdn.jsdelivr.net/npm/@fontsource-variable/caveat@5/index.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/latin-500.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/cyrillic-500.css" rel="stylesheet">
-<link href="css/styles.css?v=2026-11-03j" rel="stylesheet">
+<link href="css/styles.css?v=2026-11-03k" rel="stylesheet">
 <link rel="preload" href="img/car-poster.webp" as="image" media="(min-width: 901px)" fetchpriority="high">
 <link rel="preload" href="img/car-poster-tall.webp" as="image" media="(max-width: 900px)" fetchpriority="high">
 <!-- Yandex.Metrika counter -->
@@ -182,8 +191,8 @@ document.documentElement.className = 'js';
   </div>
 </div>
 
-<script src="js/main.js?v=2026-11-03j"></script>
-<script src="js/animations.js?v=2026-11-03j"></script>
-<script type="module" src="js/ai-car.js?v=2026-11-03j"></script>
+<script src="js/main.js?v=2026-11-03k"></script>
+<script src="js/animations.js?v=2026-11-03k"></script>
+<script type="module" src="js/ai-car.js?v=2026-11-03k"></script>
 </body>
 </html>

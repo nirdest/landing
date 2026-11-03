@@ -70,7 +70,11 @@ guard and Telegram link are unchanged.
   `models/car-hi.glb` (≈4.2 MB, ≈245 MB GPU textures, desktop) and
   `models/car-lo.glb` (≈2.7 MB, ≈48 MB, phones / coarse pointer / ≤4 cores or
   ≤4 GB). The unprocessed model would need ~5 GB of GPU memory (232 textures at
-  2048²) — never ship it raw. Bump `?v=` on `MODEL` when you replace a GLB.
+  2048²) — never ship it raw. Which GLB loads is decided **only** by the inline
+  script in `ai.html`'s `<head>` (`window.__carModel`), which also preloads the GLB,
+  `car-inner.glb` and `studio.hdr` (`as=fetch`, `crossorigin` — must match
+  GLTFLoader's fetch or the file downloads twice). When you replace a model, bump its
+  `?v=` there **and** in `ai-car.js` (inner/hdr URLs appear in both).
   A second download, "F1 2026 Release Car" (FIA launch livery), was rejected: its
   body is one mesh, so it cannot be taken apart.
 - **Lighting:** `models/studio.hdr` is Poly Haven "Studio Small 09" (CC0, 1k) as
