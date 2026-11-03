@@ -38,64 +38,84 @@ reference. What changed, and what it overrides further down this file:
 The lead endpoint, Worker, validation, honeypot, modal focus handling, HTTPS
 guard and Telegram link are unchanged.
 
-## AI page — 2026-10-30
+## AI page — 2026-11-03 (photoreal F1 car replaced the film)
 
-- `ai.html` is a second page: a ~34 s canvas cartoon (factory → AI chip → belt
-  ×60 → truck inflates and pops → trucks cycle → city grows → rockets to
-  planets) followed by four AI service points and a CTA. It reuses the header,
-  lead modal, footer, `main.js` and `animations.js`; `<html data-meta="ai.meta">`
-  makes `applyLang` use `ai.meta.title/desc` instead of `meta.*`.
-- The film is a **Three.js** 3D scene. Three.js r169 is **self-hosted** as one
-  tree-shaken file, `js/vendor/three-ai.js` (~144 KB gzip), built from
-  `tools/three-ai.entry.js` with esbuild — the rebuild command is in that
-  file's header. It replaced ~10 chained jsDelivr module requests (the main
-  cause of slow first frame). It is the only JS dependency on the site and is
-  scoped to `ai.html`. If you use a new `THREE.*` symbol in `ai-film.js`, add
-  it to the entry and rebuild, or it is `undefined` at runtime. Modules do not
-  load over `file://`; preview with `python3 -m http.server`. The Sky shader
-  returns NaN at zero rayleigh/mie and bloom smears NaN over the whole frame
-  (black screen) — keep the minimums in `render()`.
-- **Three files, two threads.** `js/ai-film.js` is the player (time, captions,
-  HUD, buttons, quality tiers) and stays on the main thread. `js/ai-scene.js`
-  is the whole Three.js scene with no DOM access; `js/ai-worker.js` runs it on
-  an `OffscreenCanvas` in a module Worker, so the page never blocks on scene
-  build, shader compile or frames (main-thread long tasks during load went
-  from ~1.1 s to 0 on a CPU-throttled profile). Browsers without OffscreenCanvas
-  WebGL or module workers fall back to running `ai-scene.js` on the main
-  thread; `?main` in the URL forces that path for testing. The worker gets the
-  next frame only after it returned the previous one (no queue build-up).
-  The worker has no page fonts, so the player draws the "AI" chip label and
-  sends it as an ImageBitmap.
-- **Poster.** `img/ai-poster.webp` / `ai-poster-tall.webp` are the first frame
-  as images, the `.film` background until the canvas fades in — something is on
-  screen before any JS. Regenerate with `tools/poster.js` when the opening shot
-  changes. With Save-Data or 2G the 3D is not loaded at all (not even the
-  preloads, which live in an inline script for that reason); the poster and the
-  final card show and ▶ / "watch again" starts the film.
-- **Staged build.** Only the factory is built before the first frame; the hub,
-  city and space are built in the background (`buildRest`) and compiled with
-  `compileAsync`, or synchronously if the viewer seeks ahead (`ensure(t)`).
-  Code that touches stage objects in `render()` must guard for them not
-  existing yet. The shadow map is redrawn every other frame.
-- **Measuring.** Chrome's CPU throttling (DevTools/CDP) slows only the main
-  thread, **not workers** — verified. Throttled numbers for the worker path
-  are therefore not a weak-device simulation; compare render cost on `?main`,
-  and judge the worker by main-thread time and long tasks.
-- **Performance rules for the film** (measured 2026-10-30 with Playwright, CPU
-  throttled 6×/15×: first frame 4.3 → 2.9 s, city frame 46 → 12 ms, very weak
-  profile 17 → 29 fps): static parts are merged per material (`batch()`,
-  `bakeTree()`), the truck fleet and the city are `InstancedMesh`es (window
-  UVs scale by instance size in the shader), mesh `matrixAutoUpdate` is off
-  except for meshes that move themselves, particles upload only the used
-  range. Quality tiers (`TIERS`) drop resolution → bloom → shadow size → 30 fps
-  cap when frames run slow, only downward. Rendering pauses when the film
-  scrolls out of view. Keep draw calls low when adding objects: a new moving
-  object is a group, its meshes get baked.
-- `js/ai-film.js` draws every frame as a pure function `render(t)` — no state
-  between frames — so seeking, pause and the static last frame under
-  `prefers-reduced-motion` all come free. Captions are HTML `.cap[data-t="from,to"]`
-  (translated via i18n), the finale `#fin` is `inert` until shown.
-  `window.__film.render(t)` exists for Playwright frame checks.
+- `ai.html` is a second page: a photorealistic 3D **Red Bull RB18 (2022)** that
+  the visitor rotates, takes apart and inspects part by part, then four AI service
+  points and a CTA. It reuses the header, lead modal, footer, `main.js` and
+  `animations.js`; `<html data-meta="ai.meta">` makes `applyLang` use
+  `ai.meta.title/desc`. The 34 s canvas film, its worker and posters were deleted
+  on 2026-11-03 at the owner's request (git history has them). A first, fully
+  procedural car (built in code) was replaced the same day because the owner asked
+  for CGTrader-level photorealism, which code-built geometry cannot reach.
+- **Owner's decisions, don't revert without asking:** the Red Bull livery and
+  sponsor logos stay as in the model (owner's explicit choice, after being told it
+  is third-party trademarks on a commercial site). To keep it from reading as
+  "Red Bull is our client", `.car-note` says the model is by an independent CGTrader
+  artist and DevOps.toys is not affiliated with Red Bull Racing — keep that line.
+  The lead says what is true: AI prepared the model for the web (compression,
+  parts, tuning); it does **not** claim AI modelled the car.
+- **Model source:** CGTrader "Red Bull 2022 Formula 1 Car" (free, royalty-free),
+  downloaded by the owner to `~/Downloads/f1/` — the source `.blend`/textures
+  (~260 MB) are **not** in the repo. Pipeline: `tools/car-export.py` (Blender,
+  always `--disable-autoexec`) groups objects into the 11 parts as nodes `p_<id>`,
+  turns the car nose-to-+X, scales ×0.5 to real size (wheelbase 3.6 m) and puts the
+  tyres on y=0; `tools/car-opt.mjs` (gltf-transform) sizes every texture by the
+  size of the part it sits on, encodes WebP and meshopt geometry. Output:
+  `models/car-hi.glb` (≈4.2 MB, ≈245 MB GPU textures, desktop) and
+  `models/car-lo.glb` (≈2.7 MB, ≈48 MB, phones / coarse pointer / ≤4 cores or
+  ≤4 GB). The unprocessed model would need ~5 GB of GPU memory (232 textures at
+  2048²) — never ship it raw. Bump `?v=` on `MODEL` when you replace a GLB.
+  A second download, "F1 2026 Release Car" (FIA launch livery), was rejected: its
+  body is one mesh, so it cannot be taken apart.
+- **Lighting:** `models/studio.hdr` is Poly Haven "Studio Small 09" (CC0, 1k) as
+  the environment; one shadow-casting sun; ground is a `ShadowMaterial` plus a
+  canvas contact-shadow blob. Body and wings get `clearcoat` on top of the model's
+  PBR maps; normal maps are scaled to 0.45 and textures get anisotropy 8 — without
+  that the carbon floor shimmers in a "zebra" pattern.
+- **Parts.** 15 ids — `fwing body cockpit wheel fsusp brakes wheels fuel ers engine
+  cooling floor rsusp gearbox rwing` — match the `p_<id>` nodes, `[data-part]` buttons and
+  `car.<id>` / `car.<id>.d` i18n keys. Explode directions live in `DIRS` in
+  `js/ai-car.js` in world axes; `lat` parts split left/right by the sign of each
+  mesh's centre Z. The body lifts 2 m so the cockpit tub and steering wheel are
+  visible under it. The CGTrader model has no internals, so they are modelled in
+  Blender by `tools/car-inner.py` (real metres, same axes as the export) into
+  `models/car-inner.glb` (~195 KB, 22k triangles, flat PBR, no textures; its
+  `carbon` material is swapped at runtime for the model's own carbon): V6 90° with
+  tall carbon plenum and runners, split turbo (compressor front with purple cap,
+  turbine rear) and MGU-H, heat-wrapped exhaust, black coil packs with purple
+  Honda fasteners, hoses/looms on top, saddle cooler at the rear engine-cover outlet
+  (`engine`),
+  battery + MGU-K + CE + HV cables (`ers`), fuel cell (`fuel`), long raked
+  radiators (edge-on, rear end higher, per the Bahrain 2022 Motorsport.com photos) and
+  intercoolers (`cooling`), plus calipers, rear discs, gearbox casing and steering
+  rack added to existing groups. Layout follows the generic 2022 PU packaging
+  (owner's reference photos of Honda RA621H/RA620H and RB18 in the garage, kept
+  outside the repo in `~/Downloads/f1/photo/`), not exact RB18 CAD — keep texts generic. Part texts are 2022-regulation facts (ground effect,
+  18" wheels, DRS, 8-speed gearbox) — check before adding numbers.
+- **Three.js r169 is self-hosted** as `js/vendor/three-car.js` (~156 KB gzip:
+  core + GLTFLoader + MeshoptDecoder + RGBELoader + OrbitControls), built from
+  `tools/three-car.entry.js` with esbuild (command in its header). New `T.*`
+  symbol → add to the entry, rebuild, bump `?v=r169…` in `ai-car.js` and the head
+  preload. Modules do not load over `file://`; preview with `python3 -m http.server`.
+- **WebGL, not WebGPU** — WebGPU is still patchy on the weak phones this must run
+  on, and `WebGPURenderer` would roughly double the bundle.
+- **Performance rules.** Render on demand (camera, explode or auto-rotate moved
+  something), 60 fps cap, shadow map redrawn only when parts move, no rendering off
+  screen or in a hidden tab, `TIERS` drop resolution → shadow size → shadows →
+  30 fps when frames run slow (only downward). Measured 2026-11-03 on localhost
+  (no network): ready 0.7 s desktop / 1.2 s at 6× CPU / 3.4 s at 15× CPU; 59 / 59 /
+  55 fps; tier never dropped. Over a real network add the GLB + HDR download
+  (≈4.3–5.8 MB) — the poster covers it and a progress bar shows.
+- **Poster.** `img/car-poster.webp` / `car-poster-tall.webp` are the first frame;
+  regenerate with `tools/poster.js` whenever the model, materials or camera change.
+  With Save-Data or 2G nothing 3D loads until the "Показать 3D" button.
+- **Layout.** ≥901 px: canvas fills the section, text top-left, part list right;
+  `offset()` shifts the car left by half the list and further down when exploded so
+  the lifted body clears the heading. ≤900 px: text, then the canvas sticky under
+  the 69 px header, then the list; the selected part's text opens under its button.
+- `window.__car` (`explode`, `render`, `debugCam`, `pieces`, `info`) exists for
+  Playwright checks and the poster script.
 - The main page links to it twice: the `#ai` card after `#formats` and the
   floating `.ai-pill` (fixed bottom-right, inside `#page` so the modal's
   `inert` covers it; pulls ≤18 px toward the cursor on fine pointers).
