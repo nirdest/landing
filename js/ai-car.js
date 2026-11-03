@@ -138,10 +138,11 @@ async function build(T) {
   }
 
   /* ============ callouts ============ */
-  /* Выноски как на техническом чертеже: подпись, короткая горизонталь, диагональ к детали, точка.
-     Немного и по делу: в собранном виде — внешние узлы, в разобранном — внутренние, плюс выбранная деталь. */
-  const coBox = $('co'), coSvg = coBox.querySelector('svg'), coEls = {};
-  const SHOW_A = ['fwing', 'wheels', 'rwing', 'cockpit'], SHOW_E = ['engine', 'ers', 'fuel', 'cooling', 'gearbox'];
+  /* Выноска как на техническом чертеже: точка на детали → диагональ → горизонталь, над которой
+     стоит название. Только для детали под курсором (на машине или в списке); на тач-экранах,
+     где наведения нет, — для выбранной. */
+  const coBox = $('co'), coSvg = coBox.querySelector('svg'), coL = coBox.querySelector('.co-l');
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const nameOf = id => btns.find(b => b.dataset.part === id)?.querySelector('span').textContent || id;
   const wp = new T.Vector3(), cbox = new T.Box3(), corner = new T.Vector3();
   function anchor(P) {                              // центр куска детали, ближайшего к камере
@@ -153,51 +154,35 @@ async function build(T) {
     return best;
   }
   function callouts() {
+    const id = hover || (fine ? null : sel), P = id && parts[id];
+    coBox.classList.toggle('on', !!P);
+    if (!P) { coSvg.innerHTML = ''; return; }
     const w = cv.clientWidth, h = cv.clientHeight, narrow = w < 620;
-    let ids = (e > .5 ? SHOW_E : SHOW_A).slice(0, narrow ? 2 : 9);
-    if (sel && !ids.includes(sel)) ids = narrow ? [sel] : [...ids, sel];
-    for (const id of Object.keys(coEls)) if (!ids.includes(id)) { coEls[id].remove(); delete coEls[id]; }
-    /* точки на деталях */
-    const pts = [];
-    for (const id of ids) {
-      const P = parts[id]; if (!P) continue;
-      wp.copy(anchor(P)).project(cam);
-      if (wp.z > 1) continue;
-      let el = coEls[id];
-      if (!el) {
-        el = coEls[id] = document.createElement('button');
-        el.type = 'button'; el.className = 'co-l'; el.tabIndex = -1;
-        el.addEventListener('click', () => select(id));
-        coBox.appendChild(el);
-      }
-      const t = nameOf(id); if (el.textContent !== t) el.textContent = t;
-      el.classList.toggle('on', id === sel);
-      pts.push({ id, el, ax: (wp.x + 1) / 2 * w, ay: (1 - wp.y) / 2 * h, lw: el.offsetWidth });
-    }
-    /* подписи — столбиками слева и справа от машины, раздвинуты по вертикали, как на чертеже */
-    const mid = pts.reduce((a, p) => a + p.ax, 0) / (pts.length || 1);
-    /* габарит машины на экране — столбики подписей стоят за ним, а не поверх деталей */
-    let L = Infinity, Rr = -Infinity;
+    wp.copy(anchor(P)).project(cam);
+    const ax = (wp.x + 1) / 2 * w, ay = (1 - wp.y) / 2 * h;
+    let L = Infinity, Rr = -Infinity;               // габарит машины на экране: подпись встаёт за ним, в пустом месте
     for (let i = 0; i < 8; i++) {
       corner.set(i & 1 ? cbox.max.x : cbox.min.x, i & 2 ? cbox.max.y : cbox.min.y, i & 4 ? cbox.max.z : cbox.min.z).project(cam);
       const x = (corner.x + 1) / 2 * w; L = Math.min(L, x); Rr = Math.max(Rr, x);
     }
-    const maxR = wide.matches ? aside.offsetLeft - 16 : w - 8, gap = narrow ? 18 : 24, dx = narrow ? 24 : 44, run = narrow ? 14 : 22;
-    const out = [];
-    for (const s of [-1, 1]) {
-      const side = pts.filter(p => (p.ax < mid) === (s < 0)).sort((a, b) => a.ay - b.ay);
-      if (!side.length) continue;
-      let col = s < 0 ? Math.min(L + 12, Math.min(...side.map(p => p.ax)) - dx - run) : Math.max(Rr - 12, Math.max(...side.map(p => p.ax)) + dx + run);
-      col = s < 0 ? Math.max(col, Math.max(...side.map(p => p.lw)) + 10) : Math.min(col, maxR - Math.max(...side.map(p => p.lw)) - 6);
-      let y = -Infinity;
-      for (const p of side) {
-        y = Math.min(Math.max(p.ay - (narrow ? 26 : 40), y + gap, 14), h - (narrow ? 70 : 90));
-        const ex = col - s * run;                   // от подписи короткая горизонталь, затем диагональ к точке
-        out.push(`<path d="M${col.toFixed(1)} ${y.toFixed(1)}H${ex.toFixed(1)}L${p.ax.toFixed(1)} ${p.ay.toFixed(1)}"/><circle cx="${p.ax.toFixed(1)}" cy="${p.ay.toFixed(1)}" r="3"/>`);
-        p.el.style.transform = `translate(${(s < 0 ? col - 6 - p.lw : col + 6).toFixed(1)}px, ${y.toFixed(1)}px) translateY(-50%)`;
-      }
-    }
-    coSvg.innerHTML = out.join('');
+    const t = nameOf(id); if (coL.textContent !== t) coL.textContent = t;
+    const lw = coL.offsetWidth, lh = coL.offsetHeight, maxR = wide.matches ? aside.offsetLeft - 16 : w - 6;
+    const pad = narrow ? 8 : 12;
+    const lxOf = s => s > 0 ? Math.max(ax + 40, Rr + 10) : Math.min(ax - 40, L - 10) - lw;
+    let s = ax < (L + Rr) / 2 ? -1 : 1, lx = lxOf(s);
+    if (lx < 6 || lx + lw > maxR) { const o = lxOf(-s); if (o >= 6 && o + lw <= maxR) { s = -s; lx = o; } else lx = Math.min(Math.max(lx, 6), maxR - lw); }
+    /* как на чертеже: длинная диагональ от точки почти до подписи, короткая горизонталь под ней */
+    const ex = s > 0 ? lx - pad : lx + lw + pad, end = s > 0 ? lx + lw + 4 : lx - 4;
+    /* вверх или вниз — куда подпись не ляжет на заголовок и блок описания слева */
+    const cr = cv.getBoundingClientRect(), avoid = [document.querySelector('.car-txt'), document.querySelector('.car-info')]
+      .map(el => el.getBoundingClientRect()).filter(r => r.width && r.height).map(r => [r.left - cr.left, r.top - cr.top, r.right - cr.left, r.bottom - cr.top]);
+    const dy = Math.min(Math.max(Math.abs(ex - ax) * .5, narrow ? 24 : 34), narrow ? 50 : 80);
+    const bad = ey => avoid.some(([l, t, r, b]) => lx < r && lx + lw > l && ey - lh - 4 < b && ey > t) || ey - lh < 4 || ey > h - 12;
+    const pref = ay > h * .55 ? -1 : 1;
+    let ey = ay + pref * dy; if (bad(ey) && !bad(ay - pref * dy)) ey = ay - pref * dy;
+    ey = Math.min(Math.max(ey, lh + 8), h - 12);
+    coSvg.innerHTML = `<circle cx="${ax.toFixed(1)}" cy="${ay.toFixed(1)}" r="3.5"/><path d="M${ax.toFixed(1)} ${ay.toFixed(1)}L${ex.toFixed(1)} ${ey.toFixed(1)}H${end.toFixed(1)}"/>`;
+    coL.style.transform = `translate(${lx.toFixed(1)}px, ${(ey - lh - 4).toFixed(1)}px)`;
   }
   const draw = () => { renderer.render(scene, cam); callouts(); };
 
@@ -305,7 +290,11 @@ async function build(T) {
     if (id !== sel) select(id ?? sel);             // клик мимо снимает выбор (select(sel) переключает)
     btns.find(b => b.dataset.part === sel)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   });
-  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  if (fine) {
+    for (const b of btns) {
+      b.addEventListener('mouseenter', () => { hover = b.dataset.part; glow(); });
+      b.addEventListener('mouseleave', () => { hover = null; glow(); });
+    }
     let pend = 0;
     cv.addEventListener('pointermove', ev => {
       if (ev.buttons || pend) return;
